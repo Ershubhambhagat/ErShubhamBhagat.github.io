@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-[This website host in Github]   (ErShubhamBhagat.github.io)
+This website host in Github https://ershubhambhagat.github.io/
 
 
 
