@@ -3,7 +3,7 @@
     /* background-color: #9d9898; */
 
     background: linear-gradient(45deg,#6969ff,#2a00e4 ,#1fedb3d8);
-    animation: hue-rotate  1s linear infinite alternate;
+    animation: hue-rotate  2s linear infinite alternate;
 
 
     color: rgb(0, 0, 0);
