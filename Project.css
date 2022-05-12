@@ -1,12 +1,17 @@
 .card{
     /* background-color: rgb(187, 174, 174); */
-    background-color: #9d9898;
+    /* background-color: #9d9898; */
+
+    background: linear-gradient(45deg,#6969ff,#2a00e4 ,#1fedb3d8);
+    animation: hue-rotate  1s linear infinite alternate;
+
+
     color: rgb(0, 0, 0);
     box-shadow: 0 9px 8px 0 rgba(0, 255, 132, 0.2);
     max-width: 300px;
-    box-sizing: 20px;
-    margin-left: 60px;
-    margin:  40px ;
+    box-sizing: 22px;
+    margin-left: 70px;
+    margin:  55px ;
     text-align: center;
     font-family: arial;
     float: left;
@@ -15,6 +20,9 @@
     padding: 16px;
     font-weight: bold;
 }
+@keyframes hue-rotate{
+  to{filter:hue-rotate(90deg);}
+} 
 .nav
 {
     text-align: center;
@@ -30,12 +38,6 @@
     
     font-family: arial;
   }
-
-
-
-body{
-    /* background-color: rgb(255, 255, 255); */
-}
 .row{    
     margin: top 9px;
 }
@@ -59,17 +61,35 @@ body{
     border: 2px solid #488d46; 
     border-radius: 8px;
   }
+
   .card button:hover {
-    background-color: green; /* Green */
+    background-color: green;  
     color: white;
+   
   }
   
   .card button:hover {
-    opacity: 0.7;
-  }
+    opacity: 0.8;
+  } 
+  
+
   /* @media only screen and (min-width : 1200px) {
     .container { max-width: 1400px; }
 } */
+
+.card button:hover {
+ 
+}
+
+/* button{
+  background: linear-gradient(45deg,#6969ff,#2a00e4 ,#1fedb3d8);
+  animation: hue-rotate  1s linear infinite alternate;
+  margin: 5px;
+  width: 232px;
+  height: 44px;
+
+}
+*/
 
 
 .sms{
