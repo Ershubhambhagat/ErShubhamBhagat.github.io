@@ -18,13 +18,14 @@
 }
 
 .text {
-  text-align: justify;
+  /* text-align: justify; */
   text-justify: inter-word;
   
 }
 
 .image {
   height: 200px;
+  padding: auto;
   /* margin-left: 60px; */
 }
 
