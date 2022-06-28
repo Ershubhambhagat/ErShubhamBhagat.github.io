@@ -1,11 +1,17 @@
 
 
 .SiteButton{
-  float: right;
-  width: 20%;
-  padding-left: 20px;
-color: rgb(31, 2, 255);
-background-color: skyblue;
+  float:right;
+  width: 188px;
+  height: 50px;
+  text-align: center;
+ padding-top: 9px;
+color: #ffffff;
+background-color: #4CAF50;
+
+font-size: 17px;
+font-family: 'Source Sans Pro', sans-serif;
+/* padding:9px 11px; */
 border: 2px solid #ef6a23 !important;
 
 }
@@ -57,15 +63,9 @@ body {
 .header {
   padding: 30px;
   font-size: 40px;
+  background-color: rgb(59, 158, 125);
   text-align: center;
   background: white;
-}
-
-/* Create two unequal columns that floats next to each other */
-/* Left column */
-.leftcolumn {   
-  float: left;
-  width: 75%;
 }
 
 /* Right column */
@@ -76,11 +76,7 @@ body {
 }
 
 /* Fake image */
-.fakeimg {
-  background-color: #aaa;
-  width: 100%;
-  padding: 20px;
-}
+
 
 /* Add a card effect for articles */
 .card {
@@ -106,7 +102,7 @@ body {
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 800px) {
-  .leftcolumn, .rightcolumn {   
+  .leftcolumn {   
     width: 100%;
     padding: 0;
   }
