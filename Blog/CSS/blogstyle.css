@@ -1,29 +1,35 @@
-
-
-.SiteButton{
-  float:right;
+.SiteButton {
+  float: right;
   width: 188px;
   height: 50px;
   text-align: center;
- padding-top: 9px;
-color: #ffffff;
-background-color: #4CAF50;
-
-font-size: 17px;
-font-family: 'Source Sans Pro', sans-serif;
-/* padding:9px 11px; */
-border: 2px solid #ef6a23 !important;
-
+  padding-top: 9px;
+  color: #ffffff;
+  background-color: #4CAF50;
+  font-size: 17px;
+  font-family: 'Source Sans Pro', sans-serif;
+  /* padding:9px 11px; */
+  border: 2px solid #ef6a23 !important;
 }
 
 
-.image{
-  height:200px;  
-  margin-left: 60px;
+.collapsible {
+  scroll-behavior: smooth
+}
+
+.text {
+  text-align: justify;
+  text-justify: inter-word;
+  
+}
+
+.image {
+  height: 200px;
+  /* margin-left: 60px; */
 }
 
 
- .button {
+.button {
   border: none;
   outline: 0;
   display: inline-block;
@@ -34,11 +40,13 @@ border: 2px solid #ef6a23 !important;
   cursor: pointer;
   width: 100%;
 }
-.active, .collapsible:hover {
+
+.active,
+.collapsible:hover {
   background-color: #555;
 }
 
-  
+
 .content {
   padding: 0 18px;
   display: none;
@@ -80,9 +88,9 @@ body {
 
 /* Add a card effect for articles */
 .card {
-   background-color: white;
-   padding: 20px;
-   margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
 }
 
 /* Clear floats after the columns */
@@ -102,7 +110,7 @@ body {
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 800px) {
-  .leftcolumn {   
+  .leftcolumn {
     width: 100%;
     padding: 0;
   }
