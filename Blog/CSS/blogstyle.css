@@ -62,10 +62,11 @@
 }
 
 /* Add a gray background color with some padding */
-body {
-  font-family: Arial;
+body{  
+background: navajowhite;
+  background-size: cover;
+  font-family: 'Trebuchet MS', sans-serif;
   padding: 20px;
-  background: #f1f1f1;
 }
 
 /* Header/Blog Title */
@@ -116,18 +117,3 @@ body {
     padding: 0;
   }
 }
-
-
-
-
-/*_________________________ Typeing Effect__________________________________*/
-body {
-  background: navajowhite;
-  background-size: cover;
-  font-family: 'Trebuchet MS', sans-serif;
-}
-
-.container {
-  display: inline-block;
-}
-
