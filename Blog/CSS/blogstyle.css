@@ -20,7 +20,7 @@
 .text {
   /* text-align: justify; */
   text-justify: inter-word;
-  
+
 }
 
 .image {
@@ -116,3 +116,18 @@ body {
     padding: 0;
   }
 }
+
+
+
+
+/*_________________________ Typeing Effect__________________________________*/
+body {
+  background: navajowhite;
+  background-size: cover;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.container {
+  display: inline-block;
+}
+
