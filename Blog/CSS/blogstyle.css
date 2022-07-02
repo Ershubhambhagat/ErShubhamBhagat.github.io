@@ -63,9 +63,11 @@
 
 /* Add a gray background color with some padding */
 body {
-  font-family: Arial;
+  background: navajowhite;
+  background-size: cover;
+  font-family: 'Trebuchet MS', sans-serif;
+
   padding: 20px;
-  background: #f1f1f1;
 }
 
 /* Header/Blog Title */
@@ -119,42 +121,3 @@ body {
 
 
 
-
-/*_________________________ Typeing Effect__________________________________*/
-body {
-  background: navajowhite;
-  background-size: cover;
-  font-family: 'Trebuchet MS', sans-serif;
-}
-
-.container {
-  display: inline-block;
-}
-
-
-
-
-
-.typing-demo {
-  width: 99ch;
-  animation: typing 5s;
-  /* animation: typing 2s steps(2), blink .5s step-end infinite alternate; */
-  /* white-space:; */
-  white-space: nowrap;
-  overflow:hidden;
-  border-right: 4px solid;
-  font-family:Microsoft Uighur;
-  font-size: 2em;
-}
-
-@keyframes typing {
-  from {
-    width: 0
-  }
-}
-
-@keyframes blink {
-  50% {
-    border-color: transparent
-  }
-}
