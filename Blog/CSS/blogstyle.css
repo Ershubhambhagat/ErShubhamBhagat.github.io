@@ -24,7 +24,12 @@
 }
 
 .image {
-  height: 200px;
+  max-width: 100%;
+  width: 500px;
+
+  object-fit: cover;
+  object-position: 44px;
+  
   padding: auto;
   /* margin-left: 60px; */
 }
