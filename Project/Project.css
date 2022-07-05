@@ -43,12 +43,11 @@
   margin-left: 0px;
   padding: 5px;
   font-size: 20px;
-
   font-family: arial;
 }
 
 .row {
-  margin: top 9px;
+  margin: 2px;
 }
 
 .row:after {
@@ -64,7 +63,7 @@
   color: rgb(186, 18, 18);
   background-color: rgb(195, 210, 197);
   text-align: center;
-  cursor: pointer;
+  cursor: pointer ;
   width: 100%;
   font-size: 18px;
   transition-duration: 0.4s;
@@ -109,9 +108,11 @@ button:hover {
   padding-bottom: 2px;
 }
 
-.alsc {
+.imag {
   padding-top: 20px;
   padding-right: 2px;
   padding-left: 3px;
   padding-bottom: 2px;
+  width: 100%;
+  height: inherit;
 }
