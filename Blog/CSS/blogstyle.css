@@ -120,3 +120,29 @@ body {
     padding: 0;
   }
 }
+
+
+/*             */
+
+
+
+body
+  {
+    background: linear-gradient(45deg,
+        #6969ff,
+        #2a00e4,
+        #1fedb3d8,
+        #f150a5,
+        #f150a5,
+        #692fdc,
+        #692fdc,
+        #95806d);
+    /* display: initial-block; */
+    animation: hue-rotate 2s linear infinite alternate;
+  }
+
+@keyframes hue-rotate {
+  to {
+    filter: hue-rotate(100deg);
+  }
+}

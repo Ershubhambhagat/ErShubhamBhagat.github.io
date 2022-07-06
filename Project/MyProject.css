@@ -166,7 +166,7 @@ body{
   /*card */
 
   
-.container .card .face.face1,
+/* .container .card .face.face1 */
   /* .container .card .face.face2  , */
   .container .card:hover .face.face1
   {
