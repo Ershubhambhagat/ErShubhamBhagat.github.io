@@ -15,7 +15,13 @@ body{
 
 .container{
     width: 1150px;
-    
+    padding-top: 50px;
+
+    padding-left: 50px;
+    padding-left: 50px;
+    padding-bottom: 50px;
+
+
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -28,19 +34,22 @@ body{
 }
 
 .container .card .face{
+    padding-top: 100px;
+    padding-bottom: 80px;
+
     width: 350px;
-    height:300px;
+    height:100px;
     transition: 0.5s;
 }
 
 .container .card .face.face1{
     position: relative;
-    background: #333;
+    background: rgb(70, 70, 70);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1;
-    transform: translateY(200px);
+    transform: translateY(0px);
 }
 
 .container .card:hover .face.face1{
@@ -76,7 +85,7 @@ body{
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.8);
     transform: translateY(-100px);
 }
 
@@ -101,12 +110,13 @@ body{
 
 .container .card .face.face2 .content a:hover{
     background: #333;
-    color: #fff;
+    color: rgb(129, 13, 13);
+    
 }
 
 
 
-/*  */
+/*row   */
 
 
 .row {
@@ -119,3 +129,76 @@ body{
     clear: both;
   }
   
+
+
+
+
+  /*  Button */
+
+
+
+  .card button {
+    border: none;
+    outline: 1;
+    padding: 12px;
+    color: rgb(186, 18, 18);
+    background-color: rgb(195, 210, 197);
+    text-align: center;
+    cursor: pointer ;
+    width: 100%;
+    font-size: 18px;
+    transition-duration: 0.4s;
+    border: 2px solid #488d46;
+    border-radius: 8px;
+  }
+
+  .card button:hover {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+  }
+  button:hover {
+    animation: pulsate 1s ease-in-out
+  }
+
+
+
+  /*card */
+
+  
+.container .card .face.face1,
+  /* .container .card .face.face2  , */
+  .container .card:hover .face.face1
+  {
+    background: linear-gradient(45deg,
+        #6969ff,
+        #2a00e4,
+        #1fedb3d8,
+        #f150a5,
+        #f150a5,
+        #692fdc,
+        #692fdc,
+        #95806d);
+    /* display: initial-block; */
+    animation: hue-rotate 2s linear infinite alternate;
+    /* color: rgb(0, 0, 0); */
+    /* box-shadow: 0 9px 8px 0 rgba(0, 255, 132, 0.2); */
+    /* max-width: 300px;
+    box-sizing: 22px;
+    margin-left: 70px;
+    margin: 55px; 
+    text-align: center;
+    font-family: arial;
+    float: left;
+    width: 3;
+    padding: 10px;
+    padding: 16px;*/
+    /* font-weight: bold;
+    border-radius: 5px; */
+  }
+  
+  @keyframes hue-rotate {
+    to {
+      filter: hue-rotate(100deg);
+    }
+  }
