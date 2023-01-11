@@ -1,16 +1,36 @@
+
 .SiteButton {
-  float: right;
-  width: 188px;
-  height: 50px;
-  text-align: center;
-  padding-top: 9px;
-  color: #ffffff;
-  background-color: #4CAF50;
-  font-size: 17px;
-  font-family: 'Source Sans Pro', sans-serif;
-  /* padding:9px 11px; */
-  border: 2px solid #ef6a23 !important;
+ 
+float: right;
+	box-shadow: 9px 14px 16px -10px #276873;
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+	background-color:#599bb3;
+	border-radius:17px;
+	border:2px solid #29668f;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	font-weight:bold;
+	padding:13px 13px;
+	text-decoration:none;
+	text-shadow:2px 4px 30px #3d768a;
 }
+.SiteButton:hover {
+	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+	background-color:#408c99;
+}
+.SiteButton:active {
+	position:relative;
+	top:1px;
+  /* float: right; */
+
+}
+
+        
+
+
+
 
 
 .collapsible {
@@ -46,7 +66,7 @@
 
 .active,
 .collapsible:hover {
-  background-color: #555;
+  background-color: rgb(189, 122, 122);
 }
 
 
@@ -65,7 +85,7 @@
 
 /* Add a gray background color with some padding */
 body {
-  background: navajowhite;
+  background: #000000;
   background-size: cover;
   font-family: 'Trebuchet MS', sans-serif;
 
@@ -78,7 +98,7 @@ body {
   font-size: 40px;
   background-color: rgb(59, 158, 125);
   text-align: center;
-  background: white;
+  background:#10ad92;
 }
 
 /* Right column */
@@ -93,7 +113,7 @@ body {
 
 /* Add a card effect for articles */
 .card {
-  background-color: white;
+  background-color:#b1b1b1;
   padding: 20px;
   margin-top: 20px;
 }
@@ -121,31 +141,29 @@ body {
   }
 }
 
-
-/*             */
-
-
-
-body
-  {
+/*  */
 
 
 
-    background: linear-gradient(45deg,
-        #6969ff,
-        #2a00e4,
+/* body */
+  /* { */
+      /* background: linear-gradient(45deg, */
+        /* #6969ff, */
+        /* #2a00e4,
         #1fedb3d8,
         #f150a5,
         #f150a5,
         #692fdc,
-        #692fdc,
-        #95806d);
+        #692fdc, */
+        /* #95806d */
+      
+        /* ); */
     /* display: initial-block; */
-    animation: hue-rotate 2s linear infinite alternate;
-  }
+    /* animation: hue-rotate 2s linear infinite alternate;
+  } */
 
-@keyframes hue-rotate {
+/* @keyframes hue-rotate {
   to {
     filter: hue-rotate(100deg);
-  }
-}
+  } */
+/* } */
