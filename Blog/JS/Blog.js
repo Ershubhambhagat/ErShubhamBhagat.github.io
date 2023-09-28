@@ -1,9 +1,11 @@
 
-// Function to fetch and populate the blog post content
 
-function fetchAndPopulateBlogPost() {
 
-    fetch('https://ershubhambhagat.github.io//Blog/Json/BlogPost.json') // Adjust the path to your JSON file
+// JavaScript code to fetch and populate blog post data from JSON
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    fetch('https://ershubhambhagat.github.io//Blog/Json/BlogPost.json')
 
         .then(response => {
 
@@ -65,9 +67,35 @@ function fetchAndPopulateBlogPost() {
 
         });
 
-}
+
+    // JavaScript code to toggle "Read More" functionality for blog posts
+
+    const buttons = document.querySelectorAll(".collapsible");
 
 
-// Call the function when the page loads
+    buttons.forEach(button => {
 
-window.addEventListener('load', fetchAndPopulateBlogPost);
+        button.addEventListener("click", function () {
+
+            const content = this.nextElementSibling;
+
+            if (content.style.display === "block") {
+
+                content.style.display = "none";
+
+                this.textContent = "Read More";
+
+            } else {
+
+                content.style.display = "block";
+
+                this.textContent = "Read Less";
+
+            }
+
+        });
+
+    });
+
+});
+
