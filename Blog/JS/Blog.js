@@ -3,7 +3,7 @@
 
 function fetchAndPopulateBlogPost() {
 
-    fetch('Blog/Json/BlogPost.json') // Adjust the path to your JSON file
+    fetch('https://github.com/Ershubhambhagat/ErShubhamBhagat.github.io/blob/gh-pages/Blog/Json/BlogPost.json') // Adjust the path to your JSON file
 
         .then(response => {
 
