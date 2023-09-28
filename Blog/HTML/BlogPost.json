@@ -1,0 +1,16 @@
+
+[
+   {
+       "title": "PfMaker",
+       "date": "10 August 2022",
+       "images": [
+           "../Image/Pfmaker3.jpg",
+           "../Image/Pfmaker4.jpg"
+       ],
+       "description": "PFPMaker helps people without design skills create an awesome professional or creative profile pic with Artificial Intelligence.",
+       "content": [
+           "PFP is an acronym for profile picture...",
+           "There is no strict categorization of profile picture types..."
+       ]
+   }
+]
