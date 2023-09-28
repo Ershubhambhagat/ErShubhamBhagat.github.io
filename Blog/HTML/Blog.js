@@ -3,7 +3,7 @@
 
 function fetchAndPopulateBlogPost() {
 
-    fetch('BlogPost.json') // Adjust the path to your JSON file
+    fetch('Blog/HTML/BlogPost.json') // Adjust the path to your JSON file
 
         .then(response => {
 
