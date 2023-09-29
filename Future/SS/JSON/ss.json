@@ -1,0 +1,12 @@
+[
+    {
+        "imageURL":  "../Image/BugMeNot_homepage_screenshot.png",
+        "title": "Image 1",
+        "tag": "Nature"
+    },
+    {
+        "imageURL":  "../Image/BugMeNot_homepage_screenshot.png",
+        "title": "Image 2",
+        "tag": "Travel"
+    }
+ ]
