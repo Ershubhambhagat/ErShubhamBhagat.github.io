@@ -16,5 +16,403 @@
            "Profile pictures for social media"
          
        ]
-   }
+   },
+   {
+       "title": "PfMaker ",
+       "date": "10 August 2022",
+       "images": [
+           "../Image/Pfmaker3.jpg",
+           "../Image/Pfmaker4.jpg"
+       ],
+       "description": "PFPMaker helps people without design skills create an awesome professional or creative profile pic with Artificial Intelligence.",
+       "content": [
+           "PFP is an acronym for profile picture. It does have other meanings",
+           "however, profile pic has become more common in recent years. The acronym has been rapidly adopted across all social networks and messengers across all user groups. ",
+          " Thus today it is mostly associated with one’s avatar or, in other words, profile picture.",
+          " There is no strict categorization of profile picture types. But we can conditionally divide them into the following groups:",
+           "Profile pictures for social media"
+         
+       ]
+   },
+   {
+    "title": "BugMeNot",
+    "date": "27 June 2022",
+    "images": [
+        "../Image/BugMeNot_homepage_screenshot.png",
+        "../Image/Image_not_available.png"
+    ],
+    "description": "BugMeNot is an Internet service that provides usernames and passwords to let Internet users bypass mandatory free registration on websites.",
+    "content": [
+        {
+            "heading": "Excellent for sites with annoying \"login required\" to view stuff",
+            "paragraphs": [
+                "Many sites require you to register just to see a simple video or read a review... etc. Even if this registration is free if you stumble on a site that you are unlikely to visit again, creating yet another registration is a haste. BugMeNot.com will help you quickly bypass the login of web sites that require compulsory registration and/or the collection of personal/demographic information. The service is quite good as you only have to enter the site you need to log into and some other user would have shared credentials."
+            ]
+        }
+    ]
+},
+{
+    "title": "Prepostseo",
+    "date": "04 July 2022",
+    "images": [
+        "../Image/Effective-Tools-for-Content-Optimization-PrepostSeo-800x445.png",
+        "../Image/Prepostseo.png"
+    ],
+    "description": "Prepostseo provides best SEO solutions for webmasters. Our top tools are Plagiarism checker and Online Ping Website tool. There are 20+ Tools available at our website. You can use those tools totally free. You can also purchase premium Packages.",
+    "content": [
+        {
+            "heading": "Plagiarism Checker",
+            "paragraphs": [
+                "The first and most important feature offered by this tool is the plagiarism checker. In any field, it is important to submit content that is free of duplication and copying. To let your content rank on SEO and getting approved and appreciated, it is necessary to provide plagiarism-free work. This tool helps its users to check plagiarism in their text.",
+                "It is very easy to use and understand the plagiarism checker. It gives you the option to paste or upload your content and generates the output quickly. Moreover, it provides you a report of plagiarism that you can download too and shows the result with sources and percentage."
+            ]
+        },
+        {
+            "heading": "Paraphrasing Tool",
+            "paragraphs": [
+                "Paraphrasing is known as rewriting any content in your words. Paraphrasing is an effective way to get rid of plagiarism. To help you paraphrase your text efficiently along with maintaining the original meaning of the source text, Prepostseo provides you the best paraphrasing tool.",
+                "It is very easy to understand and operate this tool, it’s just a few simple steps. It gives you the option to paraphrase in three modes including Simple, Advanced, and AI mode. You can choose any model according to your preferences. It also helps you to generate SEO-optimized and plagiarism-free content. It enhances the quality of your content."
+            ]
+        },
+        {
+            "heading": "Grammar Checker",
+            "paragraphs": [
+                "Grammar is an important thing to consider in writing, either it’s for a blog, exam, marketing purpose, or client work. To maintain the quality of your content you need to keep it free of any grammatical errors.."
+            ]
+        }
+    ]
+},
+ {
+    "title": "Synthesia",
+    "date": "04 July 2022",
+    "images": [
+        "../Image/Synthesia.jpg",
+        "https://assets-global.website-files.com/5ece2fc54146394d5196d8f3/604b772a8902608eeb84817b_wf-p-500.png"
+    ],
+    "description": "Synthesia is an AI video avatar platform that creates professional videos from a text in different languages.",
+    "content": [
+        {
+            "heading": "Synthesia is an AI video generation platform.",
+            "paragraphs": [
+                "Thousands of companies use it to turn boring docs, PowerPoints or PDFs into engaging training, marketing or how-to videos.",
+                "Create a free AI video Trusted by 8,000+ companies of all sizes.",
+                "Synthesia turns anyone into a professional video creator."
+            ]
+        }
+    ]
+},
+{
+    "title": "Cleanup.Pictures",
+    "date": "6 July 2022",
+    "images": [
+        "../Image/4.1.1.jpg",
+        "../Image/4.1.2.jpg"
+    ],
+    "description": "How to Easily Remove Objects From Your Photos",
+    "content": [
+        {
+            "heading": "Removing unwanted objects and text out of an image to clean up your photo used to require special software and skills, but these days AI has led to features like Content-Aware Fill in Photoshop that lets anyone do it in just a few clicks.",
+            "paragraphs": [
+                "If you do not have a Photoshop subscription, there is a free Web and mobile app called Cleanup.pictures you can use."
+            ]
+        }
+    ]
+},
+{
+    "title": "AutoDraw",
+    "date": "7 July 2022",
+    "images": [
+        "../Image/5.2.jpg",
+        "../Image/5.1.jpg"
+    ],
+    "description": "AutoDraw is a new kind of drawing suggestion tool for QuickDraw, to guess what you’re trying to draw.",
+    "content": [
+        {
+            "heading": "AutoDraw’s suggestion tool uses the same technology used in QuickDraw, to guess what you’re trying to draw.",
+            "paragraphs": [
+                "Right now, it can guess hundreds of drawings and we look forward to adding more over time.",
+                "If you are interested in creating drawings for others to use with AutoDraw, contact us here..",
+                "AutoDraw is a new kind of drawing tool. It pairs machine learning with drawings from talented artists to help everyone create anything visual, fast.",
+                "There’s nothing to download. Nothing to pay for. And it works anywhere: smartphone, tablet, laptop, desktop, etc."
+            ]
+        }
+    ]
+},
+{
+    "title": "DesignGradients",
+    "date": "18 July 2022",
+    "images": [
+        "../Image/6.1.jpg.png",
+        "../Image/6.2.png"
+    ],
+    "description": "The free platform of 48 linear gradients curated by designers to use as content backgrounds in any piece of digital art.",
+    "content": []
+},
+ {
+    "title": "Hack.chat",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/hackChat.jpg",
+        ""
+    ],
+    "description": "This is for Private Chat",
+    "content": [
+        {
+            "heading": "This is for Private Chat",
+            "paragraphs": []
+        }
+    ]
+},
+{
+    "title": "FlutterFlow",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/FlutterFlow.svg",
+        "../Image/FlutterFlow2.1.png"
+    ],
+    "description": "Flutter flow is a great tool that allows you to build mobile and web applications in a very easy way. It is an example of the future of low code.",
+    "content": [
+        {
+            "heading": "FlutterFlow is a great tool for building mobile and web applications.",
+            "paragraphs": [
+                "It offers an easy way to create apps and is an example of the future of low code development."
+            ]
+        }
+    ]
+},
+{
+    "title": "You.com",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/you.png",
+        "../Image/you.2.PNG"
+    ],
+    "description": "You.com is a search engine that summarizes the best parts of the internet for you, without ads.",
+    "content": [
+        {
+            "heading": "You.com is a search engine that summarizes the best parts of the internet for you, without ads and with great privacy.",
+            "paragraphs": [
+                "Our AI will help you find the most relevant results from the web and apps that you can sort and prioritize for an optimum search experience.",
+                "We believe that you should control your search: your privacy, results, and time.",
+                "WHAT KIND OF SEARCH ENGINE IS YOU.COM?",
+                "Private: We don’t store any sensitive data. The only data we store is used to improve your search and never sold or distributed to third parties.",
+                "Customized: Signing in to You.com will give you control over what types of websites you want to see in your results. Over time, search results get better and better with the help of AI and your preferences.",
+                "Summarized: Websites and sources are presented as “Apps” on the search results to discover answers at a glance, dive deep into specific findings, or take action directly from search results. The novel interface enables both vertical and horizontal scroll to see more with fewer clicks."
+            ]
+        }
+    ]
+},
+ {
+    "title": "Z-Library.org",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/Z-Library.jpg",
+        "../Image/Z-Library2.jpg"
+    ],
+    "description": "Z-Library. The world's largest ebook library.",
+    "content": [
+        {
+            "heading": "Z-Library is a mirror of Library Genesis",
+            "paragraphs": [
+                "Z-Library is a mirror of Library Genesis, a shadow library project for file-sharing access to scholarly journal articles, academic texts, and general-interest books.",
+                "Most of its books are from Library Genesis, while some of them are uploaded directly to its site by individuals."
+            ]
+        },
+        {
+            "heading": "Why avoid using Z-Library?",
+            "paragraphs": [
+                "⚠ If you want to know more about why to avoid using Z-Library, you can check out this resource: [Why avoid using Z-Library](https://gobookmart.com/avoid-using-z-library-and-sites-like-it/)"
+            ]
+        }
+    ]
+},
+{
+    "title": "Incognito",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/Incognito2.png",
+        "../Image/Incognito.jpg"
+    ],
+    "description": "Clear your Incognito Browsing {> chrome://net-internals/}",
+    "content": []
+},
+{
+    "title": "ZType",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/ZType.jpg",
+        "../Image/ZType2.jpg"
+    ],
+    "description": "If you would like to learn how to type faster, we highly recommend Typesy. It's by far the most awesome Typing program",
+    "content": []
+},
+ {
+    "title": "12ft.io",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/12ft.webp",
+        "../Image/12ft.2.jpg"
+    ],
+    "description": "12ft is a website that allows online paywalls to be bypassed.",
+    "content": [
+        {
+            "paragraphs": [
+                "12ft Pro is a browser extension that will automatically remove paywalls, banner ads, and other popups your favorite websites.",
+                "A paywall is a method of restricting access to content, with a purchase or a paid subscription, especially news."
+            ]
+        }
+    ]
+},
+{
+    "title": "Reshot.com",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/reshot.1.jpg",
+        "../Image/reshot.jpg"
+    ],
+    "description": "Free Icons & Illustrations for your next project",
+    "content": [
+        {
+            "paragraphs": [
+                "Reshot is an online content service where we make certain content available for download."
+            ]
+        }
+    ]
+},
+{
+    "title": "fffuel.co",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/fffuel.PNG",
+        "../Image/fffuel.1.PNG"
+    ],
+    "description": "fffuel is a collection of color tools and free SVG generators for gradients, patterns, textures, shapes, backgrounds & decorative graphics.",
+    "content": []
+},
+{
+    "title": "Huemint",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/huemint.jpg",
+        "../Image/huemint.1.png"
+    ],
+    "description": "Color palette generator. Huemint uses machine learning to create unique color schemes for your brand, website or graphic.",
+    "content": [
+        {
+            "paragraphs": [
+                "Huemint uses machine learning to create unique color schemes for your brand, website, or graphic."
+            ]
+        }
+    ]
+},
+ {
+    "title": "Joshwcomeau",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/Gradient.PNG",
+        "../Image/Gradient.1.PNG"
+    ],
+    "description": "Gradient Generator Beautiful, lush gradients ✨",
+    "content": []
+},
+{
+    "title": "Axiom.ai",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/axiom.png",
+        "../Image/Image_not_available.png"
+    ],
+    "description": "Browser Automation. Quickly, without code",
+    "content": [
+        {
+            "paragraphs": [
+                "Is Axiom AI free?",
+                "Get started for FREE, with 2 hours runtime. Get started for FREE, with 2 hours runtime."
+            ]
+        }
+    ]
+},
+{
+    "title": "Core.ac.uk",
+    "date": "10 August 2022",
+    "images": [
+        "../Image/core.ac.uk.png",
+        "../Image/core.ac.uk2.png"
+    ],
+    "description": "CORE is the world’s largest aggregator of open access research papers from repositories and journals",
+    "content": [
+        {
+            "paragraphs": [
+                "CORE is the world’s largest aggregator of open access research papers from repositories and journals.",
+                "CORE harvests research papers from such as institutional and subject repositories, and open access and hybrid journals.",
+                "CORE currently contains 223M open access articles collected from 11K data providers around the world.",
+                "We provide solutions for content management, discovery and scalable machine access to research. Our services support a wide range of stakeholders, specifically researchers, the general public, academic institutions, developers, funders and companies from a diverse range of sectors including but not limited to innovators, AI technology companies, digital library solutions and pharma.",
+                "It is a not-for-profit service dedicated to the open access mission. We serve the global network of repositories and journals by increasing the discoverability and reuse of open access content."
+            ]
+        }
+    ]
+},
+{
+    "title": "10015.io",
+    "date": "Thursday, 10 November 2022",
+    "images": [
+        "../Image/10015.png",
+        "../Image/10015.2.0.PNG.jpg"
+    ],
+    "description": "All Online Tools in “One Box”",
+    "content": [
+        {
+            "paragraphs": [
+                "10015.io is a “free all-in-one toolbox” solution created to ease your life by preventing bookmark mess.",
+                "10015.io brings all online tools together. If you got tired of bookmarking a single website for each online tool, you are in the right place.",
+                "10015.io has designed as simple as possible to make it easier to focus on the functionality of the tool. The main aim of the tools is to perform the operation in the minimum steps with a clear UI/UX.",
+                "Start using 10015.io and forget all other tools you use forever."
+            ]
+        }
+    ]
+},
+{
+    "title": "Video Editing Tools",
+    "date": "9 Dec 2022",
+    "images": [
+        "../Image/flexclip.jpg",
+        "../Image/Media.jpg"
+    ],
+    "description": "Video Editing Tool :- This Tolls use for Video Editing Online",
+    "content": [
+        {
+            "paragraphs": [
+                "<a class='InsideBtn' href='https://www.flexclip.com/editor/app'><button class='SiteButton'>flexclip</button></a>",
+                "You May use This Id or password: Id- meveba2174@paxven.com, password: meveba2174@paxven.com",
+                "<a class='InsideBtn' href='https://www.media.io'><button class='SiteButton'>Media.io</button></a>",
+                "<a class='InsideBtn' href='https://www.openshot.org'><button class='SiteButton'>openshot.org</button></a>",
+                "<a class='InsideBtn' href='https://www.shortcut.org'><button class='SiteButton'>shortcut.org</button></a>",
+                "<a class='InsideBtn' href='https://www.blender.org'><button class='SiteButton'>blender.org</button></a>"
+            ]
+        }
+    ]
+},
+{
+    "title": "MyNikko",
+    "date": "11 January 2023",
+    "images": [
+        "../Image/MyNikko.png",
+        "../Image/MyNikko.2.png"
+    ],
+    "description": "Auto-increment String Generator",
+    "content": [
+        {
+            "blockquote": "Auto generate strings with incremental numbers. Execute by pressing the button(s).",
+            "pre": [
+                "http://www.example.com/item_<font color=\"#0000FF\">[x]</font>.html",
+                "The following text can be generated using the default setting.",
+                "http://www.example.com/item_<font color=\"#0000FF\">0</font>.html",
+                "http://www.example.com/item_<font color=\"#0000FF\">1</font>.html",
+                "http://www.example.com/item_<font color=\"#0000FF\">2</font>.html",
+                "http://www.example.com/item_<font color=\"#0000FF\">3</font>.html"
+            ]
+        }
+    ]
+}
 ]
+
