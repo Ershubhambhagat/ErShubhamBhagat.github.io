@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-   fetch("data.json") // Replace with the path to your JSON file
+   fetch('https://ershubhambhagat.github.io//Future/SS/JSON/ss.json') // Replace with the path to your JSON file
        .then(response => response.json())
        .then(data => {
            const gallery = document.getElementById("gallery");
