@@ -1,101 +1,165 @@
 
+// JavaScript code to fetch and populate all blog post data from JSON
 
-
-// JavaScript code to fetch and populate blog post data from JSON
 
 document.addEventListener("DOMContentLoaded", function () {
 
+
     fetch('https://ershubhambhagat.github.io//Blog/Json/BlogPost.json')
+
 
         .then(response => {
 
+
             if (!response.ok) {
-
-                throw new Error('Network response was not ok');
-
+throw new Error('Network response was not ok');
             }
+
 
             return response.json();
 
+
         })
+
 
         .then(data => {
 
+
             if (data.length === 0) {
+
 
                 throw new Error('JSON data is empty');
 
+
             }
 
-            const post = data[0]; // Assuming you want to display the first blog post
+
+            // Iterate through each blog post in the JSON data
+
+            data.forEach((post, index) => {
 
 
-            // Populate HTML elements with data from the JSON
+                // Create a new HTML container for each blog post
 
-            document.getElementById('post-title').textContent = post.title;
+                const postContainer = document.createElement('div');
 
-            document.getElementById('post-date').textContent = post.date;
-
-            document.getElementById('post-image-1').src = post.images[0];
-
-            document.getElementById('post-image-2').src = post.images[1];
-
-            document.getElementById('post-description').textContent = post.description;
+                postContainer.classList.add('blog-post'); // You can add your own CSS class for styling
 
 
-            // Populate the content section with paragraphs from the JSON
+                // Populate HTML elements with data from the JSON
 
-            const contentContainer = document.getElementById('post-content');
+                const postTitle = document.createElement('h1');
 
-            post.content.forEach(paragraph => {
+                postTitle.textContent = post.title;
 
-                const p = document.createElement('p');
+                const postDate = document.createElement('h6');
 
-                p.textContent = paragraph;
+                postDate.textContent = post.date;
 
-                contentContainer.appendChild(p);
+
+                const postImages = [];
+
+                post.images.forEach((imageSrc, imageIndex) => {
+
+                    const img = document.createElement('img');
+
+                    img.src = imageSrc;
+
+                    img.alt = `Image ${imageIndex + 1}`;
+
+                    postImages.push(img);
+
+                });
+
+
+                const postDescription = document.createElement('p');
+
+                postDescription.textContent = post.description;
+
+
+                // Populate the content section with paragraphs from the JSON
+
+                const contentContainer = document.createElement('div');
+
+                contentContainer.classList.add('content');
+
+
+                post.content.forEach(paragraph => {
+
+                    const p = document.createElement('p');
+
+                    p.textContent = paragraph;
+
+                    contentContainer.appendChild(p);
+
+                });
+
+
+                // Create a "Read More" button for each post
+
+                const readMoreButton = document.createElement('button');
+
+                readMoreButton.textContent = 'Read More';
+
+                readMoreButton.classList.add('collapsible'); // You can add your own CSS class for styling
+
+
+                // Add event listener for toggling content visibility
+
+                readMoreButton.addEventListener('click', function () {
+
+                    const content = contentContainer;
+
+                    if (content.style.display === 'block') {
+
+                        content.style.display = 'none';
+
+                        this.textContent = 'Read More';
+
+                    } else {
+
+                        content.style.display = 'block';
+
+                        this.textContent = 'Read Less';
+
+                    }
+
+                });
+
+
+                // Append elements to the post container
+
+                postContainer.appendChild(postTitle);
+
+                postContainer.appendChild(postDate);
+
+                postImages.forEach(img => postContainer.appendChild(img));
+
+                postContainer.appendChild(postDescription);
+
+                postContainer.appendChild(readMoreButton);
+
+                postContainer.appendChild(contentContainer);
+
+
+                // Append the post container to your HTML document
+
+                document.getElementById('blog-posts').appendChild(postContainer);
 
             });
 
         })
 
+
         .catch(error => {
+
 
             console.error('Error:', error);
 
+
             // You can handle the error here, such as displaying an error message to the user.
 
-        });
-
-
-    // JavaScript code to toggle "Read More" functionality for blog posts
-
-    const buttons = document.querySelectorAll(".collapsible");
-
-
-    buttons.forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            const content = this.nextElementSibling;
-
-            if (content.style.display === "block") {
-
-                content.style.display = "none";
-
-                this.textContent = "Read More";
-
-            } else {
-
-                content.style.display = "block";
-
-                this.textContent = "Read Less";
-
-            }
 
         });
-
-    });
 
 });
-
