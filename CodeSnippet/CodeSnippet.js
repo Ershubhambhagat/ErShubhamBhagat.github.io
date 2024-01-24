@@ -20,25 +20,24 @@ function displayCodeSnippets() {
     },
 
 
-
-
+       {
+           title: 'Remove WhiteSpace in VS Code  ',
+           code: `^\\s*$\\n`,
+           description: `'How do I remove line spacing in VS Code?\n
+           To remove empty lines in Visual Studio Code, you can use the built-in “Find and Replace” feature with a regular expression:\n
+           Open the file you want to remove empty lines from in Visual Studio Code.\n
+           Press Ctrl + H (Windows/Linux) or Command + H (Mac) to open the "Find and Replace" panel.\n
+           In the “Find” field, type: ^\s*$\n.',`,
+           tags: ['VS Code  ', 'Trick']
+       },
 
     {
-           title: 'JavaScript Hello World',
-           code: 'function helloWorld() {\n    console.log("Hello, World!");\n}',
+        title: 'Demo Title',
+        code: 'Demo Code',
 
-           description: 'Prints "Hello, World!" to the console. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat justo et aliquam eleifend.',
-           tags: ['javascript', 'programming']
-       },
-       {
-           title: 'HTML Heading',
-           code: '<h1>Hello, HTML!</h1>',
-           description: 'Displays a heading in HTML. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-           tags: ['html', 'web']
-       },
-
-
-
+        description: 'Demo description',
+        tags: ['Demo Tag' ]
+    },
 
 
 
