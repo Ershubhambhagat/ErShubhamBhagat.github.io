@@ -1,0 +1,225 @@
+
+body {
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    transition: background-color 0.5s, color 0.5s;
+
+    margin: 0;
+
+}
+
+.dark-mode {
+
+    background-color: #2c3e50; /* Dark background color */
+
+    color: #ecf0f1; /* Light text color */
+
+}
+
+#darkModeBtn {
+
+    position: fixed;
+
+    top: 10px;
+
+    right: 10px;
+
+    background-color: #3498db; /* Blue */
+
+    color: #fff; /* White text */
+
+    padding: 8px 15px;
+
+    border: none;
+
+    border-radius: 3px;
+
+    cursor: pointer;
+
+    z-index: 1000; /* Ensure the dark mode button is above other elements */
+
+}
+
+#codeContainer {
+
+    max-width: 800px;
+
+    margin: auto;
+
+    padding: 20px;
+
+    background-color: #ecf0f1;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    border-radius: 10px;
+
+    margin-top: 50px; /* Adjusted margin-top for better visibility of the code */
+
+}
+
+.codeSnippet {
+
+    border: 2px solid #3498db;
+
+    background-color: #ecf0f1;
+
+    padding: 15px;
+
+    margin-bottom: 20px;
+
+    border-radius: 5px;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    transition: transform 0.3s ease-in-out, border-color 0.3s ease-in-out;
+
+    position: relative;
+
+}
+
+.codeSnippet:hover {
+
+    transform: scale(1.02);
+
+    border-color: #e67e22; /* Highlight color on hover */
+
+}
+
+.codeCountTitleContainer {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+
+}
+
+.codeCount {
+
+    font-size: 15px;
+
+    color: #3498db; /* Blue */
+
+    margin-right: 10px;
+
+    border: 2px solid #3498db;
+
+    border-radius: 50%;
+
+    padding: 8px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.codeTitle {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    color: #e67e22; /* Orange */
+
+}
+
+.codeDescription {
+
+    font-style: italic;
+
+    color: #2ecc71; /* Green */
+
+    max-height: 0;
+
+    overflow: hidden;
+
+    transition: max-height 0.5s ease;
+
+}
+
+.copyButton
+ {
+
+    background-color: #3498db; /* Blue */
+
+    color: #fff; /* White text */
+
+    padding: 8px 12%;
+
+    border: none;
+
+    border-radius: 30px;
+
+    cursor: pointer;
+    margin-left: 30%;
+
+    margin-top: 2px;
+
+    position: center;
+
+    bottom: 30px; /* Adjusted position to place it below the code */
+
+    right: 15px; /* Adjusted position for better alignment */
+
+}
+
+
+.readMoreContainer.expanded .codeDescription {
+
+    max-height: 1000px; /* Adjust the value based on your content height */
+
+}
+
+.codeTags {
+
+    font-size: 14px;
+
+    color: #747e87; /* Darker Blue-Gray */
+
+    margin-top: 10px;
+
+}
+
+.readMoreButton {
+
+    background-color: #3498db; /* Blue */
+
+    color: #fff; /* White text */
+
+    padding: 8px 15px;
+
+    border: none;
+
+    border-radius: 3px;
+
+    cursor: pointer;
+
+    margin-top: 10px;
+
+    margin-right: 10px;
+
+}
+
+.copyButton:hover {
+
+    background-color: #2980b9; /* Darker Blue */
+
+}
+
+
+/* ... Previous styles ... */
+.codeSnippet code {
+    display: block;
+    background-color: #f1c40f; /* Yellow background color for code */
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    overflow: auto;
+ }
+ /* ... Remaining styles ... */
