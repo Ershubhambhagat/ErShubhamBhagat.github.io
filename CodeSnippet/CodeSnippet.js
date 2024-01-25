@@ -32,13 +32,33 @@ function displayCodeSnippets() {
        },
 
     {
+        title: 'Git Problem',
+        code: `
+
+        >Installed the [YourCompany] CA5 certificates\n
+        >Run the commands in Git CMD\n
+        git config --global http.sslVerify false\n
+        git config --global http.sslBackend schannel',`,
+
+        description: ` If you are facing Git Problem 'Git failed with a fatal error. Git failed with a fatal error. unable to access'
+        'https://github.com/{YourRepo} OpenSSL/3.1.4: error:0A000152:SSL routines::unsafe legacy renegotiation disabled
+        `,
+        tags: ['Git' ]
+    },
+    {
         title: 'Demo Title',
         code: 'Demo Code',
 
         description: 'Demo description',
         tags: ['Demo Tag' ]
     },
+    {
+        title: 'Demo Title',
+        code: 'Demo Code',
 
+        description: 'Demo description',
+        tags: ['Demo Tag' ]
+    },
 
 
 
