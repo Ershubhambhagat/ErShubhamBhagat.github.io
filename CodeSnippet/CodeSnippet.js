@@ -89,7 +89,7 @@ function displayCodeSnippets() {
        readMoreContainer.appendChild(descriptionElement);
        const readMoreButton = document.createElement("button");
        readMoreButton.classList.add("readMoreButton");
-       readMoreButton.textContent = "Read More";
+       readMoreButton.textContent = "Description 🔽";
        readMoreButton.addEventListener("click", () => toggleDescription(readMoreContainer));
        snippetDiv.appendChild(readMoreButton);
        snippetDiv.appendChild(readMoreContainer);
