@@ -40,11 +40,14 @@ body {
 
     z-index: 1000; /* Ensure the dark mode button is above other elements */
 
+
+
 }
 
 #codeContainer {
 
 
+	box-shadow: 9px 14px 16px -10px #276873;
 
     max-width: 800px;
 
@@ -77,11 +80,13 @@ body {
 
     border-radius: 5px;
 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 
     transition: transform 0.3s ease-in-out, border-color 0.3s ease-in-out;
 
     position: relative;
+
+	box-shadow: 9px 14px 16px -10px #276873;
 
 }
 
@@ -111,6 +116,8 @@ body {
 
 .codeCount {
 
+
+
     font-size: 15px;
 
     color: #3498db; /* Blue */
@@ -118,6 +125,8 @@ body {
     margin-right: 10px;
 
     border: 2px solid #3498db;
+
+	box-shadow: 9px 14px 16px -10px #6e8e94;
 
     border-radius: 50%;
 
@@ -139,6 +148,7 @@ body {
 
     color: #e67e22; /* Orange */
 
+
 }
 
 .codeDescription {
@@ -157,11 +167,11 @@ body {
 
 .copyButton
  {
- 
+
 
     background-color: #3498db; /* Blue */
 
-    color: #fff; /* White text */
+    color: #ffffff; /* White text */
 
     padding: 8px 12%;
 
@@ -174,11 +184,23 @@ body {
 
     margin-top: 2px;
 
-    position: center;
+    position:13px center;
+	font-weight:bold;
+
+	cursor:pointer;
+
+	border:2px solid #29668f;
+	border-radius:17px;
+	box-shadow: 9px 14px 16px -10px #276873;
+
+
 
     bottom: 30px; /* Adjusted position to place it below the code */
 
     right: 15px; /* Adjusted position for better alignment */
+
+
+
 
 }
 
@@ -201,12 +223,13 @@ body {
 
 .readMoreButton {
 
+	box-shadow: 9px 14px 16px -10px #276873;
 
     background-color: #3498db; /* Blue */
 
     color: #fff; /* White text */
 
-    padding: 8px 15px;
+    padding: 13px 13px;
 
     border: none;
 
@@ -217,6 +240,8 @@ body {
     margin-top: 10px;
 
     margin-right: 10px;
+	box-shadow: 9px 14px 16px -10px #276873;
+
 
 }
 
@@ -235,5 +260,7 @@ body {
     margin: 10px 0;
     border-radius: 5px;
     overflow: auto;
+	box-shadow: 9px 14px 16px -10px #998747;
+
  }
  /* ... Remaining styles ... */
