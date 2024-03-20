@@ -45,37 +45,7 @@ function displayCodeSnippets() {
         `,
         tags: ['Git' ]
     },
-    {
-        title: ' URL / Links Extracto',
-        code: `const results = [
-            ['Url', 'Anchor Text', 'External']
-        ];
-        var urls = document.getElementsByTagName('a');
-        for (urlIndex in urls) {
-            const url = urls[urlIndex]
-            const externalLink = url.host !== window.location.host
-            if(url.href && url.href.indexOf('://')!==-1) results.push([url.href, url.text, externalLink]) // url.rel
-        }
-        const csvContent = results.map((line)=>{
-            return line.map((cell)=>{
-                if(typeof(cell)==='boolean') return cell ? 'TRUE': 'FALSE'
-                if(!cell) return ''
-                let value = cell.replace(/[\f\n\v]*\n\s*/g, "\n").replace(/[\t\f ]+/g, ' ');
-                value = value.replace(/\t/g, ' ').trim();
-                return ``"${value}"``}).join('\t')
-        }).join("\n");
-        console.log(csvContent)
-        `,
-
-        description:` Link extractor tool is used to scan and extract links from HTML of a web page. It is 100% free SEO tools it has multiple uses in SEO works.
-
-        Some of the most important tasks for which linkextractor is used are below
-        
-        To find out calculate external and internal link on your webpage.
-        Extract links from website and check the status if those are broken or working.
-        In the creation of a sitemap if you want to generate full sitemap manually.`,
-        tags: ['Website' ]
-    },
+   
     {
         title: 'Demo Title',
         code: 'Demo Code',
