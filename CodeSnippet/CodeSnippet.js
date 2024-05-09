@@ -30,6 +30,17 @@ function displayCodeSnippets() {
            In the “Find” field, type: ^\s*$\n.',`,
            tags: ['VS Code  ', 'Trick']
        },
+    {
+           title: 'Increase Video Speed  ',
+           code: `$('video').playbackRate=5`,
+           description: `'How to speed your watching video?\n 
+           its work on Browser only.\n 
+           Press Ctrl + Shift + I .\n
+            Go To Console and paste this $('video').playbackRate=5.\n 
+            If you want to increase or decrease video speed you may change the last digit. 
+          `,
+           tags: ['Browser  ', 'Trick','Js']
+       },
 
     {
         title: 'Git Problem',
