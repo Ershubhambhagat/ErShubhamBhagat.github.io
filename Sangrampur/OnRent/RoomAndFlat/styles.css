@@ -1,0 +1,149 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    /* background-color: #a0a7ad; Light gray background */
+    background-color: #a0d2eb; /* Light gray background */
+    color: #000000; /* Dark text color */
+}
+.jumbotron{
+    background: linear-gradient(to right, #14c0d6, #e8f9fd); /* Gradient background */
+
+}
+.container {
+    margin-top: 20px;
+}
+
+/* Header Styles */
+header {
+    background: linear-gradient(to right, #51e2f5, #e5eaf5); /* Gradient background */
+    padding: 20px;
+    color: rgb(180, 100, 100); /* White text color */
+    text-align: center;
+}
+
+/* Property Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    background-color: #d0bdf4; /* White background for cards */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.carousel-inner img {
+    border-radius: 5px 5px 0 0;
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color:  #8458B3; /* Primary blue color */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.btn-info {
+    background-color: #17a2b8; /* Info color */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn-info:hover {
+    background-color: #117a8b; /* Darker info color on hover */
+}
+
+/* Search Bar Styles */
+#search-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#search-input {
+    width: 60%;
+    padding: 10px;
+    border: 1px solid #ced4da; /* Lighter border color */
+    border-radius: 5px 0 0 5px;
+    font-size: 1rem;
+    outline: none;
+}
+#button-search {
+    padding: 10px 20px;
+    border: none;
+    height: 34px;
+    background-color: #007bff;
+    color: #fff; /* White text color */
+    font-size: 1rem;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#button-search:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Collapse Details */
+.collapse {
+    background-color: #f8f9fa; /* Light gray background */
+    border: 1px solid #ced4da; /* Lighter border color */
+    border-radius: 5px;
+    padding: 10px;
+}
+
+/* Footer Styles */
+footer{
+    background-color: #0773df;
+    color:  #a28089; /* White text color */
+    padding: 20px 0;
+    text-align: center;
+}
+
+
+footer a {
+
+    color: #007bff; /* Primary blue color for links */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    #search-input {
+        width: calc(100% - 80px);
+    }
+
+    #button-search {
+        width: 80px;
+    }
+}

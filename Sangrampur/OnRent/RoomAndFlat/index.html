@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room and Flat</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Room and Flat</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#listings">Property Listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="container mt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to Room and Flat</h1>
+            <p class="lead">Affordable Rentals in Prime Locations with Flexible Lease Terms and 24/7 Customer Support</p>
+            <p>Experience hassle-free processes, transparency, and personalized assistance with us.</p>
+        </div>
+    </section>
+
+    <!-- Search Bar -->
+    <section id="search" class="container mt-5">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="search-input" placeholder="Search properties..." aria-label="Search properties" aria-describedby="button-search">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Listings Section -->
+    <section id="listings" class="container mt-5">
+        <h2 class="mb-4">Property Listings</h2>
+        <div class="row" id="property-list">
+            <!-- Property cards will be dynamically inserted here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Dynamic Map Section -->
+    <section id="map" class="container mt-5">
+        <!-- <h2 class="mb-4">Property Locations</h2> -->
+        <div id="map-canvas"></div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="container mt-5">
+        <h2 class="mb-4">Contact Us</h2>
+        <form>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Preferred Move-in Date</label>
+                <input type="date" class="form-control" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea class="form-control" id="message" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </section>
+<div class="foot">
+    <!-- Footer Section -->
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="container p-4">
+            <p class="text-center">&copy; 2024 Room and Flat. All Rights Reserved.</p>
+            <p class="text-center">
+                <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Contact Information</a>
+            </p>
+            <div class="text-center">
+                <a href="#"><img src="facebook-icon.png" alt="Facebook" width="24"></a>
+                <a href="#"><img src="instagram-icon.png" alt="Instagram" width="24"></a>
+            </div>
+        </div>
+    </footer>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
