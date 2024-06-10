@@ -25,14 +25,14 @@ header {
 
 /* Property Card Styles */
 .card {
-    border: none;
+    border:orange;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
     background-color: #d0bdf4; /* White background for cards */
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-15px);
 }
 
 .card-title {
@@ -46,11 +46,13 @@ header {
 }
 
 .carousel-inner img {
-    border-radius: 5px 5px 0 0;
-    width: 100%;
-    height: auto;
-    object-fit: cover; /* Maintain aspect ratio */
+    border-radius: 10px 10px 0 0;
+    width: 8000px; /* Ensure the image takes up the full width of its container */
+    height: 400px; /* You can keep the max-height if you prefer to limit the height */
+    object-fit:cover  ; /* Adjusted to contain, ensuring the whole image is shown */
 }
+
+
 
 /* Button Styles */
 .btn-primary {
@@ -136,14 +138,22 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+.responsive-map {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 0;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+}
 
-/* Responsive Design */
-@media (max-width: 767px) {
-    #search-input {
-        width: calc(100% - 80px);
-    }
+.responsive-map iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #ef0505ac; /* Dark Gray Border */
 
-    #button-search {
-        width: 80px;
-    }
+
 }

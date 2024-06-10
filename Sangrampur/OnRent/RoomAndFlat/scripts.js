@@ -8,13 +8,41 @@ document.addEventListener('DOMContentLoaded', function() {
             amenities: 'Not Furnished',
             location: 'Sangrampur',
             price: '$**/month',
-            lat: -34.397,
-            lng: 150.644,
+            lat: 24.949925340658663,
+            lng: 86.58923864364625,
             images: [
-                './image/TilesRoom.png',
-                './image/kitchen.jpg',
-                'https://dummyimage.com/300x200/000/fff&text=Kitchen',
-                'https://dummyimage.com/300x200/000/fff&text=Bathroom'
+                './image/1 room.jpeg',
+                './image/1 room wide view.jpeg',
+                './image/bathroom.png',
+                './image/kitche_cleanup.jpeg',
+                './image/LastRoom (3).jpeg',
+                './image/LastRoom.jpeg',
+                './image/Pnorma 3.jpeg',
+                './image/Pnorma2.jpeg',
+                './image/bathroom.png',
+            ]
+        },
+        {
+            id: 2,
+            title: 'Room Near BOI Sangrampur,Munger ',
+            size: '460 sq ft',
+            amenities: '',
+            location: 'Sangrampur,Munger',
+            price: '$**/month',
+            lat: 24.949925340658663,
+            lng: 86.58923864364625,
+            images: [
+
+                './image/LastRoom (3).jpeg',
+                './image/LastRoom.jpeg',
+                './image/Pnorma 3.jpeg',
+                './image/1 room wide view.jpeg',
+                './image/bathroom.png',
+                './image/kitche_cleanup.jpeg',
+                './image/1 room.jpeg',
+
+                './image/Pnorma2.jpeg',
+                './image/bathroom.png',
             ]
         },
        {
@@ -22,10 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
             title: 'Room Near Bank Of India Sangrampur ',
             size: '460 sq ft',
             amenities: 'Not Furnished',
-            location: 'Sangrampur',
+            location: 'Sangrampur,Munger',
             price: '$**/month',
-            lat: -34.397,
-            lng: 150.644,
+            lat: 24.949925340658663,
+            lng: 86.58923864364625,
             images: [
                 './image/kitchen.jpg',
                 './image/TilesRoom.png  ',
@@ -33,20 +61,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 'https://dummyimage.com/300x200/000/fff&text=Kitchen',
                 'https://dummyimage.com/300x200/000/fff&text=Bathroom'
             ]
-        },{
-            id: 3,
-            title: 'Room Near Bank Of India Sangrampur ',
+        },
+        {
+            id: 4,
+            title: 'Sangrampur ',
             size: '460 sq ft',
             amenities: 'Not Furnished',
             location: 'Sangrampur',
             price: '$**/month',
-            lat: -34.397,
-            lng: 150.644,
+            lat: 24.949925340658663,
+            lng: 86.58923864364625,
             images: [
-                './image/TilesRoom.png  ',
-                './image/kitchen.jpg',
-                'https://dummyimge.com/300x200/000/fff&text=Kitchen',
-                'https://dummyimage.com/300x200/000/fff&text=Bathroom'
+
+                './image/LastRoom (3).jpeg',
+                './image/LastRoom.jpeg',
+                './image/Pnorma 3.jpeg',
+                './image/1 room wide view.jpeg',
+                './image/bathroom.png',
+                './image/kitche_cleanup.jpeg',
+                './image/1 room.jpeg',
+
+                './image/Pnorma2.jpeg',
+                './image/bathroom.png',
             ]
         },
 
@@ -88,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="collapse mt-3" id="details${property.id}">
                             <div class="card card-body">
                                 <p>Distance from Bus Stand: 500m</p>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${property.lat},${property.lng}" target="_blank" class="btn btn-info">Navigate to Bus Stand</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${property.lat},${property.lng}" target="_blank" class="btn btn-info">Navigate Room</a>
                             </div>
                         </div>
                     </div>
