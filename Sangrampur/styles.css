@@ -150,9 +150,9 @@ footer a:hover {
 .responsive-map iframe {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    left: 400px;
+    width: 50%;
+    height: 50%;
     border: 2px solid #ef0505ac; /* Dark Gray Border */
 
 

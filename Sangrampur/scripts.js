@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lat: 24.949925340658663,
             lng: 86.58923864364625,
             images: [
+                './image/bathroom.png',
 
                 './image/LastRoom (3).jpeg',
                 './image/LastRoom.jpeg',
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 './image/bathroom.png',
                 './image/kitche_cleanup.jpeg',
                 './image/1 room.jpeg',
+                './image/1 room wide view.jpeg',
 
                 './image/Pnorma2.jpeg',
                 './image/bathroom.png',
@@ -55,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lat: 24.949925340658663,
             lng: 86.58923864364625,
             images: [
-                './image/kitchen.jpg',
+                './image/kitche_cleanup.jpeg',
                 './image/TilesRoom.png  ',
 
                 'https://dummyimage.com/300x200/000/fff&text=Kitchen',
