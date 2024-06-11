@@ -12,27 +12,29 @@ document.addEventListener('DOMContentLoaded', function() {
             lng: 86.58923864364625,
             images: [
                 './image/1 room.jpeg',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=1 RooM',
+
                 './image/1 room wide view.jpeg',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=Bathroom',
+
                 './image/bathroom.png',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=Kitchen',
+
                 './image/kitche_cleanup.jpeg',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=2nd Room',
+
                 './image/LastRoom (3).jpeg',
                 './image/LastRoom.jpeg',
                 './image/Pnorma 3.jpeg',
                 './image/Pnorma2.jpeg',
                 './image/bathroom.png',
-            ]
-        },
-        {
-            id: 2,
-            title: 'Room Near BOI Sangrampur,Munger ',
-            size: '460 sq ft',
-            amenities: '',
-            location: 'Sangrampur,Munger',
-            price: '$**/month',
-            lat: 24.949925340658663,
-            lng: 86.58923864364625,
+            ],
             images: [
+                './image/1 room.jpeg',
+                './image/1 room wide view.jpeg',
+
                 './image/bathroom.png',
+                './image/kitche_cleanup.jpeg',
 
                 './image/LastRoom (3).jpeg',
                 './image/LastRoom.jpeg',
@@ -47,8 +49,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 './image/bathroom.png',
             ]
         },
-       {
+        {
             id: 2,
+            title: 'Room Near BOI Sangrampur,Munger ',
+            size: '460 sq ft',
+            amenities: '',
+            location: 'Sangrampur,Munger',
+            price: '$**/month',
+            lat: 24.949925340658663,
+            lng: 86.58923864364625,
+            images: [
+                './image/1 room.jpeg',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=1st Room',
+
+                './image/1 room wide view.jpeg',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=Bathroom',
+
+                './image/bathroom.png',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=Kitchen',
+
+                './image/kitche_cleanup.jpeg',
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=2nd Room',
+
+                './image/LastRoom (3).jpeg',
+                './image/LastRoom.jpeg',
+                './image/Pnorma 3.jpeg',
+                './image/Pnorma2.jpeg',
+                './image/bathroom.png',
+            ],
+        },
+       {
+            id: 3,
             title: 'Room Near Bank Of India Sangrampur ',
             size: '460 sq ft',
             amenities: 'Not Furnished',
@@ -57,11 +88,13 @@ document.addEventListener('DOMContentLoaded', function() {
             lat: 24.949925340658663,
             lng: 86.58923864364625,
             images: [
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=Kitchen',
+
                 './image/kitche_cleanup.jpeg',
                 './image/TilesRoom.png  ',
 
-                'https://dummyimage.com/300x200/000/fff&text=Kitchen',
-                'https://dummyimage.com/300x200/000/fff&text=Bathroom'
+                'https://dummyimage.com/300x400/ffffff/000000.png&text=Bathroom',
+
             ]
         },
         {
