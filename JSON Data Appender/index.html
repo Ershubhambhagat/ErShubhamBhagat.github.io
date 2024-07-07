@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Data Appender</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="aaaacontainer">
+    <div class="form-container">
+        <h1>Append Data to JSON File</h1>
+        <label for="File">Insert Your File where you want to Append :</label>
+        
+
+        <input type="file" id="fileInput" accept=".txt,.json">
+        <form id="dataForm">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title"  >
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date"  >
+
+            <label for="images">Image URLs (comma separated):</label>
+            <input type="text" id="imageUrls" name="images" placeholder="Enter image URLs">
+
+            <label for="imageUpload">Upload Images:</label>
+            <input type="file" id="imageUpload" name="imageUpload" multiple>
+
+            <label for="directoryPath">Directory Path for Uploaded Images:</label>
+            <input type="text" id="directoryPath" name="directoryPath" placeholder="Enter directory path">
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"  ></textarea>
+
+            <div id="content">
+                <h2>Content</h2>
+                <div class="content-section">
+                    <label for="heading">Heading:</label>
+                    <input type="text" class="heading"  >
+
+                    <label for="paragraphs">Paragraphs (comma separated):</label>
+                    <textarea class="paragraphs"  ></textarea>
+                </div>
+            </div>
+            <button type="button" id="addContent">Add More Content</button>
+            <button type="submit">Submit</button>
+            <button type="button" id="downloadData">Download Data</button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
