@@ -11,14 +11,14 @@
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBxkgUCQNflHvknU6CXe9Yphh9hBm-NB5g",
-  authDomain: "linksstorebyshubham.firebaseapp.com",
-  databaseURL: "https://linksstorebyshubham-default-rtdb.firebaseio.com",
-  projectId: "linksstorebyshubham",
-  storageBucket: "linksstorebyshubham.appspot.com",
-  messagingSenderId: "232907042392",
-  appId: "1:232907042392:web:c3c0eb927116e41d77642d",
-  measurementId: "G-D151S3RKV0"
+  apiKey: "-NB5g",
+  authDomain: ".firebaseapp.com",
+  databaseURL: "https://-default-rtdb.firebaseio.com",
+  projectId: "",
+  storageBucket: ".appspot.com",
+  messagingSenderId: "",
+  appId: "1:232907042392:web:",
+  measurementId: "G-"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
