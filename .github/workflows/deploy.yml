@@ -13,13 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2  # Step to check out the repository code
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2  # Set up Node.js environment
-        with:
-          node-version: '14'  # Specify the Node.js version (optional for static sites)
-
       - name: Install Firebase CLI
         run: npm install -g firebase-tools  # Install Firebase CLI globally
+
+      - name: Set up Firebase Configuration
+        run: |
+          echo "APIKEY=${{ secrets.APIKEY }}" >> $GITHUB_ENV
+          echo "AUTHDOMAIN=${{ secrets.AUTHDOMAIN }}" >> $GITHUB_ENV
+          echo "DATABASEURL=${{ secrets.DATABASEURL }}" >> $GITHUB_ENV
+          echo "PROJECTID=${{ secrets.PROJECTID }}" >> $GITHUB_ENV
+          echo "STORAGEBUCKET=${{ secrets.STORAGEBUCKET }}" >> $GITHUB_ENV
+          echo "MESSAGINGSENDERID=${{ secrets.MESSAGINGSENDERID }}" >> $GITHUB_ENV
+          echo "APPID=${{ secrets.APPID }}" >> $GITHUB_ENV
+          echo "MEASUREMENTID=${{ secrets.MEASUREMENTID }}" >> $GITHUB_ENV
 
       - name: Deploy to Firebase Hosting
         env:
