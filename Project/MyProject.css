@@ -1,7 +1,7 @@
 body{
     margin: 0;
     padding-top: 1px;
-    
+
     min-height: 100vh;
     background: #333;
     /* background-color: #b1b1b1; */
@@ -30,7 +30,7 @@ body{
 .container .card{
     position: relative;
     cursor: pointer;
-    
+
 }
 
 .container .card .face{
@@ -111,7 +111,7 @@ body{
 .container .card .face.face2 .content a:hover{
     background: #333;
     color: rgb(129, 13, 13);
-    
+
 }
 
 
@@ -122,13 +122,13 @@ body{
 .row {
     margin: 1px;
   }
-  
+
   .row:after {
     content: "";
     display: table;
     clear: both;
   }
-  
+
 
 
 
@@ -165,7 +165,7 @@ body{
 
   /*card */
 
-  
+
 /* .container .card .face.face1 */
   /* .container .card .face.face2  , */
   .container .card:hover .face.face1
@@ -186,7 +186,7 @@ body{
     /* max-width: 300px;
     box-sizing: 22px;
     margin-left: 70px;
-    margin: 55px; 
+    margin: 55px;
     text-align: center;
     font-family: arial;
     float: left;
@@ -196,9 +196,28 @@ body{
     /* font-weight: bold;
     border-radius: 5px; */
   }
-  
+
   @keyframes hue-rotate {
     to {
       filter: hue-rotate(100deg);
     }
   }
+/* Make the webpage responsive */
+@media only screen and (max-width: 600px) {
+  .container {
+    width: 100%;
+  }
+  .card {
+    width: 100%;
+  }
+}
+
+/* Prevent overflow */
+.container {
+  overflow: auto;
+}
+
+/* Equally divide the distance between each card */
+.card {
+  margin: 1em auto;
+}

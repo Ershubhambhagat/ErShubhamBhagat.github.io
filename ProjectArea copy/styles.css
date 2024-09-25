@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.project-card {
+    display: inline-block;
+    margin: 20px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.project-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.project-card .card-header {
+    position: relative;
+    padding: 10px;
+}
+
+.project-card .card-header .card-number {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+}
+
+.project-card .card-header .card-date {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.project-card .card-header .card-tags {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+}
+
+.project-card .card-body {
+    padding: 20px;
+}
+
+.project-card .card-body .slider {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.project-card .card-body .slider .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.project-card .card-body .slider .slide.active {
+    display: block;
+}
+
+.project-card .card-body .slider .slide video,
+.project-card .card-body .slider .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-card .card-footer {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.project-card .card-footer .source-link {
+    float: right;
+}
