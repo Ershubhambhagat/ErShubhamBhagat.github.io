@@ -16,7 +16,7 @@
     "tags": ["Tag3", "Tag4"],
     "slides": [
       {"type": "image", "url": "https://via.placeholder.com/300/ff0000"},
-      {"type": "video", "url": "https://www.youtube.com/embed/videoID2"},
+      {"type": "video", "url": "https://youtu.be/07sOggH0q1g?si=msz7WF7I1J3BAB9G"},
       {"type": "image", "url": "https://via.placeholder.com/300/gg0000"}
     ],
     "source": "https://github.com/project2"
