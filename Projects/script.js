@@ -1,56 +1,45 @@
 const dummyData = [
   {
-    title: "Project 1",
-    description: "Description of Project 1",
+    title: "Your Project Title ",
+    description: "Description of Project ",
     tags: ["Tag1", "Tag2"],
     slides: [  {type: "image", url: "../Blog/Image/1.gif"},
       { type: "image", url: "https://via.placeholder.com/300/ff0000" },
     { type: "image", url: "https://via.placeholder.com/300/" },
-    {type: "video", url: "https://www.youtube.com/embed/videoID1"},
+    {type: "video", url: 'https://youtu.be/oi64s4czHRg?si=GzsuFy1tlbyqTzUa'},
     {type: "image", url: "../Future/Image/AI Tools/AI (10).JPG"},
   ],
     source: "https://github.com/project1",
-  },
-   {
-    title: "Project 1",
-    description: "Description of ProjectDescription of ProjectDescription of Project 1 Description of ProjectDescription of ProjectDescription of Project",
-    tags: ["Tag1", "Tag2"],
-    slides: [{ type: "image", url: "https://via.placeholder.com/300/ff0000" },
-    { type: "image", url: "https://via.placeholder.com/300/" },
-    {type: "video", url: "https://www.youtube.com/embed/videoID1"},
-    {type: "image", url: "https://via.placeholder.com/300/"}
-  ],
-    source: "https://github.com/project1",
-  },
+  }
 ];
-
-
 document.addEventListener("DOMContentLoaded", loadProjects);
-
 let currentSlideIndex = 0;
 let slideInterval;
 let url = 'https://ershubhambhagat.github.io/Projects/projects.json';
 function loadProjects() {
   // fetch(projects.json)
   fetch(url)
-    .then((response) => response.json())
-    .then((data) =>
-    {
-      if(data >=1 )
-      {
-        displayProjects(data);
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error status: ${response.status}`);
       }
-      else
-      {
-        console.log("Not Fetching")
-        // alert("Hello! I am an alert box!!");
-// displayProjects(dummyData)
+      return response.json();
+    })
+    .then(data => {
+      if (data.length >= 1) {
+        displayProjects(data);
+      } else {
+        displayProjects(dummyData);
       }
     })
-    .catch((error) => {
-      alert(error);
-      console.log(error ,"while feching");
-      console.error("Error fetching projects:", error);
+    .catch(error => {
+      if (error instanceof SyntaxError) {
+        console.error("Invalid JSON:", error);
+      } else {
+        console.error("Error fetching projects:", error);
+      }
+      alert(error.message);
+      displayProjects(dummyData);
     });
   }
 function displayProjects(projects) {
@@ -187,12 +176,10 @@ function updateSlide(slider, index) {
   }
   slides[index].style.display = "block";
 }
-
 function toggleDescription(button) {
   const readMoreContainer = button.parentElement.querySelector('.readMoreContainer');
     readMoreContainer.classList.toggle('expanded');
 }
-
 function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
 }
