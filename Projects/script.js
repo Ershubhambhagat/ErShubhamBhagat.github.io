@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", loadProjects);
 let currentSlideIndex = 0;
 let slideInterval;
 let isVideoPlaying = false;
-let url = 'https://rshubhambhagat.github.io/Projects/projects.json';
+let url = 'https://ershubhambhagat.github.io/Projects/projects.json';
 function loadProjects() {
   // fetch(projects.json)
   fetch(url)
