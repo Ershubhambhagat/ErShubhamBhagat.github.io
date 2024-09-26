@@ -6,7 +6,7 @@ const dummyData = [
     slides: [  {type: "image", url: "../Blog/Image/1.gif"},
       { type: "image", url: "https://via.placeholder.com/300/ff0000" },
     { type: "image", url: "https://via.placeholder.com/300/" },
-    {type: "video", url: 'https://youtu.be/oi64s4czHRg?si=GzsuFy1tlbyqTzUa'},
+    {type: "video", url: 'https://www.youtube.com/embed/oi64s4czHRg?si=44EeifZw-FhzC3B2'},
     {type: "image", url: "../Future/Image/AI Tools/AI (10).JPG"},
   ],
     source: "https://github.com/project1",
@@ -15,7 +15,8 @@ const dummyData = [
 document.addEventListener("DOMContentLoaded", loadProjects);
 let currentSlideIndex = 0;
 let slideInterval;
-let url = 'https://ershubhambhagat.github.io/Projects/projects.json';
+let isVideoPlaying = false;
+let url = 'https://rshubhambhagat.github.io/Projects/projects.json';
 function loadProjects() {
   // fetch(projects.json)
   fetch(url)
@@ -89,44 +90,82 @@ function displayProjects(projects) {
         const img = document.createElement("img");
         img.src = slide.url;
         slideElement.appendChild(img);
+        //Video
       } else if (slide.type === "video") {
         const iframe = document.createElement("iframe");
-        iframe.src = slide.url;
+        iframe.src = slide.url + '?enablejsapi=1'; // Enable JavaScript API
         iframe.frameBorder = "0";
         iframe.allowFullScreen = true;
+        iframe.allow = "autoplay; fullscreen;encrypted-media;gyroscope;midi;";
+
+
+  iframe.addEventListener('load', () => {
+          iframe.contentWindow.postMessage('{"event":"listening"}', '*');
+        });
+        window.addEventListener('message', (event) => {
+          if (event.source === iframe.contentWindow) {
+            const data = JSON.parse(event.data);
+            if (data.event === 'onStateChange') {
+              if (data.info === 1) { // Video started playing
+                isVideoPlaying = true;
+                pauseSlider();
+              } else if (data.info === 0 || data.info === 2) { // Video ended or paused
+                isVideoPlaying = false;
+                resumeSlider();
+              }
+            }
+          }
+        });
+
         slideElement.appendChild(iframe);
       }
       slider.appendChild(slideElement);
     });
     //slider-controls'
+
     const controls = document.createElement("div");
     controls.classList.add("slider-controls");
     sliderContainer.appendChild(controls);
+
     const prevButton = document.createElement("button");
     prevButton.classList.add("prev-button");
     prevButton.textContent = "<";
     prevButton.addEventListener("click", () => {
-      currentSlideIndex =
-        (currentSlideIndex - 1 + project.slides.length) % project.slides.length;
+      currentSlideIndex = (currentSlideIndex - 1 + project.slides.length) % project.slides.length;
+
       updateSlide(slider, currentSlideIndex);
+       pauseSlider()
     });
     controls.appendChild(prevButton);
+
     const nextButton = document.createElement("button");
     nextButton.classList.add("next-button");
     nextButton.textContent = ">";
     nextButton.addEventListener("click", () => {
+      // pauseSlider()
       currentSlideIndex = (currentSlideIndex + 1) % project.slides.length;
+       pauseSlider()
       updateSlide(slider, currentSlideIndex);
     });
     controls.appendChild(nextButton);
+
+
+
+
     // Auto-slide
-    let slideInterval = 3000;
-    function startSlideShow() {
+    function startSlideShow(slider, slideCount) {
+      if (slideInterval) clearInterval(slideInterval);
       slideInterval = setInterval(() => {
-        nextButton.click();
-      }, slideInterval);
+        // pauseSlider()
+        // Only change slides if no video is playing
+        if (!isVideoPlaying) {
+          currentSlideIndex = (currentSlideIndex + 1) % slideCount;
+          updateSlide(slider, currentSlideIndex);
+        }
+      }, 3000);
     }
-    startSlideShow();
+
+    startSlideShow(slider, project.slides.length);
     //codeTags
     const tagsElement = document.createElement("p");
     tagsElement.classList.add("codeTags");
@@ -172,14 +211,26 @@ function displayProjects(projects) {
 function updateSlide(slider, index) {
   const slides = slider.children;
   for (let i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
+    slides[i].style.display = 'none';
   }
-  slides[index].style.display = "block";
+  slides[index].style.display = 'block';
 }
+
 function toggleDescription(button) {
   const readMoreContainer = button.parentElement.querySelector('.readMoreContainer');
     readMoreContainer.classList.toggle('expanded');
 }
 function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
+}
+
+function pauseSlider() {
+  // alert("Stop ");
+  if (slideInterval) clearInterval(slideInterval);
+}
+
+function resumeSlider() {
+  alert("start ");
+
+  startSlideShow(slider, project.slides.length);
 }

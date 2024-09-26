@@ -197,3 +197,7 @@ body {
     text-align: center;
     color: wheat;
 }
+.slide iframe {
+    position: relative;
+    z-index: 2;
+  }
