@@ -29,19 +29,26 @@ document.addEventListener("DOMContentLoaded", loadProjects);
 
 let currentSlideIndex = 0;
 let slideInterval;
-let url = "https://mocki.io/v1/68515333-144d-4f20-a09b-b7a76c299527";
+let url = 'https://ershubhambhagat.github.io/Projects/projects.json';
 function loadProjects() {
-  fetch(projects.json)
-  // fetch(url)
+  // fetch(projects.json)
+  fetch(url)
     .then((response) => response.json())
     .then((data) =>
     {
-      if(data <=1 )
+      if(data >=1 )
       {
         displayProjects(data);
       }
+      else
+      {
+        console.log("Not Fetching")
+        // alert("Hello! I am an alert box!!");
+// displayProjects(dummyData)
+      }
     })
     .catch((error) => {
+      alert(error);
       console.log(error ,"while feching");
       console.error("Error fetching projects:", error);
     });
