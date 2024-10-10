@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Mark Link</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="https://ershubhambhagat.github.io/Sangrampur/image/febicon.png">
+</head>
+<body>
+    <div class="searchContainer">
+        <input type="text" id="searchBox" placeholder="Search...">
+        <div class="suggestions" id="suggestions"></div>
+    </div>
+    <div class="container" id="cardContainer"></div>
+    <script>
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                displayCards(data);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+        function openNewTab(url) {
+            window.open(url, '_blank');
+        }
+        function createCard(cardData) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const button = document.createElement('button');
+            button.className = 'glow-on-hover';
+            button.textContent = cardData.buttonText;
+            button.onclick = () => openNewTab(cardData.url);
+            const paragraph = document.createElement('p');
+            paragraph.textContent = cardData.description;
+            card.appendChild(button);
+            card.appendChild(paragraph);
+            return card;
+        }
+        function displayCards(data) {
+            const cardContainer = document.getElementById('cardContainer');
+            data.forEach(cardData => {
+                const card = createCard(cardData);
+                cardContainer.appendChild(card);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const jsonUrl = `https://raw.githubusercontent.com/Ershubhambhagat/Code_Snippets/refs/heads/main/Json/BookMark.json`; // Replace with your
+            fetchData(jsonUrl);
+            document.getElementById('searchBox').focus();
+        });
+        document.getElementById('searchBox').addEventListener('input', function() {
+            let filter = this.value.toLowerCase();
+            let cards = document.getElementsByClassName('card');
+            Array.from(cards).forEach(function(card) {
+                let text = card.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            updateSuggestions(filter);
+        });
+        document.getElementById('searchBox').addEventListener('keydown', function(e) {
+            const suggestionsContainer = document.getElementById('suggestions');
+            const highlighted = suggestionsContainer.querySelector('.highlighted');
+            const suggestions = Array.from(suggestionsContainer.getElementsByClassName('suggestion'));
+            if (e.key === 'ArrowDown') {
+                if (highlighted) {
+                    const next = highlighted.nextElementSibling;
+                    if (next) {
+                        highlighted.classList.remove('highlighted');
+                        next.classList.add('highlighted');
+                    }
+                } else if (suggestions.length > 0) {
+                    suggestions[0].classList.add('highlighted');
+                }
+                e.preventDefault();
+            } else if (e.key === 'ArrowUp') {
+                if (highlighted) {
+                    const prev = highlighted.previousElementSibling;
+                    if (prev) {
+                        highlighted.classList.remove('highlighted');
+                        prev.classList.add('highlighted');
+                    }
+                }
+                e.preventDefault();
+            } else if (e.key === 'Enter') {
+                if (highlighted) {
+                    this.value = highlighted.textContent;
+                    this.dispatchEvent(new Event('input'));
+                    suggestionsContainer.innerHTML = '';
+                }
+            }
+        });
+        function updateSuggestions(filter) {
+            const suggestionsContainer = document.getElementById('suggestions');
+            suggestionsContainer.innerHTML = '';
+            if (filter === '') return;
+            const cards = document.getElementsByClassName('card');
+            const suggestions = new Set();
+            Array.from(cards).forEach(function(card) {
+                const buttons = card.getElementsByTagName('button');
+                const paragraphs = card.getElementsByTagName('p');
+                Array.from(buttons).forEach(function(button) {
+                    if (button.textContent.toLowerCase().includes(filter)) {
+                        suggestions.add(button.textContent);
+                    }
+                });
+                Array.from(paragraphs).forEach(function(paragraph) {
+                    if (paragraph.textContent.toLowerCase().includes(filter)) {
+                        suggestions.add(paragraph.textContent);
+                    }
+                });
+            });
+            suggestions.forEach(function(suggestion) {
+                const suggestionElement = document.createElement('div');
+                suggestionElement.className = 'suggestion';
+                suggestionElement.textContent = suggestion;
+                suggestionElement.addEventListener('click', function() {
+                    document.getElementById('searchBox').value = this.textContent;
+                    document.getElementById('searchBox').dispatchEvent(new Event('input'));
+                    suggestionsContainer.innerHTML = '';
+                });
+                suggestionsContainer.appendChild(suggestionElement);
+            });
+            if (suggestionsContainer.children.length > 0) {
+                suggestionsContainer.children[0].classList.add('highlighted');
+            }
+        }
+    </script>
+</body>
+</html>
