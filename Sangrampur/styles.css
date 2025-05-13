@@ -1,62 +1,75 @@
 /* Global Styles */
-body {
-    font-family: 'Arial', sans-serif;
+* {
     margin: 0;
     padding: 0;
-    /* background-color: #a0a7ad; Light gray background */
-    background-color: #a0d2eb; /* Light gray background */
-    color: #000000; /* Dark text color */
+    box-sizing: border-box; /* Ensures padding and borders are included in element dimensions */
 }
-.jumbotron{
-    background: linear-gradient(to right, #14c0d6, #e8f9fd); /* Gradient background */
 
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #672828; /* Fallback background color */
+    color: #000000; /* Dark text color */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    position: relative; /* Ensure proper stacking of elements */
 }
+
 .container {
     margin-top: 20px;
 }
 
-/* Header Styles */
-header {
+/* Hero Section */
+#home .jumbotron {
     background: linear-gradient(to right, #51e2f5, #e5eaf5); /* Gradient background */
-    padding: 20px;
-    color: rgb(180, 100, 100); /* White text color */
+    color: #333; /* Dark text color for contrast */
     text-align: center;
+    padding: 20px;
+    border-radius: 10px;
 }
 
-/* Property Card Styles */
+#home .jumbotron h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+#home .jumbotron p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+#search .input-group {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Property Listings Section */
 .card {
-    border:orange;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-    background-color: #d0bdf4; /* White background for cards */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-    transform: translateY(-15px);
+    transform: translateY(-10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.card-title {
-    font-size: 1.25rem;
-    color: #333;
-}
-
-.card-text {
-    font-size: 0.9rem;
-    color: #777;
-}
-
-.carousel-inner img {
+.card img {
     border-radius: 10px 10px 0 0;
-    width: 8000px; /* Ensure the image takes up the full width of its container */
-    height: 400px; /* You can keep the max-height if you prefer to limit the height */
-    object-fit:cover  ; /* Adjusted to contain, ensuring the whole image is shown */
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Ensure the image fills the container without distortion */
 }
 
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
 
-
-/* Button Styles */
+/* Buttons */
 .btn-primary {
-    background-color:  #8458B3; /* Primary blue color */
+    background-color: #8458B3;
     border: none;
     padding: 10px 20px;
     font-size: 1rem;
@@ -65,11 +78,11 @@ header {
 }
 
 .btn-primary:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #5a3d8a;
 }
 
 .btn-info {
-    background-color: #17a2b8; /* Info color */
+    background-color: #51e2f5;
     border: none;
     padding: 10px 20px;
     font-size: 1rem;
@@ -78,70 +91,30 @@ header {
 }
 
 .btn-info:hover {
-    background-color: #117a8b; /* Darker info color on hover */
+    background-color: #3bb0d6;
 }
 
-/* Search Bar Styles */
-#search-container {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-#search-input {
-    width: 60%;
-    padding: 10px;
-    border: 1px solid #ced4da; /* Lighter border color */
-    border-radius: 5px 0 0 5px;
-    font-size: 1rem;
-    outline: none;
-}
-#button-search {
-    padding: 10px 20px;
-    border: none;
-    height: 34px;
-    background-color: #007bff;
-    color: #fff; /* White text color */
-    font-size: 1rem;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#button-search:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Collapse Details */
-.collapse {
-    background-color: #f8f9fa; /* Light gray background */
-    border: 1px solid #ced4da; /* Lighter border color */
-    border-radius: 5px;
-    padding: 10px;
-}
-
-/* Footer Styles */
-footer{
-    background-color: #0773df;
-    color:  #a28089; /* White text color */
-    padding: 20px 0;
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
     text-align: center;
+    padding: 10px 0;
 }
-
 
 footer a {
-
-    color: #007bff; /* Primary blue color for links */
+    color: #007bff;
     text-decoration: none;
 }
 
 footer a:hover {
     text-decoration: underline;
 }
+
+/* Responsive Map */
 .responsive-map {
     position: relative;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    padding-top: 0;
     height: 0;
     overflow: hidden;
     max-width: 100%;
@@ -150,10 +123,123 @@ footer a:hover {
 .responsive-map iframe {
     position: absolute;
     top: 0;
-    left: 40%;
-    width: 50%;
-    height: 50%;
-    border: 2px solid #ef0505ac; /* Dark Gray Border */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #ef0505ac;
+}
+
+/* Carousel Controls */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.carousel-indicators li {
+    background-color: #8458B3;
+    border: 2px solid #fff;
+}
+
+.carousel-indicators .active {
+    background-color: #5a3d8a;
+}
+
+/* Dynamic Background */
+/* Dynamic Background */
+.dynamic-background {
+    position: fixed; /* Fix the background in place */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    z-index: -1; /* Place it behind all other content */
+    overflow: hidden;
+    background: #000000; /* Dark background */
+}
+
+/* Sparkling Particles */
+.dynamic-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    opacity: 0.6;
+    animation: sparkleAnimation 14s linear infinite;
+    pointer-events: none; /* Ensure it doesn't block interactions */
+}
+
+.dynamic-background .floating-dots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Floating Dots */
+.dynamic-background .floating-dots span {
+    position: absolute;
+    display: block;
+    width: 10px; /* Dot size */
+    height: 10px;
+    background: rgba(255, 255, 255, 0.8); /* Default white color */
+    border-radius: 50%;
+    pointer-events: none; /* Ensure dots don't block interactions */
+    animation: float 3s ease-in-out infinite; /* Faster animation */
+    mix-blend-mode: screen; /* Blend dots with the background */
+}
 
 
+/* Alternate Red Sparkles */
+.dynamic-background .floating-dots span:nth-child(odd) {
+    background: rgba(255, 0, 0, 5); /* Red color for alternate dots */
+}
+
+/* Gradient Animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Sparkle Animation */
+@keyframes sparkleAnimation {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translate(50px, 50px) scale(1.5);
+        opacity: 0.4;
+    }
+    100% {
+        transform: translate(-50px, -50px) scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* Floating Animation */
+@keyframes float {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-30px) scale(1.2); /* Slight floating effect */
+    }
+    100% {
+        transform: translateY(-60px) scale(1);
+    }
 }
