@@ -44,6 +44,35 @@
   display: inline-block;
 }
 
+/* Count badges (BADGE-004). The module appends `<span class="badge__count">`
+   with a visually hidden noun, so the number needs its own pill and must not
+   inherit the label's wrapping rules. */
+.badge__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.35em;
+  padding: 0 0.35em;
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: var(--radius-full);
+}
+
+/* A badge sits on one line, but a row of badges must wrap instead of forcing
+   the card wider than its grid track. */
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 /* ---- Variants ----------------------------------------------------------- */
 
 .badge--neutral {

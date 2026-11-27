@@ -42,11 +42,11 @@
     {
       "id": "bookmark-001",
       "name": "Blog",
-      "url": "./Blog/HTML/blog.html",
-      "description": "Notes on web tools, AI services and things worth trying.",
+      "url": "https://sanjivanilibrarysangrampur.vercel.app/",
+      "description": "Sanjivani Library is a premier self-study center designed for students preparing for competitive exams, board exams, and professional courses. We provide a distraction-free environment with all modern amenities.",
       "categoryId": "site",
-      "faviconUrl": "",
-      "image": "",
+      "faviconUrl": "https://firebasestorage.googleapis.com/v0/b/sanjivanilibraryfree-aa8fb.firebasestorage.app/o/branding%2FappleIcon_1792342533499_boswfg.png?alt=media&token=e0d11da4-bf91-4ad1-ac07-df3605d27238",
+      "image": "https://firebasestorage.googleapis.com/v0/b/sanjivanilibraryfree-aa8fb.firebasestorage.app/o/gallery%2F1794717042533_gwn29o.jpg?alt=media&token=e08a4fb6-f558-4f7c-b2aa-18e2a7c366c7",
       "screenshot": "",
       "featured": true,
       "favorite": true,
@@ -54,7 +54,7 @@
         "writing"
       ],
       "preview": {
-        "enabled": false,
+        "enabled": true,
         "mode": "link"
       },
       "notes": "",

@@ -14,6 +14,7 @@
  *   { category: "web",                    // equality
  *     tags: ["javascript", "css"],        // record value intersects this list
  *     issuer: (value, record) => boolean, // custom rule
+ *     score: { min: 75, max: 90 },         // numeric range (either side optional)
  *     year: "" }                          // empty values are ignored
  *
  * Dotted keys reach nested values: { "issuer.name": "Coursera" }.
@@ -30,6 +31,98 @@
  * them as real filter values would hide every record.
  */
 const DEFAULT_IGNORED_VALUES = Object.freeze(["", "all", "*", null, undefined]);
+
+/**
+ * Recognises a numeric-range rule.
+ *
+ * A range is a plain object with a `min` and/or `max` key, which is why the
+ * check is explicit rather than "any object": filter state is public API here,
+ * and a record-shaped value must not be mistaken for an interval.
+ *
+ * @param {unknown} value
+ * @returns {boolean}
+ */
+export function isRangeFilter(value) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    (Object.prototype.hasOwnProperty.call(value, "min") ||
+      Object.prototype.hasOwnProperty.call(value, "max"))
+  );
+}
+
+/**
+ * Converts a value to a finite number, or null.
+ *
+ * Numeric strings are accepted because dates arrive as "2025-10" and will be
+ * mapped by the caller, while imported JSON sometimes stores numbers as text.
+ * Everything else (null, "", "abc", arrays) is null, which never matches.
+ *
+ * @param {unknown} value
+ * @returns {number|null}
+ */
+function toFiniteNumber(value) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value.trim());
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
+/**
+ * Normalises a range rule to `{ min, max }` finite numbers (null = unbounded).
+ *
+ * @param {{min?: unknown, max?: unknown}} range
+ * @returns {{min: number|null, max: number|null}}
+ */
+export function normalizeRange(range) {
+  if (!isRangeFilter(range)) {
+    return { min: null, max: null };
+  }
+
+  return { min: toFiniteNumber(range.min), max: toFiniteNumber(range.max) };
+}
+
+/**
+ * Tests one record value against a numeric interval.
+ *
+ * Inclusive on both ends, matching how "2022 to 2025" reads. A record without
+ * a numeric value is excluded while the rule is active: a range filter asks
+ * "which records have a value in here", so an unrated record is not a match.
+ *
+ * @param {unknown} recordValue
+ * @param {{min?: unknown, max?: unknown}} range
+ * @returns {boolean}
+ */
+export function matchesRange(recordValue, range) {
+  const { min, max } = normalizeRange(range);
+
+  if (min === null && max === null) {
+    return true;
+  }
+
+  const value = toFiniteNumber(recordValue);
+
+  if (value === null) {
+    return false;
+  }
+
+  if (min !== null && value < min) {
+    return false;
+  }
+
+  if (max !== null && value > max) {
+    return false;
+  }
+
+  return true;
+}
 
 /**
  * Reads a dotted path from a record without throwing.
@@ -162,6 +255,12 @@ export function applyFilters(records, filters, options = {}) {
       return filterValue.length > 0;
     }
 
+    if (isRangeFilter(filterValue)) {
+      // A range with both ends cleared is "no filter"; one end is enough.
+      const { min, max } = normalizeRange(filterValue);
+      return min !== null || max !== null;
+    }
+
     return !ignoreValues.includes(filterValue);
   });
 
@@ -187,6 +286,10 @@ export function applyFilters(records, filters, options = {}) {
           console.error(`Filter predicate for "${key}" failed:`, error);
           return false;
         }
+      }
+
+      if (isRangeFilter(filterValue)) {
+        return matchesRange(recordValue, filterValue);
       }
 
       return matchesFilterValue(recordValue, filterValue);

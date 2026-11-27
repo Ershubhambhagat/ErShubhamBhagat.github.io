@@ -21,11 +21,11 @@
     "subtitle": "Work, study and projects on one timeline. Each entry is resolved from the dataset that owns it, so titles never drift.",
     "layout": "vertical",
     "defaultSort": "newest",
-    "showSearch": false,
+    "showSearch": true,
     "showFilters": true,
     "showYearGroups": true,
     "showFeaturedOnlyOption": true,
-    "showLoadMore": false,
+    "showLoadMore": true,
     "itemsPerPage": 10,
     "showDescriptions": true
   },

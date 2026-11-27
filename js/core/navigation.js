@@ -14,11 +14,17 @@
  *
  * Does NOT own:
  *   - section content, section ids or their headings (js/sections/*.js);
- *   - Global Search or Theme Studio UI (js/features/*). Their mount points are
- *     not inside the header and .build/CONTRACT.md defines no event for opening
- *     them, so this module renders no search or theme trigger rather than a
- *     button that would do nothing. See "decisions" in the build report;
+ *   - Global Search or Theme Studio UI (js/features/*). The header renders only
+ *     trigger buttons; each feature owns its dialog and opens it in response to
+ *     the `ui:open-search` / `ui:open-theme` bus events declared below. That is
+ *     why the triggers keep working when a feature is switched off in
+ *     APP_CONFIG: no listener, no dialog, and the button is not rendered when
+ *     the data file disables it;
  *   - theme state (Theme Studio), storage keys, routing or search indexing.
+ *
+ * Bus events emitted here: `ui:open-search` and `ui:open-theme` (no payload).
+ * They are intentionally request events, not state: the feature decides whether
+ * a dialog is already open, so a double click cannot stack two dialogs.
  *
  * Data contract: data/navigation.json is public, owner-editable and importable
  * through the JSON Manager, so every string read here is untrusted. Labels are
@@ -32,6 +38,8 @@
  * second call (JSON Manager re-import, tests) cannot stack duplicate observers
  * or listeners.
  */
+
+import { createIcon } from "./section-kit.js";
 
 /** Desktop breakpoint. MUST match the `min-width` in css/layout/navigation.css. */
 const DESKTOP_QUERY = "(min-width: 1120px)";
@@ -62,6 +70,19 @@ const FALLBACK_SCROLL_OFFSET_PX = 90;
  * landing the deep link anyway.
  */
 const HASH_LANDING_TIMEOUT_MS = 1500;
+
+/**
+ * Accessible names for the two header triggers.
+ *
+ * Kept next to the renderer rather than in the data file: the button exists to
+ * open one specific feature, and an owner-editable label that says something
+ * else would be a lie. The shortcut hint is display-only (the actual handler is
+ * in global-search.js).
+ */
+const HEADER_ACTIONS = Object.freeze({
+  search: { label: "Search", icon: "search", event: "ui:open-search", shortcut: "Ctrl K" },
+  theme: { label: "Theme", icon: "palette", event: "ui:open-theme" }
+});
 
 /**
  * Teardown of the most recent initialization.
@@ -148,6 +169,20 @@ export function initializeNavigation(sectionData, appContext) {
     }
 
     linkByTarget = renderLinkList(mount, config.items);
+  });
+
+  // 2b. Header actions -----------------------------------------------------
+  // Rendered after the link list because the actions read as utilities, not as
+  // destinations. They are real buttons, not links: they open a dialog and must
+  // not change the URL. The aria-expanded state is not set here - the feature
+  // owns the dialog and the modal manager restores focus on close - so the
+  // button stays a plain, honest "open this" control.
+  runSafely("header actions", () => {
+    renderHeaderActions(header, {
+      config,
+      bus: context.bus,
+      profile: isRecord(data.profile) ? data.profile.profile : null
+    });
   });
 
   // 3. Active-section indication ------------------------------------------
@@ -570,6 +605,11 @@ function normalizeConfiguration(sectionData, appConfig, sections) {
     closeOnEscape: navigationBlock.closeOnEscape !== false,
     closeOnNavigate: navigationBlock.closeOnNavigate !== false,
     showBrand: headerBlock.showBrand !== false,
+    // Two reserved switches that were documented in navigation.json but never
+    // read. They are opt-in (`=== true`) so an older file without them keeps the
+    // header exactly as it was.
+    showGlobalSearch: headerBlock.showGlobalSearch === true,
+    showThemeToggle: headerBlock.showThemeToggle === true,
     scrollOffset: toPositiveNumber(layoutBlock.scrollOffset, FALLBACK_SCROLL_OFFSET_PX),
     brand: {
       label,
@@ -706,6 +746,148 @@ function renderLinkList(mount, items) {
 
   mount.replaceChildren(list);
   return links;
+}
+
+/**
+ * Renders the Search, Theme and Résumé triggers into the header.
+ *
+ * Three rules make this safe in a header that is already tight at 1120px:
+ *   1. only configured actions are rendered, and the group is removed entirely
+ *      when none is (an empty flex child would still consume the gap);
+ *   2. icons are decorative and the accessible name lives on the button, so the
+ *      control is one clean tab stop with no duplicate announcement;
+ *   3. the control is a <button>, because it opens a dialog and must not
+ *      navigate. The résumé is the one anchor, because it is a real file.
+ *
+ * @param {HTMLElement} header
+ * @param {Object} options
+ * @param {Object} options.config - normalizeConfiguration() output.
+ * @param {Object|undefined} options.bus
+ * @param {Object|null} options.profile - data/profile.json profile block.
+ * @returns {void}
+ */
+function renderHeaderActions(header, { config, bus, profile } = {}) {
+  if (!(header instanceof HTMLElement)) {
+    return;
+  }
+
+  header.querySelector(".site-header__actions")?.remove();
+
+  const entries = [];
+
+  if (config?.showGlobalSearch) {
+    entries.push({ kind: "search", ...HEADER_ACTIONS.search });
+  }
+
+  if (config?.showThemeToggle) {
+    entries.push({ kind: "theme", ...HEADER_ACTIONS.theme });
+  }
+
+  const resume = normalizeResume(profile);
+
+  if (resume) {
+    entries.push({ kind: "resume", label: resume.label, href: resume.href });
+  }
+
+  if (entries.length === 0) {
+    return;
+  }
+
+  const group = document.createElement("div");
+  group.className = "site-header__actions";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", "Page actions");
+
+  for (const entry of entries) {
+    if (entry.kind === "resume") {
+      const link = document.createElement("a");
+      link.className = "site-header__action site-header__action--resume";
+      link.href = entry.href;
+      link.setAttribute("download", "");
+      link.textContent = entry.label;
+      group.append(link);
+      continue;
+    }
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "site-header__action";
+    button.id = `header-${entry.kind}-action`;
+    button.setAttribute("aria-label", entry.label);
+    button.title = entry.shortcut ? `${entry.label} (${entry.shortcut})` : entry.label;
+
+    const glyph = createIcon(entry.icon);
+    if (glyph) {
+      button.append(glyph);
+    }
+
+    // Visible text is hidden at narrow widths by CSS, not removed from the DOM,
+    // so the button keeps a readable name when the icon alone is shown.
+    const text = document.createElement("span");
+    text.className = "site-header__action-label";
+    text.textContent = entry.label;
+    button.append(text);
+
+    button.addEventListener("click", () => {
+      // The feature registers its listener during initialization, which happens
+      // after navigation in js/app.js; by the time a visitor can click, it is
+      // registered. If it is not (feature disabled, module failed), fall back to
+      // the tools-dock launcher so the header button is never a dead end.
+      const handled = typeof bus?.emit === "function" ? bus.emit(entry.event) : 0;
+
+      if (handled > 0) {
+        return;
+      }
+
+      const fallbackId =
+        entry.kind === "search" ? "global-search-trigger" : "theme-studio-trigger";
+      const fallback = document.getElementById(fallbackId);
+
+      if (fallback instanceof HTMLElement) {
+        fallback.click();
+      } else {
+        console.warn(`[navigation] No handler for "${entry.event}"; ${entry.label} is unavailable.`);
+      }
+    });
+
+    group.append(button);
+  }
+
+  header.append(group);
+}
+
+/**
+ * Reads the optional résumé action from the profile record.
+ *
+ * Only a local, project-relative path is accepted: the résumé is a file in this
+ * repository, and an absolute or scheme-qualified URL here would turn a download
+ * button into an arbitrary navigation. The path must start with ./ or ../ or /
+ * and must not contain a backslash or a control character.
+ *
+ * @param {Object|null} profile
+ * @returns {{label: string, href: string}|null}
+ */
+function normalizeResume(profile) {
+  if (!isRecord(profile) || !isRecord(profile.resume)) {
+    return null;
+  }
+
+  if (profile.resume.enabled !== true) {
+    return null;
+  }
+
+  const file = typeof profile.resume.file === "string" ? profile.resume.file.trim() : "";
+
+  if (!/^(?:\.\.?\/|\/)/.test(file) || /[\\\s]/.test(file)) {
+    return null;
+  }
+
+  const label =
+    typeof profile.resume.label === "string" && profile.resume.label.trim()
+      ? profile.resume.label.trim()
+      : "Résumé";
+
+  return { label, href: file };
 }
 
 /**

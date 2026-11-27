@@ -1,0 +1,18 @@
+# robots.txt - this site is a public portfolio; everything a visitor can reach is
+# meant to be crawled.
+User-agent: *
+Allow: /
+
+# The component lab is a development fixture: it renders example states of the
+# shared components and has no content of its own, so indexing it would only add
+# thin pages to a search result.
+Disallow: /tools/component-lab/
+
+# Working material: the agent rules, status documents and the 33 specifications.
+# The deploy workflow excludes both folders from the artifact; this covers any
+# build that serves the tracked tree directly.
+Disallow: /docs/
+Disallow: /Prompt/
+
+# The legacy pages under /Old_Data/ are real pages, not build output.
+Sitemap: https://ershubhambhagat.github.io/sitemap.xml

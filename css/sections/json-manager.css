@@ -107,3 +107,92 @@
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
 }
+
+/* ---- Header row, strategies, preview ---- */
+.json-manager__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-block-end: var(--spacing-xs);
+}
+
+.json-manager__section-head .json-manager__heading {
+  margin: 0;
+}
+
+.json-manager__strategies {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.json-manager__strategy,
+.json-manager__confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.json-manager__strategy input,
+.json-manager__confirm input {
+  margin-block-start: 0.2rem;
+}
+
+/* The replace confirmation is the one destructive path in this dialog, so it
+   carries a warning tint instead of the neutral border used elsewhere. */
+.json-manager__confirm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-warning);
+  background-color: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-sm);
+}
+
+.json-manager__confirm[hidden] {
+  display: none;
+}
+
+.json-manager__preview {
+  display: grid;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.json-manager__preview[hidden] {
+  display: none;
+}
+
+.json-manager__preview-summary {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+}
+
+.json-manager__preview-list {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.json-manager__preview-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.json-manager__conflict {
+  color: var(--color-text-secondary);
+}

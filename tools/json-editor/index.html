@@ -18,13 +18,22 @@
     <header class="topbar">
         <div class="topbar__brand">
             <h1>JSON Editor Studio</h1>
-            <p>Edit the portfolio's JSON through forms, validate, then save or download.</p>
+            <p>Edit the portfolio's JSON through forms, review the diff, then save or download.</p>
         </div>
 
         <div class="topbar__actions">
             <span id="connection-status" class="status" data-state="preview" role="status" aria-live="polite">
                 Loading datasets…
             </span>
+            <!--
+              Two separate live regions: one reports the connection, the other the
+              draft state (Saved / Unsaved / Invalid / Saving). A single region would
+              overwrite the connection message on every keystroke.
+            -->
+            <span id="draft-status" class="chip" data-state="saved" role="status" aria-live="polite">Not loaded</span>
+            <button id="undo-button" class="button" type="button" aria-keyshortcuts="Control+Z" disabled>Undo</button>
+            <button id="redo-button" class="button" type="button" aria-keyshortcuts="Control+Shift+Z" disabled>Redo</button>
+            <button id="changes-button" class="button" type="button" disabled>Changes</button>
             <button id="connect-button" class="button" type="button">Connect project folder</button>
             <button id="save-button" class="button button--primary" type="button" disabled>Save</button>
             <button id="download-button" class="button" type="button" disabled>Download</button>
@@ -55,6 +64,27 @@
             <div class="toolbar">
                 <label class="visually-hidden" for="record-search">Search records</label>
                 <input id="record-search" class="input" type="search" placeholder="Search records…" autocomplete="off">
+
+                <!--
+                  Filter and sort sit beside the search because they act on the same
+                  list. Both are views: the JSON collection is never reordered.
+                -->
+                <label class="visually-hidden" for="filter-field">Filter by field</label>
+                <select id="filter-field" class="input input--compact">
+                    <option value="">All fields</option>
+                </select>
+                <label class="visually-hidden" for="filter-value">Filter value</label>
+                <select id="filter-value" class="input input--compact" disabled>
+                    <option value="">Any value</option>
+                </select>
+                <label class="visually-hidden" for="sort-order">Sort records</label>
+                <select id="sort-order" class="input input--compact">
+                    <option value="order">Manual order</option>
+                    <option value="id">ID</option>
+                    <option value="label">Title</option>
+                    <option value="updated">Updated</option>
+                </select>
+                <button id="clear-filters" class="button button--ghost" type="button">Clear</button>
                 <button id="add-record" class="button" type="button">+ Add record</button>
             </div>
 
@@ -68,27 +98,51 @@
         <aside class="editor" aria-label="Record editor">
             <div class="editor__head">
                 <h2 id="form-title">Record</h2>
+                <!--
+                  WAI-ARIA tabs: each tab names the panel it controls, only the active
+                  tab sits in the tab order, and Arrow keys move between the two (see
+                  the keydown handler in app.js). Without aria-controls and a roving
+                  tabindex the markup would claim to be tabs while behaving like two
+                  unrelated buttons.
+                -->
                 <div class="tabs" role="tablist" aria-label="Editor view">
-                    <button class="tab is-active" type="button" data-tab="form" role="tab" aria-selected="true">Form</button>
-                    <button class="tab" type="button" data-tab="json" role="tab" aria-selected="false">JSON</button>
+                    <button id="tab-form" class="tab is-active" type="button" data-tab="form" role="tab"
+                            aria-selected="true" aria-controls="panel-form" tabindex="0">Form</button>
+                    <button id="tab-json" class="tab" type="button" data-tab="json" role="tab"
+                            aria-selected="false" aria-controls="preview-wrap" tabindex="-1">JSON</button>
                 </div>
             </div>
 
-            <form id="record-form" class="record-form" novalidate></form>
+            <div id="panel-form" class="tabpanel" role="tabpanel" aria-labelledby="tab-form" tabindex="0">
+                <form id="record-form" class="record-form" novalidate></form>
 
-            <div id="preview-wrap" class="preview-wrap" hidden>
-                <pre id="json-preview" class="json-preview" hidden></pre>
-                <button id="copy-json" class="button button--ghost" type="button">Copy JSON</button>
+                <div class="editor__actions">
+                    <button id="apply-record" class="button button--primary" type="button" disabled>Apply</button>
+                    <button id="cancel-record" class="button" type="button" disabled>Cancel</button>
+                </div>
             </div>
 
-            <div class="editor__actions">
-                <button id="apply-record" class="button button--primary" type="button" disabled>Apply</button>
-                <button id="cancel-record" class="button" type="button" disabled>Cancel</button>
+            <div id="preview-wrap" class="preview-wrap tabpanel" role="tabpanel" aria-labelledby="tab-json" tabindex="0" hidden>
+                <pre id="json-preview" class="json-preview" hidden></pre>
+                <button id="copy-json" class="button button--ghost" type="button">Copy JSON</button>
             </div>
 
             <section id="validation-panel" class="validation" aria-live="polite"></section>
         </aside>
     </main>
+
+    <!--
+      The change review is a native <dialog>: it traps focus, closes on Escape and
+      dims the workspace without custom modal code. Content is rebuilt in app.js.
+    -->
+    <dialog id="changes-dialog" class="dialog" aria-labelledby="changes-title">
+        <div class="dialog__head">
+            <h2 id="changes-title">Unsaved changes</h2>
+            <button id="changes-close" class="icon-button" type="button" aria-label="Close change review">×</button>
+        </div>
+        <div id="changes-body" class="dialog__body"></div>
+        <div id="changes-actions" class="dialog__actions"></div>
+    </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 

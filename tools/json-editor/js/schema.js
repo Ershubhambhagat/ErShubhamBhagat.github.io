@@ -12,7 +12,13 @@
  * Validation mirrors scripts/validate-data.mjs plus the editor-only checks
  * (category and related-id references) that the Node script leaves to the
  * section modules. Errors block saving; warnings do not.
+ *
+ * Module map: imported by app.js and file-access.js; imports ids.js only. Keep it
+ * side-effect free - the Node tests and scripts/check-modules.mjs import it with
+ * no DOM present.
  */
+
+import { allocateId } from "./ids.js";
 
 export const DATASETS = Object.freeze([
   { key: "profile", file: "profile.json", collection: "profile", kind: "record", label: "Profile" },
@@ -77,23 +83,6 @@ export function recordLabel(dataset, record) {
   return "(untitled)";
 }
 
-export function nextId(dataset, records) {
-  const prefix = dataset.prefix;
-  if (!prefix) {
-    return "";
-  }
-
-  let highest = 0;
-  for (const record of records) {
-    const id = typeof record?.id === "string" ? record.id : "";
-    if (!id.startsWith(prefix)) continue;
-    const number = Number.parseInt(id.slice(prefix.length), 10);
-    if (Number.isFinite(number)) highest = Math.max(highest, number);
-  }
-
-  return `${prefix}${String(highest + 1).padStart(3, "0")}`;
-}
-
 function blankValue(value) {
   if (Array.isArray(value)) return [];
   if (value && typeof value === "object") {
@@ -118,7 +107,9 @@ export function blankRecord(dataset, records) {
   const record = blankValue(template);
 
   if (dataset.prefix) {
-    record.id = nextId(dataset, records);
+    // allocateId skips an id that is already taken, so a duplicated import or a
+    // hand-written record cannot make "+ Add record" produce an invalid draft.
+    record.id = allocateId(dataset, records);
   }
 
   if (dataset.labelField) {

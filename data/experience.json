@@ -30,8 +30,9 @@
     "subtitle": "Professional and freelance work. Both records are examples that show every field; replace them with real roles.",
     "layout": "timeline",
     "sortOrder": "newest-first",
-    "showSearch": false,
-    "showFilters": false,
+    "showSearch": true,
+    "showFilters": true,
+    "showSort": true,
     "showAchievements": true,
     "showTechnologies": true,
     "expandableDetails": true

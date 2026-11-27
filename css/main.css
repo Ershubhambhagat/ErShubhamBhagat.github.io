@@ -16,9 +16,10 @@
      css/components/<name>.css   (one file per shared component)
      css/sections/<name>.css     (one file per section id)
    This file does not @import the later files: one hidden @import chain per
-   page is slower and makes the real cascade invisible in the HTML. The
-   foundation agent owns the <link> list; layout/component/section files are
-   placeholders at this phase and carry no rules yet.
+   page is slower and makes the real cascade invisible in the HTML. index.html
+   owns the <link> list, and every layout/component/section file linked there
+   carries real rules; this file only holds the shared primitives those files
+   build on.
 
    WHAT IS DELIBERATELY ABSENT
    No component or section selector appears here. This file only knows about
@@ -890,4 +891,51 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
+}
+/* ==========================================================================
+   19. COLLECTION TOOLBAR (js/core/collection-view.js)
+   --------------------------------------------------------------------------
+   One row above every card collection: search, one select per filter, an
+   optional sort select, then the result count. flex-wrap is what keeps a
+   four-control row usable at 375px instead of forcing a horizontal scrollbar.
+   ========================================================================== */
+
+.field__input--select {
+  padding-inline-end: var(--spacing-lg);
+  cursor: pointer;
+}
+
+.collection-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+  margin-block-end: var(--spacing-sm);
+}
+
+.collection-toolbar__search {
+  flex: 1 1 16rem;
+  max-inline-size: 24rem;
+}
+
+.collection-toolbar__field {
+  flex: 0 1 12rem;
+  min-inline-size: 9rem;
+}
+
+.collection-status {
+  margin-block-end: var(--spacing-sm);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.collection-more {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--spacing-lg);
+}
+
+/* The empty state's clear button sits under the message, not beside it. */
+.collection-list > .empty-state + .button {
+  margin-block-start: var(--spacing-sm);
 }

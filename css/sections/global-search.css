@@ -92,3 +92,81 @@
   background-color: var(--color-surface-raised);
   border-radius: var(--radius-sm);
 }
+
+/* ---- Section filter ---- */
+.global-search__field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.global-search__field .global-search__input {
+  flex: 1 1 16rem;
+}
+
+.global-search__section {
+  flex: 0 1 12rem;
+}
+
+/* ---- Headings, recent queries, highlighting ---- */
+.global-search__heading {
+  margin-block: var(--spacing-sm) 0.25rem;
+  padding-inline: var(--spacing-xs);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  list-style: none;
+}
+
+.global-search__recent {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  list-style: none;
+}
+
+.global-search__recent-button,
+.global-search__clear-recent {
+  padding: 0.35rem var(--spacing-xs);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  text-align: start;
+  cursor: pointer;
+}
+
+.global-search__recent-button:hover,
+.global-search__clear-recent:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+.global-search__clear-recent {
+  margin-inline-start: auto;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* A highlighted token must stay readable on both palettes: the mark carries a
+   tinted background and inherits the text colour rather than forcing black. */
+.global-search__mark {
+  padding-inline: 0.1em;
+  color: inherit;
+  background-color: color-mix(in srgb, var(--color-primary) 28%, transparent);
+  border-radius: 2px;
+}
+
+/* The active option is the one Enter opens. The border and the background carry
+   the state together, so it is not colour-only. */
+.global-search__item.is-active {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-primary);
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+.global-search__sort {
+  flex: 0 1 9rem;
+}

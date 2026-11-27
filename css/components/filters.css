@@ -391,3 +391,72 @@
     transition: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   11. RANGE GROUP (js/components/filter.js createRangeFilter)
+   Two native number inputs joined by a dash. The toolbar and the filter panel
+   share these classes; only the wrapper width comes from the container.
+   -------------------------------------------------------------------------- */
+
+.range-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.range-filter__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.range-filter__controls {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+}
+
+.range-filter__part {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1 1 4.5rem;
+}
+
+.range-filter__part-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.range-filter__input {
+  inline-size: 100%;
+  min-width: 0;
+  padding-inline: var(--spacing-sm);
+}
+
+/* Spinners are the native affordance for a number input; keeping them is what
+   makes the control keyboard- and screen-reader-friendly without extra ARIA. */
+.range-filter__input::-webkit-outer-spin-button,
+.range-filter__input::-webkit-inner-spin-button {
+  margin-inline-start: 0.15rem;
+}
+
+.range-filter__dash {
+  flex: 0 0 auto;
+  padding-block-end: 0.6rem;
+  color: var(--color-text-muted);
+}
+
+.range-filter__hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Inside a collection toolbar the control sizes like the neighbouring selects. */
+.collection-toolbar .range-filter--toolbar {
+  flex: 0 1 15rem;
+  align-self: flex-end;
+  padding-block-end: 0;
+}

@@ -101,3 +101,161 @@
   padding-block-start: var(--spacing-sm);
   border-block-start: 1px solid var(--color-border);
 }
+
+/* ---- Custom colours ---- */
+.theme-colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.theme-colors__field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+/* A native colour input is a small square by default; make it fill the field and
+   keep a border so it reads as a control on the dark surface. */
+.theme-colors__input {
+  inline-size: 100%;
+  block-size: 2.25rem;
+  padding: 2px;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.theme-colors__input:focus-visible {
+  border-color: var(--color-primary);
+}
+
+/* ---- Layout and component controls ---- */
+/* Two columns when the dialog is wide enough; the controls are short, so a
+   single column would make the panel scroll far more than it needs to. */
+.theme-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--spacing-sm) var(--spacing-md);
+}
+
+.theme-control {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+}
+
+/* The hint explains what a token affects (which components, which theme), so it
+   is body text at the muted step rather than an uppercase label. */
+.theme-control__hint {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.theme-control__range {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-block-size: 2.25rem;
+}
+
+/* accent-color is the one range hook that follows the palette in every engine;
+   the track and thumb stay native so the control keeps its platform behaviour
+   (keyboard steps, touch target). */
+.theme-control__slider {
+  flex: 1;
+  min-inline-size: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.theme-control__readout {
+  min-inline-size: 4.5rem;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--color-text-primary);
+}
+
+/* ---- Contrast ---- */
+.theme-studio__subheading {
+  margin-block: var(--spacing-md) 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.theme-contrast {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.theme-contrast__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.theme-contrast__value {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+/* A failing pair is called out with text and weight, not colour alone: the label
+   already says "Fails AA". */
+.theme-contrast__value--fail {
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+}
+
+/* ---- Preview ---- */
+.theme-preview {
+  display: grid;
+  gap: var(--spacing-sm);
+  margin-block-start: var(--spacing-sm);
+}
+
+.theme-preview__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+/* The frame is the "device"; the card inside is real component markup. */
+.theme-preview__frame {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-md);
+  overflow: auto;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.theme-preview__card {
+  inline-size: 100%;
+  transition: max-inline-size var(--transition-normal) var(--ease-standard);
+}
+
+.theme-preview[data-width="tablet"] .theme-preview__card {
+  max-inline-size: 768px;
+}
+
+.theme-preview[data-width="mobile"] .theme-preview__card {
+  max-inline-size: 375px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-preview__card {
+    transition: none;
+  }
+}

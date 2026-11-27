@@ -1,0 +1,167 @@
+/**
+ * Component lab styles - tools/component-lab/css/lab.css
+ *
+ * OWNS
+ *   - The lab's own scaffolding only: page width, section rhythm, label rows and
+ *     the wrappers the fixtures are mounted into.
+ *
+ * MUST NOT OWN
+ *   - Component appearance. Buttons, cards, badges, filters, search, timeline,
+ *     modals and toasts are styled by css/components/*.css; overriding them here
+ *     would hide the regression this page exists to catch.
+ *
+ * Every value comes from css/variables.css, so the lab follows Theme Studio and
+ * the light theme exactly like the site does.
+ */
+
+.lab {
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  font-family: var(--font-body);
+}
+
+.lab__header {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--gutter) var(--gutter) 0;
+}
+
+.lab__eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lab__title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.15;
+}
+
+.lab__note,
+.lab__hint {
+  max-width: 62ch;
+  margin: 0 0 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+.lab__note code,
+.lab__hint code {
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.lab__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lab__nav a {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.lab__nav a:hover,
+.lab__nav a:focus-visible {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.lab__main {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter) var(--section-space);
+}
+
+.lab__section {
+  padding-top: var(--section-space);
+  scroll-margin-top: 1rem;
+}
+
+.lab__section > h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2.6vw, 1.55rem);
+}
+
+/* A slot is the mount point for one fixture group; it never styles children. */
+.lab__slot {
+  margin-top: 1rem;
+}
+
+.lab__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* The card lab uses the site grid so card variants sit on their real surface. */
+.lab__grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  margin-top: 1rem;
+}
+
+.lab__columns {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  align-items: start;
+}
+
+.lab__output {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.85rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+/* Labels above a fixture keep the screenshot readable without touching the
+   component's own typography. */
+.lab__label {
+  margin: 0 0 0.4rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lab__fixture {
+  padding: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.lab__stretch {
+  grid-column: 1 / -1;
+}
+
+/* Modal body fixture: block paragraphs with a readable rhythm. */
+.lab__stack p {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}

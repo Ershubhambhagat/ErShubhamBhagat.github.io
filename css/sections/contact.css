@@ -123,3 +123,24 @@
     grid-column: 1 / -1;
   }
 }
+
+/* Per-field error (contact form). It sits under its own control and is wired
+   with aria-describedby, so a screen reader hears the message with the field
+   instead of only in the summary block above the button. */
+.field__error {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-danger);
+}
+
+.field__error[hidden] {
+  display: none;
+}
+
+/* aria-invalid is the state; the border makes it visible without relying on the
+   red text alone. */
+.field__input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}

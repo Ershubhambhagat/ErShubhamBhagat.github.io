@@ -190,19 +190,76 @@ if (navigation && existsSync(indexPath)) {
 // --- cross-file: local bookmark files -------------------------------------
 const bookmarks = loaded.get("bookmarks");
 
+/**
+ * Resolves a repository-relative bookmark URL to a file on disk.
+ *
+ * Two roots are checked on purpose. The deployed site serves the legacy pages at
+ * the repository root (`/Project/MyProject.html`, `/BookMark/index.html`), which
+ * is what a bookmark URL must point at to work on GitHub Pages. The owner's
+ * working copy also keeps the same tree under `Old_Data/`.
+ *
+ * Those legacy folders are git-ignored, so a fresh clone (and therefore every CI
+ * runner) has none of them. A bookmark into a folder that is absent from this
+ * checkout cannot be verified here - that is not the same as a dead link, and
+ * failing on it made the CI job red for paths that ship from another branch.
+ * The check therefore reports three states, and only `missing` is a failure.
+ *
+ * @param {string} url - A URL starting with "./".
+ * @returns {{path: string|null, state: "found"|"missing"|"absent-tree"}}
+ */
+function resolveRepositoryPath(url) {
+  const relative = decodeURIComponent(url)
+    .replace(/^\.\//, "")
+    .split("#")[0]
+    .split("?")[0];
+
+  const candidates = [path.join(root, relative), path.join(root, "Old_Data", relative)];
+  const found = candidates.find((candidate) => existsSync(candidate));
+
+  if (found) {
+    return { path: found, state: "found" };
+  }
+
+  // Is the first path segment present at all? If the whole folder is absent from
+  // this checkout, the reference points into a tree that is not versioned here.
+  const top = relative.split("/")[0];
+  const treePresent = [path.join(root, top), path.join(root, "Old_Data", top)].some((dir) =>
+    existsSync(dir)
+  );
+
+  return { path: null, state: treePresent ? "missing" : "absent-tree" };
+}
+
 if (bookmarks && Array.isArray(bookmarks.bookmarks)) {
+  let skipped = 0;
+
   bookmarks.bookmarks.forEach((bookmark, index) => {
     const url = String(bookmark.url || "");
 
-    if (url.startsWith("./") && !url.includes("#")) {
-      const target = path.join(root, decodeURIComponent(url));
-      if (!existsSync(target)) {
-        fail(`bookmarks.json bookmarks[${index}]: "${url}" does not exist`);
-      }
+    if (!url.startsWith("./") || url.includes("#")) {
+      return;
+    }
+
+    const resolution = resolveRepositoryPath(url);
+
+    if (resolution.state === "absent-tree") {
+      // Verified on the owner's machine; unverifiable in a checkout without the
+      // legacy folders. Counting them keeps the skip visible instead of silent.
+      skipped += 1;
+      return;
+    }
+
+    if (!resolution.path) {
+      fail(
+        `bookmarks.json bookmarks[${index}]: "${url}" is inside ${url.split("/")[1]}/, which exists in this checkout, but the file does not`
+      );
     }
   });
 
-  console.log(`ok    bookmarks.json: local URLs checked`);
+  console.log(
+    "ok    bookmarks.json: local URLs checked" +
+      (skipped > 0 ? ` (${skipped} skipped - their folder is not in this checkout)` : "")
+  );
 }
 
 // --- summary of sample records -------------------------------------------

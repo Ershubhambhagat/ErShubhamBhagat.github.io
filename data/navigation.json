@@ -6,7 +6,7 @@
     "// navigation.items[] REQUIRED: id, label, target, order, enabled.",
     "// target: must equal a <section id> in index.html (profile, skills, ... contact).",
     "// order: 1-11; the header and footer render in this order.",
-    "// header.showBrand / showGlobalSearch / showThemeToggle: reserved switches.",
+    "// header.showBrand / showGlobalSearch / showThemeToggle: header action switches (all booleans).",
     "// layout.scrollOffset: sticky-header offset in px used by the active-section indicator.",
     "// footer: { enabled, showCopyright, showSocialLinks, showBackToTop, copyrightText }.",
     "// Do not rename or reorder the eleven ids: search and the timeline depend on them."
@@ -109,8 +109,8 @@
   },
   "header": {
     "showBrand": true,
-    "showGlobalSearch": false,
-    "showThemeToggle": false,
+    "showGlobalSearch": true,
+    "showThemeToggle": true,
     "showResumeAction": false
   },
   "layout": {

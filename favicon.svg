@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Er Shubham Bhagat">
+  <!--
+    Single-file favicon: a rounded dark tile with the initials in the site's own
+    colours. It is drawn here, not traced, so there is no licensing question and
+    no bitmap to keep in sync.
+
+    Colours are the same values as css/variables.css. A favicon cannot read CSS
+    variables, so they are repeated literally; update this file if the palette
+    changes.
+
+    The initials use <text> with a generic family on purpose: a hand-built path
+    for each letter is easy to get subtly wrong at 16px, and every target browser
+    has a usable system UI font. The font stack falls back to sans-serif.
+  -->
+  <defs>
+    <linearGradient id="initials" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c8cff"/>
+      <stop offset="1" stop-color="#58e6c8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="#08090c"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="12.5" fill="none" stroke="#111319" stroke-width="3"/>
+
+  <text
+    x="32"
+    y="43"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+    font-size="30"
+    font-weight="700"
+    letter-spacing="-1"
+    fill="url(#initials)"
+  >SB</text>
+</svg>

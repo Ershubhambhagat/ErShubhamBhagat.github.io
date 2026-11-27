@@ -11,10 +11,25 @@
  * disagree with the section-level filters at the edges (accents, multi-token
  * queries, nested values).
  *
+ * Ranking: a title hit outranks a description hit, and an exact title match
+ * outranks a prefix. Ties keep dataset order, so the result list is stable while
+ * the visitor types. Results are grouped by section because that is how the page
+ * is organised; the group heading is a label, not a result.
+ *
+ * Highlighting: matched tokens wrapped in <mark> inside the title and the
+ * description. The match is case-insensitive and literal. Accent-folded matches
+ * (typing "sao" for "São") are found by the engine but not highlighted, because
+ * mapping a folded offset back to the original string is not reliable; the result
+ * still appears, which is the part that matters.
+ *
+ * Keyboard: Up/Down/Home/End move the active option, Enter opens it, Escape is
+ * handled by the modal manager. The input keeps focus and points at the active
+ * option with aria-activedescendant, which is the listbox pattern that works
+ * without moving focus into the list.
+ *
  * UI: the panel is a real <dialog> from the modal manager, so focus trapping,
  * Escape and scroll locking are handled once, in one place. The launcher lives in
- * the shared tools dock (see js/core/section-kit.js) because the header has no
- * search button and the feature must not edit index.html.
+ * the shared tools dock and in the header (through the ui:open-search bus event).
  *
  * Security: every dataset string is untrusted; results are built with textContent
  * and the query is never inserted into markup.
@@ -31,8 +46,14 @@ import {
   isRecord
 } from "../core/section-kit.js";
 
-/** Hard cap on rendered results; the API in the search engine also caps work. */
-const MAX_RESULTS = 30;
+/** Hard cap on rendered results; the search engine also caps its own work. */
+const MAX_RESULTS = 40;
+
+/** How many recent queries are remembered. */
+const MAX_RECENT = 5;
+
+/** How many "popular" entries are offered before a query is typed. */
+const MAX_SUGGESTIONS = 6;
 
 /** Teardown for a previous initialization. */
 let teardownPrevious = null;
@@ -50,6 +71,9 @@ const SECTION_LABELS = Object.freeze({
   bookmarks: "Bookmarks",
   contact: "Contact"
 });
+
+/** Regex metacharacters, escaped before a token becomes a pattern. */
+const REGEX_SPECIALS = /[.*+?^${}()|[\]\\]/g;
 
 /**
  * Adds one entry to the index.
@@ -71,7 +95,8 @@ function addEntry(entries, entry) {
     description: asText(entry.description),
     keywords: asArray(entry.keywords).map(asText).filter(Boolean).join(" "),
     sectionId,
-    sectionLabel: SECTION_LABELS[sectionId] || sectionId
+    sectionLabel: SECTION_LABELS[sectionId] || sectionId,
+    order: entries.length
   });
 }
 
@@ -134,12 +159,16 @@ function buildIndex(data) {
   }
 
   for (const certificate of asArray(data.certificates?.certificates)) {
+    // issuer is an object in this dataset; asText(record.issuer) would be "".
+    const issuer =
+      certificate.issuer && typeof certificate.issuer === "object"
+        ? asText(certificate.issuer.name)
+        : asText(certificate.issuer);
+
     addEntry(entries, {
       id: certificate.id,
       title: certificate.title,
-      description: [asText(certificate.issuer), asText(certificate.description)]
-        .filter(Boolean)
-        .join(" \u2014 "),
+      description: [issuer, asText(certificate.description)].filter(Boolean).join(" \u2014 "),
       keywords: certificate.skills,
       sectionId: "certificates"
     });
@@ -160,7 +189,7 @@ function buildIndex(data) {
       id: activity.id,
       title: activity.title,
       description: activity.description,
-      keywords: [activity.topic, activity.categoryId],
+      keywords: [activity.topic, activity.categoryId, activity.keyLearnings],
       sectionId: "learning-journey"
     });
   }
@@ -206,6 +235,140 @@ function revealSection(sectionId) {
 }
 
 /**
+ * Builds a fragment with every literal match of the query wrapped in <mark>.
+ *
+ * The original string is sliced, never re-parsed as HTML. Tokens shorter than two
+ * characters are not highlighted: marking every "a" would turn the list into
+ * noise.
+ *
+ * @param {string} text
+ * @param {string} query
+ * @returns {Node}
+ */
+function highlight(text, query) {
+  const source = asText(text);
+
+  if (!source) {
+    return document.createDocumentFragment();
+  }
+
+  const tokens = asText(query)
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter((token) => token.length >= 2)
+    .map((token) => token.replace(REGEX_SPECIALS, "\\$&"));
+
+  if (tokens.length === 0) {
+    return document.createTextNode(source);
+  }
+
+  let pattern;
+
+  try {
+    pattern = new RegExp(`(${tokens.join("|")})`, "gi");
+  } catch {
+    return document.createTextNode(source);
+  }
+
+  const fragment = document.createDocumentFragment();
+  let cursor = 0;
+
+  for (const match of source.matchAll(pattern)) {
+    const index = match.index ?? 0;
+
+    if (index > cursor) {
+      fragment.append(document.createTextNode(source.slice(cursor, index)));
+    }
+
+    const mark = document.createElement("mark");
+    mark.className = "global-search__mark";
+    mark.textContent = match[0];
+    fragment.append(mark);
+    cursor = index + match[0].length;
+  }
+
+  if (cursor < source.length) {
+    fragment.append(document.createTextNode(source.slice(cursor)));
+  }
+
+  return fragment;
+}
+
+/**
+ * Scores one entry for the current query.
+ *
+ * Lower is better:
+ *   0 exact title, 1 title starts with the query, 2 title contains it,
+ *   3 description contains it, 4 only the keywords match.
+ *
+ * @param {Object} entry
+ * @param {string} query
+ * @returns {number}
+ */
+function scoreEntry(entry, query) {
+  const needle = asText(query).toLowerCase().trim();
+  const title = entry.title.toLowerCase();
+
+  if (title === needle) {
+    return 0;
+  }
+
+  if (title.startsWith(needle)) {
+    return 1;
+  }
+
+  if (title.includes(needle)) {
+    return 2;
+  }
+
+  if (entry.description.toLowerCase().includes(needle)) {
+    return 3;
+  }
+
+  return 4;
+}
+
+/**
+ * Reads the recent query list, tolerating a missing or corrupt value.
+ *
+ * @param {Object|undefined} storage
+ * @returns {string[]}
+ */
+function readRecent(storage) {
+  if (!storage?.getLocalData) {
+    return [];
+  }
+
+  return asArray(storage.getLocalData(STORAGE_KEYS.ui.recentSearches, []))
+    .map(asText)
+    .filter(Boolean)
+    .slice(0, MAX_RECENT);
+}
+
+/**
+ * Pushes one query into the recent list, newest first, de-duplicated.
+ *
+ * @param {Object|undefined} storage
+ * @param {string} query
+ */
+function pushRecent(storage, query) {
+  const value = asText(query);
+
+  if (!value || !storage?.saveLocalData) {
+    return;
+  }
+
+  const existing = readRecent(storage).filter(
+    (entry) => entry.toLowerCase() !== value.toLowerCase()
+  );
+
+  storage.saveLocalData(
+    STORAGE_KEYS.ui.recentSearches,
+    [value, ...existing].slice(0, MAX_RECENT)
+  );
+}
+
+/**
  * @param {Object|undefined} sectionData - Unused: this feature reads appContext.data.
  * @param {{data?: Object, storage?: Object, bus?: Object, toast?: Object}} [appContext]
  * @returns {void}
@@ -229,6 +392,12 @@ export function initializeGlobalSearch(sectionData, appContext) {
 
   const entries = buildIndex(appContext?.data);
   const storage = appContext?.storage;
+  const bus = appContext?.bus;
+
+  const sectionOptions = [...new Set(entries.map((entry) => entry.sectionId))].map((id) => ({
+    value: id,
+    label: SECTION_LABELS[id] || id
+  }));
 
   let lastQuery = "";
 
@@ -245,7 +414,6 @@ export function initializeGlobalSearch(sectionData, appContext) {
     onClick: () => openSearch()
   });
 
-  /** Builds the dialog content once per open; simple and cheap at this size. */
   /**
    * Opens the command palette and wires its input.
    *
@@ -255,30 +423,55 @@ export function initializeGlobalSearch(sectionData, appContext) {
    */
   function openSearch() {
     const content = el("div", { className: "global-search" });
-    const field = el("div", { className: "global-search__field" });
 
-    const inputId = "global-search-input";
+    const field = el("div", { className: "global-search__field" });
     field.append(
       el("label", {
         className: "visually-hidden",
         text: "Search the portfolio",
-        attrs: { for: inputId }
+        attrs: { for: "global-search-input" }
       })
     );
 
     const input = el("input", {
       className: "field__input global-search__input",
       attrs: {
-        id: inputId,
+        id: "global-search-input",
         type: "search",
         placeholder: "Search skills, projects, certificates\u2026",
         autocomplete: "off",
         spellcheck: "false",
+        role: "combobox",
+        "aria-expanded": "true",
+        "aria-controls": "global-search-results",
+        "aria-autocomplete": "list",
         "aria-describedby": "global-search-status"
       }
     });
 
-    field.append(input);
+    const sectionFilter = el("select", {
+      className: "field__input field__input--select global-search__section",
+      attrs: { id: "global-search-section", "aria-label": "Limit to one section" }
+    });
+    sectionFilter.append(el("option", { text: "Everywhere", attrs: { value: "all" } }));
+
+    for (const option of sectionOptions) {
+      sectionFilter.append(el("option", { text: option.label, attrs: { value: option.value } }));
+    }
+
+    // Relevance is the default; alphabetical is the one alternative the spec
+    // offers that does not need reliable dates (which these records do not all
+    // have). Sorting by section is what the grouping already does.
+    const sortSelect = el("select", {
+      className: "field__input field__input--select global-search__sort",
+      attrs: { id: "global-search-sort", "aria-label": "Sort results" }
+    });
+    sortSelect.append(
+      el("option", { text: "Relevance", attrs: { value: "relevance" } }),
+      el("option", { text: "A\u2013Z", attrs: { value: "alpha" } })
+    );
+
+    field.append(input, sectionFilter, sortSelect);
     content.append(field);
 
     const status = el("p", {
@@ -286,7 +479,11 @@ export function initializeGlobalSearch(sectionData, appContext) {
       attrs: { id: "global-search-status", role: "status", "aria-live": "polite" }
     });
 
-    const list = el("ul", { className: "global-search__results" });
+    const list = el("ul", {
+      className: "global-search__results",
+      attrs: { id: "global-search-results", role: "listbox", "aria-label": "Search results" }
+    });
+
     content.append(status, list);
 
     const dialog = openModal({
@@ -295,9 +492,8 @@ export function initializeGlobalSearch(sectionData, appContext) {
       size: "lg",
       initialFocus: input,
       onClose: () => {
-        if (storage?.saveLocalData && lastQuery) {
-          storage.saveLocalData(STORAGE_KEYS.ui.lastSearchQuery, lastQuery);
-        }
+        pushRecent(storage, lastQuery);
+        storage?.saveLocalData?.(STORAGE_KEYS.ui.lastSearchQuery, lastQuery);
       }
     });
 
@@ -305,20 +501,185 @@ export function initializeGlobalSearch(sectionData, appContext) {
       return;
     }
 
+    /** @type {Array<{element: HTMLElement, entry: Object|null}>} */
+    let options = [];
+    let activeIndex = -1;
+    let search = "";
+
+    /** Marks one option active and scrolls it into view. */
+    function setActive(index) {
+      if (options.length === 0) {
+        activeIndex = -1;
+        input.removeAttribute("aria-activedescendant");
+        return;
+      }
+
+      activeIndex = (index + options.length) % options.length;
+
+      options.forEach((option, position) => {
+        const isActive = position === activeIndex;
+        option.element.classList.toggle("is-active", isActive);
+        option.element.setAttribute("aria-selected", String(isActive));
+      });
+
+      const active = options[activeIndex]?.element;
+
+      if (active) {
+        input.setAttribute("aria-activedescendant", active.id);
+        active.scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    /** Selects the active option, or the first one when nothing is active. */
+    function choose(index = activeIndex) {
+      const option = options[index >= 0 ? index : 0];
+
+      if (!option?.entry) {
+        return;
+      }
+
+      const entry = option.entry;
+      pushRecent(storage, search);
+      storage?.saveLocalData?.(STORAGE_KEYS.ui.lastSearchQuery, search);
+      closeModal(undefined, "navigation");
+      revealSection(entry.sectionId);
+    }
+
+    /**
+     * Adds one option row.
+     *
+     * A row is an <li role="option">, not a button: the input keeps focus and
+     * aria-activedescendant names the row, which is what makes ArrowDown work
+     * without a second tab stop per result.
+     */
+    function addOption(entry, index, query) {
+      const item = el("li", {
+        className: "global-search__item",
+        attrs: {
+          id: `global-search-option-${index}`,
+          role: "option",
+          "aria-selected": "false"
+        }
+      });
+
+      const title = el("span", { className: "global-search__result-title" });
+      title.append(highlight(entry.title, query));
+      item.append(title);
+
+      if (entry.description) {
+        const description = el("span", { className: "global-search__result-text" });
+        description.append(highlight(entry.description, query));
+        item.append(description);
+      }
+
+      item.append(
+        el("span", { className: "global-search__result-where", text: entry.sectionLabel })
+      );
+
+      item.addEventListener("click", () => {
+        choose(options.findIndex((option) => option.element === item));
+      });
+
+      list.append(item);
+      options.push({ element: item, entry });
+      return item;
+    }
+
+    /** Adds a non-selectable label row (group heading or "recent" label). */
+    function addHeading(text, className) {
+      const item = el("li", {
+        className: `global-search__heading ${className || ""}`.trim(),
+        attrs: { role: "presentation", "aria-hidden": "true" },
+        text
+      });
+
+      list.append(item);
+    }
+
+    /**
+     * Draws the empty-query state: recent searches and a short popular list.
+     *
+     * Suggestions are real entries, so clicking one navigates exactly like a
+     * search result. A recent query, by contrast, fills the input: the visitor
+     * may want to refine it rather than jump.
+     */
+    function renderSuggestions() {
+      list.replaceChildren();
+      options = [];
+      activeIndex = -1;
+      input.removeAttribute("aria-activedescendant");
+
+      const recent = readRecent(storage);
+
+      if (recent.length > 0) {
+        addHeading("Recent searches", "global-search__heading--recent");
+
+        for (const query of recent) {
+          const item = el("li", { className: "global-search__recent" });
+          const button = el("button", {
+            className: "global-search__recent-button",
+            text: query,
+            attrs: { type: "button" }
+          });
+          button.addEventListener("click", () => {
+            input.value = query;
+            search = query;
+            lastQuery = query;
+            renderResults(query);
+            input.focus();
+          });
+          item.append(button);
+          list.append(item);
+        }
+
+        const clear = el("button", {
+          className: "global-search__clear-recent",
+          text: "Clear recent searches",
+          attrs: { type: "button" }
+        });
+        clear.addEventListener("click", () => {
+          storage?.saveLocalData?.(STORAGE_KEYS.ui.recentSearches, []);
+          renderSuggestions();
+        });
+        list.append(el("li", { className: "global-search__recent" , children: [clear] }));
+      }
+
+      const popular = entries
+        .filter((entry) => entry.sectionId === "projects" || entry.sectionId === "skills")
+        .slice(0, MAX_SUGGESTIONS);
+
+      if (popular.length > 0) {
+        addHeading("Popular", "global-search__heading--popular");
+        popular.forEach((entry, index) => addOption(entry, index, ""));
+      }
+
+      status.textContent = entries.length
+        ? `${entries.length} items across the page. Start typing, or pick a suggestion.`
+        : "No data is loaded, so there is nothing to search.";
+
+      if (options.length > 0) {
+        setActive(0);
+      }
+    }
+
     /**
      * Renders matches for one query.
      *
-     * Matching is delegated to search-engine.matchesQuery over title, description
-     * and keywords. Results keep dataset order and are capped, rather than being
-     * re-ranked by a second algorithm that would disagree with section filters.
+     * Matching is delegated to search-engine.matchesQuery; only the ordering and
+     * the grouping are decided here. A section filter narrows the same match set
+     * rather than running a second query.
      */
-    function renderResults(query) {
+    function renderResults(rawQuery) {
       list.replaceChildren();
+      options = [];
+      activeIndex = -1;
+      input.removeAttribute("aria-activedescendant");
+
+      const query = asText(rawQuery);
+      const section = sectionFilter.value;
 
       if (!query.trim()) {
-        status.textContent = entries.length
-          ? `${entries.length} items across the page. Start typing to filter.`
-          : "No data is loaded, so there is nothing to search.";
+        renderSuggestions();
         return;
       }
 
@@ -326,63 +687,101 @@ export function initializeGlobalSearch(sectionData, appContext) {
         .filter((entry) =>
           matchesQuery(entry, query, { fields: ["title", "description", "keywords"] })
         )
-        .slice(0, MAX_RESULTS);
+        .filter((entry) => section === "all" || entry.sectionId === section)
+        .map((entry) => ({ entry, score: scoreEntry(entry, query) }))
+        .sort((a, b) => a.score - b.score || a.entry.order - b.entry.order)
+        .slice(0, MAX_RESULTS)
+        .map((scored) => scored.entry);
+
+      // Alphabetical is applied after the relevance cut, so the cap still keeps
+      // the best matches instead of the first 40 titles in the alphabet.
+      if (sortSelect.value === "alpha") {
+        matches.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }));
+      }
 
       status.textContent =
-        matches.length === 1 ? "1 result" : `${matches.length} results`;
+        matches.length === 0
+          ? `No match for \u201c${query.trim()}\u201d.`
+          : matches.length === 1
+            ? "1 result"
+            : `${matches.length} results`;
 
       if (matches.length === 0) {
         list.append(
           el("li", {
             className: "global-search__empty",
-            text: `No match for \u201c${query.trim()}\u201d. Try a skill, a technology or a project name.`
+            text: "Try a skill, a technology, a project name or a section."
           })
         );
         return;
       }
 
-      for (const match of matches) {
-        const item = el("li", { className: "global-search__item" });
-        const button = el("button", {
-          className: "global-search__result",
-          attrs: { type: "button" }
-        });
+      // Grouping keeps the page's structure visible. A group heading is not an
+      // option, so it is skipped by the arrow keys.
+      let currentSection = "";
+      let index = 0;
 
-        button.append(el("span", { className: "global-search__result-title", text: match.title }));
-
-        if (match.description) {
-          button.append(
-            el("span", { className: "global-search__result-text", text: match.description })
-          );
+      for (const entry of matches) {
+        if (entry.sectionId !== currentSection) {
+          currentSection = entry.sectionId;
+          addHeading(entry.sectionLabel, "global-search__heading--group");
         }
 
-        button.append(
-          el("span", { className: "global-search__result-where", text: match.sectionLabel })
-        );
-
-        button.addEventListener("click", () => {
-          closeModal(undefined, "navigation");
-          revealSection(match.sectionId);
-        });
-
-        item.append(button);
-        list.append(item);
+        addOption(entry, index, query);
+        index += 1;
       }
+
+      setActive(0);
     }
 
     input.addEventListener("input", () => {
-      lastQuery = input.value;
-      renderResults(input.value);
+      search = input.value;
+      lastQuery = search;
+      renderResults(search);
     });
 
-    // Ctrl/Cmd+K while the dialog is open is a no-op, not a second dialog.
+    sectionFilter.addEventListener("change", () => {
+      renderResults(input.value);
+      input.focus();
+    });
+
+    sortSelect.addEventListener("change", () => {
+      renderResults(input.value);
+      input.focus();
+    });
+
     input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        list.querySelector("button")?.click();
+      switch (event.key) {
+        case "ArrowDown":
+          event.preventDefault();
+          setActive(activeIndex + 1);
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          setActive(activeIndex - 1);
+          break;
+        case "Home":
+          if (options.length > 0) {
+            event.preventDefault();
+            setActive(0);
+          }
+          break;
+        case "End":
+          if (options.length > 0) {
+            event.preventDefault();
+            setActive(options.length - 1);
+          }
+          break;
+        case "Enter":
+          event.preventDefault();
+          choose();
+          break;
+        default:
+          break;
       }
     });
 
+    search = lastQuery;
     input.value = lastQuery;
     renderResults(lastQuery);
     input.select();
@@ -412,8 +811,14 @@ export function initializeGlobalSearch(sectionData, appContext) {
 
   document.addEventListener("keydown", onKeydown);
 
+  // The header renders a Search button; it asks through the bus instead of
+  // importing this module, so the feature stays the only owner of its dialog and
+  // a disabled feature simply leaves no listener behind.
+  const offOpenRequest = bus?.on?.("ui:open-search", () => openSearch());
+
   teardownPrevious = () => {
     document.removeEventListener("keydown", onKeydown);
+    offOpenRequest?.();
     tool.remove();
   };
 }

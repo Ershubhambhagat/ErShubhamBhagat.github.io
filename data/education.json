@@ -26,16 +26,16 @@
     "title": "Education",
     "subtitle": "Academic background. The first record is the published degree; the second shows every optional field filled with sample data.",
     "layout": "timeline",
-    "showSearch": false,
+    "showSearch": true,
     "showFilters": false,
-    "showSort": false,
+    "showSort": true,
     "showInstitutionLogo": true,
     "showFieldOfStudy": true,
     "showGrade": false,
     "showAchievements": true,
     "defaultSort": "newest",
     "itemsPerPage": 6,
-    "showLoadMore": false
+    "showLoadMore": true
   },
   "education": [
     {

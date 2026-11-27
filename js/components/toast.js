@@ -411,6 +411,14 @@ export function initializeToastManager(options = {}) {
     element.className = `toast toast--${config.type}`;
     element.setAttribute("data-toast-id", id);
 
+    // An error is the one tone that must interrupt: role=alert makes the
+    // notification assertive even though #toast-root stays polite for the other
+    // three tones. Without it an error was announced as quietly as a success,
+    // while the app.js fallback renderer used alert (quality audit A2).
+    if (config.type === "error") {
+      element.setAttribute("role", "alert");
+    }
+
     const icon = document.createElement("span");
     icon.className = "toast__icon";
     icon.setAttribute("aria-hidden", "true");
@@ -610,10 +618,15 @@ export function initializeToastManager(options = {}) {
       id
     );
 
+    // `element` is part of the record because the dismissal timer has to check
+    // whether focus is inside the toast before removing it (schedule()), and
+    // dismiss() looks the element up to remove it from the root. Omitting it made
+    // every timer-driven dismissal throw instead of closing the notification.
     const record = {
       id,
       type,
       signature,
+      element,
       duration,
       remaining: duration,
       endsAt: 0,

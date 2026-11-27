@@ -1,8 +1,9 @@
 /* ==========================================================================
    CERTIFICATES SECTION - css/sections/certificates.css
 
-   A filtered grid of shared cards. The section stylesheet only owns the filter
-   row and the grid's top spacing; the card face is components/cards.css.
+   A filtered grid of shared cards. The section stylesheet owns the filter row,
+   the grid's top spacing, the record status chip and the dialog's footer
+   navigation; the card face is components/cards.css.
    ========================================================================== */
 
 /* ---- Toolbar ---- */
@@ -24,4 +25,69 @@
 /* A single-select filter does not need the full content width. */
 .certificates-toolbar .filter {
   max-inline-size: 20rem;
+}
+
+/* ---- Certificate media ---- */
+.certificate-preview {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  margin-block-start: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+.details-panel__meta {
+  margin-block: var(--spacing-xs);
+}
+
+.details-panel__document {
+  display: inline-block;
+  margin-block-start: var(--spacing-xs);
+}
+
+/* ---- Record status ----
+   The record's own status sits beside the expiry badge without being confused
+   with it: this chip is a quiet line of text with a state dot, not a second
+   badge. The label is always written out, so colour is never the only channel. */
+.certificate-status {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: var(--spacing-sm) 0 0;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.certificate-status__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.certificate-status__value::before {
+  content: "";
+  inline-size: 0.4375rem;
+  block-size: 0.4375rem;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+}
+
+/* ---- Dialog footer navigation ----
+   Previous/Next keep their own row above the actions so the two kinds of control
+   stay distinguishable, and the pair stays reachable on a narrow dialog. */
+.details-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.certificate-nav {
+  display: inline-flex;
+  gap: var(--spacing-xs);
+  margin-inline-end: auto;
 }

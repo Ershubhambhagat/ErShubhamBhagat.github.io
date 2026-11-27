@@ -27,3 +27,15 @@
 .timeline-panel__filters {
   max-inline-size: 24rem;
 }
+
+/* ---- Year groups ---- */
+.timeline-panel__year {
+  margin-block: var(--spacing-lg) var(--spacing-sm);
+  padding-block-end: var(--spacing-xs);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-block-end: 1px solid var(--color-border);
+}

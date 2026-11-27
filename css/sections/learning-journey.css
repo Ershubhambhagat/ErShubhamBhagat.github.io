@@ -88,3 +88,28 @@
 .journey-toolbar .filter {
   max-inline-size: 20rem;
 }
+
+/* ---- Key learnings preview ----
+   Sits under the card body; the arrow-free bullet list keeps it visually part of
+   the card rather than a second card. */
+.journey-card__learnings {
+  display: grid;
+  gap: 0.25rem;
+  margin-block-start: var(--spacing-sm);
+  padding-inline-start: 1.1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.journey-card__more {
+  color: var(--color-text-muted);
+  font-style: italic;
+  list-style: none;
+  margin-inline-start: -1.1rem;
+}
+
+/* The progress bar in the card footer needs the same breathing room the body
+   had before it existed. */
+.card__footer .progress {
+  inline-size: 100%;
+}

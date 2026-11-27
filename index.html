@@ -59,13 +59,42 @@
     <link rel="canonical" href="https://ershubhambhagat.github.io/">
 
     <!--
-      Favicon is a single hand-authored SVG (assets/images/favicon.svg) linked
+      STATIC OPEN GRAPH AND TWITTER TAGS
+
+      js/features/seo.js writes richer values from data/profile.json once the
+      page runs, but link unfurlers (Slack, WhatsApp, X, Discord, Facebook) do not
+      execute JavaScript - they read this markup only. Without these tags a shared
+      link had no preview at all. The values mirror the shell's title and
+      description; the runtime module overwrites them with the dataset's truth.
+
+      No og:image is declared: the profile has no approved portrait, and a tag
+      pointing at a missing file produces a worse preview than none.
+    -->
+    <meta property="og:type" content="profile">
+    <meta property="og:site_name" content="Er Shubham Bhagat">
+    <meta property="og:title" content="Er Shubham Bhagat &middot; Portfolio">
+    <meta property="og:description" content="Personal portfolio of Er Shubham Bhagat - designer and developer from Bihar, India. Profile, skills, projects, certificates, learning journey and contact.">
+    <meta property="og:url" content="https://ershubhambhagat.github.io/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Er Shubham Bhagat &middot; Portfolio">
+    <meta name="twitter:description" content="Personal portfolio of Er Shubham Bhagat - designer and developer from Bihar, India. Profile, skills, projects, certificates, learning journey and contact.">
+
+    <!--
+      Favicon is a single hand-authored SVG (favicon.svg at the repository root) linked
       inline in the head, so no extra HTTP request is needed for a PNG set and
       the mark stays sharp at every size. Browsers without SVG favicon support
       fall back to their default icon - harmless, and the mark is not needed to
       use the page.
     -->
-    <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <!--
+      Web app manifest. It makes the page installable and gives mobile browsers a
+      name, colours and an icon for the home screen. The icon is the same SVG the
+      favicon uses; no PNG set is declared because none is drawn yet, and a
+      manifest that points at a missing file is worse than one with a single
+      honest icon.
+    -->
+    <link rel="manifest" href="./site.webmanifest">
 
     <!--
       STYLESHEET LOAD ORDER - do not shuffle, later layers depend on earlier ones.
@@ -309,12 +338,14 @@
   polite so a modal that replaces the page focus announces itself without
   interrupting whatever a screen reader is currently reading.
 
-  #toast-root is assertive-by-composition: polite plus aria-atomic so the whole
-  message is read once, rather than each span being announced separately.
-  js/components/toast.js degrades gracefully if this element is missing, but it
-  is present here, so toasts never fall back to an alert().
+  #toast-root is polite and atomic so the whole message is read once. An error
+  toast additionally carries role="alert" (js/components/toast.js), which is the
+  only way a polite container can interrupt. #modal-root is deliberately NOT a
+  live region: a native <dialog> with aria-modal plus a focus move already
+  announces itself, and a live region there queued the dialog's entire text on
+  top of that announcement (quality audit A1).
 -->
-<div id="modal-root" aria-live="polite"></div>
+<div id="modal-root"></div>
 <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
 
 <!--

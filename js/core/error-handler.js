@@ -20,9 +20,10 @@
  * innerHTML in this module, not even for fixed strings, so a future change
  * cannot accidentally interpolate a value into markup.
  *
- * Styling for .error-panel lives in css/main.css (placeholder until the global
- * CSS phase fills it). The panel stays readable without those rules because it
- * is plain text plus default button styling.
+ * Styling: .error-panel has no dedicated stylesheet rule in this build. The panel
+ * is plain text, a <details> block and a default button, so it stays readable
+ * without one; if a future stylesheet adds .error-panel rules it must keep the
+ * same contrast and must not hide the details element.
  */
 
 /** Marks the panel so a second failure replaces the first instead of stacking. */

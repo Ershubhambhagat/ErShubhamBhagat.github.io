@@ -13,10 +13,19 @@
  *
  * No date is synthesised: events without a usable date are dropped, because an
  * undated entry on a dated rail reads as a bug.
+ *
+ * Selection: search, type, featured-only, sorting and paging run through
+ * js/core/collection-view.js. The resolved records become thin view models so the
+ * shared pipeline never needs to understand the reference graph.
+ *
+ * Click-through: each event links to the section that owns the record. The
+ * link is a plain in-page anchor, so the browser, the sticky-header offset and
+ * the Back button all keep working; the projects section additionally opens the
+ * exact card because it understands its own id deep links.
  */
 
 import { createTimelineItem } from "../components/timeline-item.js";
-import { initializeFilter } from "../components/filter.js";
+import { createCollectionView } from "../core/collection-view.js";
 import {
   asArray,
   asText,
@@ -43,30 +52,39 @@ const RESOLVERS = Object.freeze({
   experience: {
     dataset: "experience",
     collection: "experiences",
+    sectionId: "experience",
     title: (record) => asText(record.role),
     text: (record) => asText(record.shortDescription) || asText(record.description)
   },
   project: {
     dataset: "projects",
     collection: "projects",
+    sectionId: "projects",
     title: (record) => asText(record.title),
     text: (record) => asText(record.shortDescription) || asText(record.description)
   },
   certificate: {
     dataset: "certificates",
     collection: "certificates",
+    sectionId: "certificates",
     title: (record) => asText(record.title),
-    text: (record) => asText(record.issuer)
+    // issuer is an object in this dataset; asText(record.issuer) would be "".
+    text: (record) =>
+      (record.issuer && typeof record.issuer === "object"
+        ? asText(record.issuer.name)
+        : asText(record.issuer))
   },
   education: {
     dataset: "education",
     collection: "education",
+    sectionId: "education",
     title: (record) => asText(record.qualification),
     text: (record) => asText(record.fieldOfStudy)
   },
   learning: {
     dataset: "learningJourney",
     collection: "learningActivities",
+    sectionId: "learning-journey",
     title: (record) => asText(record.title),
     text: (record) => asText(record.description)
   }
@@ -157,7 +175,9 @@ export function initializeCareerTimeline(sectionData, appContext) {
       continue;
     }
 
-    if (!parseDate(event.date)) {
+    const parsed = parseDate(event.date);
+
+    if (!parsed) {
       unresolved.push(`${asText(event.id) || "(no id)"} has no usable date`);
       continue;
     }
@@ -173,7 +193,7 @@ export function initializeCareerTimeline(sectionData, appContext) {
       continue;
     }
 
-    renderable.push({ event, record, resolver, type, title });
+    renderable.push({ event, record, resolver, type, title, time: parsed.time });
   }
 
   if (unresolved.length > 0) {
@@ -191,84 +211,146 @@ export function initializeCareerTimeline(sectionData, appContext) {
     return;
   }
 
-  const list = el("div", { className: "timeline-panel" });
-  const timelineMount = el("div", { className: "timeline-panel__mount" });
-  list.append(timelineMount);
+  // Thin view models: the shared pipeline filters and sorts these, while the
+  // original event and record stay available to the renderer.
+  const models = renderable.map((entry) => ({
+    id: asText(entry.event.id) || asText(entry.record.id),
+    recordId: asText(entry.record.id),
+    title: entry.title,
+    text: entry.resolver.text(entry.record),
+    type: entry.type,
+    typeLabel: typeLabels.get(entry.type) || entry.type,
+    sectionId: entry.resolver.sectionId,
+    date: asText(entry.event.date),
+    endDate: asText(entry.event.endDate),
+    time: entry.time,
+    featured: entry.event.featured === true || entry.record.featured === true,
+    // A string key, because the shared filter engine compares values and has no
+    // concept of booleans. "featured"/"other" keeps the select honest without
+    // teaching the engine a second matching rule.
+    highlight: entry.event.featured === true || entry.record.featured === true ? "featured" : "other",
+    details: asArray(entry.record.details).map(asText).filter(Boolean)
+  }));
 
-  /**
-   * Draws the events matching a type ("" means all), newest first.
-   *
-   * References were resolved once during initialization, so this only filters and
-   * orders. parseDate is reused for the comparison because events may use year or
-   * year-month precision; a plain string sort would rank "2024" after "2024-01".
-   */
-  function render(selectedType) {
-    timelineMount.replaceChildren();
+  const populatedTypes = [...new Set(models.map((model) => model.type))];
 
-    const visible = renderable
-      .filter((entry) => !selectedType || entry.type === selectedType)
-      .sort((a, b) => (parseDate(b.event.date)?.time ?? 0) - (parseDate(a.event.date)?.time ?? 0));
-
-    const items = visible.map((entry) => {
-      const typeLabel = typeLabels.get(entry.type) || entry.type;
-      const text = entry.resolver.text(entry.record);
-
-      return createTimelineItem({
-        id: asText(entry.event.id) || asText(entry.record.id),
-        title: entry.title,
-        eventType: entry.type === "learning" ? "learning" : entry.type,
-        dateLabel: formatDateRange(entry.event.date, entry.event.endDate, false),
-        description: text ? [text] : [],
-        details: asArray(entry.record.details).map(asText).filter(Boolean),
-        badges: [typeLabel].filter(Boolean),
-        featured: entry.event.featured === true || entry.record.featured === true
-      });
-    }).filter(Boolean);
-
-    const timeline = createTimeline(items, { label: "Career timeline" });
-
-    if (timeline) {
-      timelineMount.append(timeline);
-    } else {
-      renderEmpty(timelineMount, {
-        title: "No events of this type",
-        message: "Choose another type or clear the filter."
-      });
-    }
-  }
-
-  const populatedTypes = [...new Set(renderable.map((entry) => entry.type))];
-
-  if (config.showFilters !== false && populatedTypes.length > 1) {
-    const filterMount = el("div", { className: "timeline-panel__filters" });
-    list.prepend(filterMount);
-
-    const controller = initializeFilter(filterMount, {
-      heading: "",
-      config: {
-        groups: [
-          {
-            id: "type",
-            label: "Event type",
-            type: "select",
-            allLabel: "Everything",
-            options: populatedTypes.map((type) => ({
-              value: type,
-              label: typeLabels.get(type) || type
-            }))
+  const view = createCollectionView({
+    mount: section.body,
+    records: models,
+    idPrefix: "timeline",
+    search:
+      config.showSearch === true
+        ? {
+            label: "Search the timeline",
+            placeholder: "Title, type or description",
+            fields: ["title", "text", "typeLabel"]
           }
-        ]
+        : null,
+    filters: [
+      {
+        id: "type",
+        label: "Event type",
+        key: "type",
+        allLabel: "Everything",
+        options: populatedTypes.map((type) => ({
+          value: type,
+          label: typeLabels.get(type) || type
+        }))
       },
-      layout: "horizontal",
-      onChange(state) {
-        render(asText(state.type));
+      ...(config.showFeaturedOnlyOption === true
+        ? [
+            {
+              id: "featured",
+              label: "Highlight",
+              key: "highlight",
+              allLabel: "All events",
+              options: [
+                { value: "featured", label: "Featured only" },
+                { value: "other", label: "Not featured" }
+              ]
+            }
+          ]
+        : [])
+    ],
+    sort: {
+      label: "Sort by",
+      initial: asText(config.defaultSort) === "oldest" ? "oldest" : "newest",
+      options: [
+        { value: "newest", label: "Newest first" },
+        { value: "oldest", label: "Oldest first" }
+      ],
+      getDate: (model) => model.date
+    },
+    pageSize: config.showLoadMore === true && Number.isFinite(config.itemsPerPage)
+      ? Number(config.itemsPerPage)
+      : 0,
+    countLabel: (total) => (total === 1 ? "1 event" : `${total} events`),
+    empty: {
+      title: "No events match",
+      message: "Clear the search or choose another type."
+    },
+    listClassName: "timeline-panel",
+    renderList(visible) {
+      const container = el("div", { className: "timeline-panel__body" });
+
+      const shown = visible;
+      const useYears = config.showYearGroups !== false;
+      const groups = new Map();
+
+      for (const model of shown) {
+        const key = useYears ? String(parseDate(model.date)?.year ?? "Undated") : "all";
+        if (!groups.has(key)) {
+          groups.set(key, []);
+        }
+        groups.get(key).push(model);
       }
-    });
 
-    teardownPrevious = () => controller.destroy();
-  }
+      for (const [year, entries] of groups) {
+        if (useYears) {
+          container.append(el("h3", { className: "timeline-panel__year", text: year }));
+        }
 
-  render("");
-  section.body.append(list);
+        const items = entries
+          .map((model) => {
+            const target = `#${model.sectionId}`;
+            return createTimelineItem(
+              {
+                id: model.id,
+                title: model.title,
+                eventType: ["experience", "project", "certificate", "education", "learning"].includes(model.type)
+                  ? model.type
+                  : "milestone",
+                dateLabel: formatDateRange(model.date, model.endDate, false),
+                description: model.text ? [model.text] : [],
+                details: model.details,
+                badges: [model.typeLabel].filter(Boolean),
+                featured: model.featured,
+                actions: [{ id: "source", label: "View record", href: target }]
+              },
+              { idPrefix: `timeline-${model.id}` }
+            );
+          })
+          .filter(Boolean);
+
+        const timeline = createTimeline(items, { label: useYears ? `Events in ${year}` : "Career timeline" });
+
+        if (timeline) {
+          container.append(timeline);
+        }
+      }
+
+      if (shown.length === 0) {
+        renderEmpty(container, {
+          title: "No events of this type",
+          message: "Choose another type or clear the filter."
+        });
+      }
+
+      return container;
+    }
+  });
+
   renderSampleNotice(section.body, referencedSamples);
+
+  teardownPrevious = () => view.destroy();
 }

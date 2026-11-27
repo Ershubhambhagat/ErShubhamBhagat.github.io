@@ -14,6 +14,9 @@
     "// email: plain address; rendered as a mailto link and in the footer.",
     "// availability: { enabled, label }. enabled false hides the status pill.",
     "// resume: { enabled, file, label }. Point file at a real PDF before enabling.",
+    "// contactForm: { enabled, mode: 'direct-link' | 'external-provider', provider: { name, endpoint } }.",
+    "// In external-provider mode the endpoint must be an owner-configured HTTPS URL; otherwise the form",
+    "// reports itself unavailable instead of posting to a guess. Never put an API key in that URL.",
     "// primaryActions: buttons that jump to a section; target must be a section id.",
     "// socialLinks: { id, platform, url, icon, enabled }. Only http(s) URLs are rendered.",
     "// highlights: extra { label, value } rows in the at-a-glance card.",
@@ -36,11 +39,21 @@
       "label": "Part time available"
     },
     "resume": {
-      "enabled": false,
-      "file": "",
+      "enabled": true,
+      "file": "./resume/Er-Shubham-Resume.pdf",
       "label": "Download resume"
     },
-    "primaryActions": [
+    "contactForm": {
+      "enabled": true,
+      "mode": "direct-link",
+      "provider": null,
+      "messages": {
+        "submitLabel": "Open email draft",
+        "success": "Your message was submitted successfully.",
+        "error": "Unable to submit your message. Please try again.",
+        "unavailable": "The contact form is currently unavailable."
+      }
+    },    "primaryActions": [
       {
         "id": "action-projects",
         "label": "View projects",

@@ -166,12 +166,11 @@ async function runInitializer(entry, sectionData, appContext) {
 /**
  * Creates the toast service used by every section through appContext.toast.
  *
- * The shared component (js/components/toast.js) owns this UI, but it is a
- * placeholder in this build: its factory exists and returns nothing. That is not
- * an error - the resolver falls back to a minimal renderer over #toast-root, in
- * the same shape the component specification documents. When the component
- * starts returning a service (initializeToastManager() or initializeToast()),
- * it is used automatically and the fallback stops being reached.
+ * The shared component (js/components/toast.js) is fully implemented and returns
+ * a service with show/success/error/warning/info. The fallback below stays as a
+ * partial-deploy guard: if the module is missing or its factory returns nothing
+ * usable, the page still gets a working, accessible toast instead of a button
+ * that silently does nothing.
  *
  * @returns {Promise<Object>} Service with show/success/error/warning/info/dismiss/
  *   dismissAll/destroy, matching Prompt/components/TOAST_COMPONENT.md.
@@ -180,11 +179,10 @@ async function createToastService() {
   try {
     const module = await import("./components/toast.js");
 
-    // The specification names the factory initializeToastManager(); the
-    // placeholder module currently in the tree exports initializeToast(). Both
-    // are accepted, and neither is trusted blindly: the returned value must
-    // look like a toast service, otherwise this falls through to the fallback.
-    // A placeholder that returns undefined therefore costs nothing.
+    // The specification names the factory initializeToastManager(); the module
+    // in this tree exports initializeToast(). Both names are accepted so a spec
+    // rename cannot break the page, and neither is trusted blindly: the returned
+    // value must look like a toast service or the fallback is used.
     const factory = module.initializeToastManager ?? module.initializeToast;
 
     if (typeof factory === "function") {

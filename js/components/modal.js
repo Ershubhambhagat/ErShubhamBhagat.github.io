@@ -19,10 +19,10 @@
  *    there can be reported honestly instead of inside a dialog that is gone.
  *
  * Why the buttons are plain <button class="btn ..."> and not js/components/button.js:
- * that module is still a placeholder in this build, and a dialog must be usable
- * before it lands. The class contract (btn, btn--primary, btn--secondary,
- * btn--danger, btn--icon) is the one css/components/buttons.css owns, so the
- * visual layer stays in one place once that stylesheet is filled in.
+ * a modal must not depend on another component module loading, and a failed
+ * button import would otherwise take the dialog down with it. The class contract
+ * (btn, btn--primary, btn--secondary, btn--danger, btn--icon) is the one
+ * css/components/buttons.css owns, so the visual layer stays in one place.
  */
 
 import { closeModal, initializeModalManager, openModal } from "../core/modal-manager.js";
@@ -132,7 +132,11 @@ export function createModalButton({
   button.type = "button";
 
   const safeVariant = ["primary", "secondary", "ghost"].includes(variant) ? variant : "secondary";
-  button.className = `btn btn--${destructive ? "danger" : safeVariant}`;
+  // "destructive" is the variant BUTTON_COMPONENT.md defines and
+  // css/components/buttons.css implements. This used to emit "danger", a class
+  // with no rule anywhere, so every destructive confirm rendered as a neutral
+  // button (component audit).
+  button.className = `btn btn--${destructive ? "destructive" : safeVariant}`;
 
   const text = toText(label);
   if (!text) {

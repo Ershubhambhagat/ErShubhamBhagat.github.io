@@ -15,9 +15,10 @@
  *    js/core/search-engine.js (matchesQuery/normalizeText) and in each section's
  *    own logic. This module never decides whether a query matched anything, and
  *    it never invents a result count for the status line;
- *  - suggestions/autocomplete. A suggestion listbox needs the ARIA combobox
- *    pattern and a real data source, so it is deliberately not faked here
- *    (Prompt/components/SEARCH_COMPONENT.md § 12, § 14);
+ *  - the suggestion data. The consumer supplies `getSuggestions(query)`, and this
+ *    module owns the listbox, the combobox ARIA state, the keyboard model and the
+ *    empty state (Prompt/components/SEARCH_COMPONENT.md § 12, § 14). Without
+ *    `getSuggestions` no combobox role is added, so a plain field stays plain;
  *  - query persistence. Nothing is written to storage (§ 24); Global Search owns
  *    its own recent-query history under its own specification.
  *
@@ -156,6 +157,17 @@ function resolveContainer(container) {
  *   form submission.
  * @param {(value: string) => void} [options.onClear]
  * @param {() => void} [options.onEscape]
+ * @param {(query: string, detail: Object) => Array<string|{label: string, value?: string}>} [options.getSuggestions]
+ *   Consumer-owned suggestion source. Called on every keystroke; returning an
+ *   empty array closes the list. This is the only way suggestions appear.
+ * @param {(suggestion: {label: string, value: string}, detail: Object) => void} [options.onSuggestionSelect]
+ * @param {string} [options.suggestionsLabel="Suggestions"] - Group label above
+ *   the list; it is part of the listbox's accessible name.
+ * @param {number} [options.maxSuggestions=8]
+ * @param {number} [options.minSuggestionLength=1]
+ * @param {boolean} [options.suggestOnEmpty=false]
+ * @param {string} [options.emptySuggestionText] - Optional quiet message when the
+ *   source returns nothing for a real query.
  * @returns {Object|null} Controller, or null when the container is missing.
  */
 export function initializeSearch(container, options = {}) {
@@ -322,6 +334,251 @@ export function initializeSearch(container, options = {}) {
   let loadingElement = null;
   let statusElement = null;
 
+  // ---------------------------------------------------------------------------
+  // 5b. Suggestions / autocomplete
+  // ---------------------------------------------------------------------------
+  const suggestionSource =
+    typeof options.getSuggestions === "function" ? options.getSuggestions : null;
+  const maxSuggestions =
+    Number.isInteger(options.maxSuggestions) && options.maxSuggestions > 0
+      ? options.maxSuggestions
+      : 8;
+  const minSuggestionLength =
+    Number.isInteger(options.minSuggestionLength) && options.minSuggestionLength > 0
+      ? options.minSuggestionLength
+      : 1;
+
+  /** Root of the listbox, built only when the consumer supplies a source. */
+  let suggestionsElement = null;
+  let suggestionsList = null;
+  let suggestionsEmpty = null;
+  let suggestionItems = [];
+  let activeSuggestion = -1;
+  let suggestionsAttributesAdded = false;
+
+  /**
+   * Normalises one consumer suggestion.
+   *
+   * @param {unknown} entry
+   * @returns {{label: string, value: string}|null}
+   */
+  function normalizeSuggestion(entry) {
+    if (typeof entry === "string") {
+      const label = entry.trim();
+      return label ? { label, value: label } : null;
+    }
+
+    if (!entry || typeof entry !== "object") {
+      return null;
+    }
+
+    const label = normalizeSearchValue(entry.label);
+
+    if (!label) {
+      return null;
+    }
+
+    return { label, value: normalizeSearchValue(entry.value) || label };
+  }
+
+  /** Builds the listbox shell once, then reuses it. */
+  function ensureSuggestionsElement() {
+    if (suggestionsElement || !suggestionSource) {
+      return;
+    }
+
+    const listId = `${input.id}-suggestions`;
+
+    suggestionsElement = document.createElement("div");
+    suggestionsElement.className = "search__suggestions";
+    suggestionsElement.hidden = true;
+
+    const groupLabel = document.createElement("p");
+    groupLabel.className = "search__suggestions-label";
+    groupLabel.id = `${listId}-label`;
+    groupLabel.textContent = normalizeSearchValue(options.suggestionsLabel) || "Suggestions";
+
+    suggestionsList = document.createElement("ul");
+    suggestionsList.className = "search__suggestions-list";
+    suggestionsList.id = listId;
+    suggestionsList.setAttribute("role", "listbox");
+    suggestionsList.setAttribute("aria-labelledby", groupLabel.id);
+
+    suggestionsEmpty = document.createElement("p");
+    suggestionsEmpty.className = "search__suggestions-empty";
+    suggestionsEmpty.hidden = true;
+
+    suggestionsElement.append(groupLabel, suggestionsList, suggestionsEmpty);
+    searchElement.append(suggestionsElement);
+    ownedNodes.push(suggestionsElement);
+
+    // Combobox semantics exist only while a suggestion source is configured, so a
+    // plain search field is not announced as a combobox with an empty popup.
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-expanded", "false");
+    input.setAttribute("aria-controls", listId);
+    input.setAttribute("aria-haspopup", "listbox");
+    suggestionsAttributesAdded = true;
+  }
+
+  /** Marks one suggestion active, wrapping at both ends. */
+  function setActiveSuggestion(index) {
+    if (suggestionItems.length === 0) {
+      activeSuggestion = -1;
+      input.removeAttribute("aria-activedescendant");
+      return;
+    }
+
+    activeSuggestion = (index + suggestionItems.length) % suggestionItems.length;
+
+    suggestionItems.forEach((item, position) => {
+      const isActive = position === activeSuggestion;
+      item.classList.toggle("is-active", isActive);
+      item.setAttribute("aria-selected", String(isActive));
+    });
+
+    const active = suggestionItems[activeSuggestion];
+    input.setAttribute("aria-activedescendant", active.id);
+    active.scrollIntoView({ block: "nearest" });
+  }
+
+  /** Hides the list and clears the combobox state. */
+  function closeSuggestions() {
+    if (!suggestionsElement) {
+      return;
+    }
+
+    suggestionsElement.hidden = true;
+    suggestionsList.replaceChildren();
+    suggestionsEmpty.hidden = true;
+    suggestionItems = [];
+    activeSuggestion = -1;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+  }
+
+  /**
+   * Flips the list above the field when it would fall below the viewport.
+   *
+   * A search box near the bottom of a short window is normal; a listbox that opens
+   * downward there is unreachable. The class is re-evaluated on every render and on
+   * resize, never cached.
+   */
+  function positionSuggestions() {
+    if (!suggestionsElement || suggestionsElement.hidden) {
+      return;
+    }
+
+    suggestionsElement.classList.remove("search__suggestions--above");
+    const box = suggestionsElement.getBoundingClientRect();
+
+    if (box.bottom > window.innerHeight && box.top > box.height) {
+      suggestionsElement.classList.add("search__suggestions--above");
+    }
+  }
+
+  /**
+   * Rebuilds the list for the current query.
+   *
+   * @param {{activateFirst?: boolean}} [renderOptions]
+   */
+  function renderSuggestions(renderOptions = {}) {
+    if (!suggestionSource) {
+      return;
+    }
+
+    ensureSuggestionsElement();
+
+    const query = input.value.trim();
+    const suggestionsAllowed = options.suggestOnEmpty === true || query.length >= minSuggestionLength;
+    let normalized = [];
+
+    if (suggestionsAllowed) {
+      try {
+        normalized = (suggestionSource(input.value, { source }) || [])
+          .map(normalizeSuggestion)
+          .filter(Boolean)
+          .slice(0, maxSuggestions);
+      } catch (error) {
+        console.error("Search getSuggestions callback failed:", error);
+        normalized = [];
+      }
+    }
+
+    suggestionsList.replaceChildren();
+    suggestionItems = [];
+    activeSuggestion = -1;
+
+    if (normalized.length === 0) {
+      const emptyText = normalizeSearchValue(options.emptySuggestionText);
+      suggestionsList.hidden = true;
+      suggestionsEmpty.hidden = !emptyText || !suggestionsAllowed;
+      suggestionsEmpty.textContent = emptyText;
+      suggestionsElement.hidden = !emptyText || !suggestionsAllowed;
+      input.setAttribute("aria-expanded", "false");
+      input.removeAttribute("aria-activedescendant");
+      return;
+    }
+
+    suggestionsEmpty.hidden = true;
+    suggestionsList.hidden = false;
+
+    normalized.forEach((suggestion, index) => {
+      const item = document.createElement("li");
+      item.className = "search__suggestion";
+      item.id = `${suggestionsList.id}-option-${index}`;
+      item.setAttribute("role", "option");
+      item.setAttribute("aria-selected", "false");
+      item.textContent = suggestion.label;
+
+      // pointerdown + preventDefault keeps focus in the input, so the blur handler
+      // cannot close the list before the click lands.
+      item.addEventListener("pointerdown", (event) => event.preventDefault(), { signal });
+      item.addEventListener("click", () => selectSuggestion(index), { signal });
+
+      suggestionsList.append(item);
+      suggestionItems.push(item);
+    });
+
+    suggestionsElement.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+    positionSuggestions();
+
+    if (renderOptions.activateFirst === true) {
+      setActiveSuggestion(0);
+    }
+  }
+
+  /**
+   * Applies one suggestion to the field and tells the consumer.
+   *
+   * @param {number} index
+   */
+  function selectSuggestion(index) {
+    const item = suggestionItems[index];
+
+    if (!item) {
+      return;
+    }
+
+    const label = item.textContent || "";
+    input.value = label;
+    syncClearButton();
+    closeSuggestions();
+    deliver("suggestion");
+
+    if (typeof options.onSuggestionSelect === "function") {
+      try {
+        options.onSuggestionSelect({ label, value: label }, { source, reason: "suggestion" });
+      } catch (error) {
+        console.error("Search onSuggestionSelect callback failed:", error);
+      }
+    }
+
+    input.focus();
+  }
+
   /**
    * Delivers the current value to the consumer.
    *
@@ -368,6 +625,18 @@ export function initializeSearch(container, options = {}) {
   function scheduleDelivery() {
     window.clearTimeout(pendingTimer);
 
+    // A zero debounce means "deliver now": a consumer that wants instant filtering
+    // (the section toolbars) should not wait a macrotask for every keystroke.
+    if (debounceMs === 0) {
+      pendingTimer = 0;
+
+      if (isDeliverable(input.value.trim())) {
+        deliver("typing");
+      }
+
+      return;
+    }
+
     pendingTimer = window.setTimeout(() => {
       pendingTimer = 0;
 
@@ -398,6 +667,9 @@ export function initializeSearch(container, options = {}) {
 
   const handleInput = () => {
     syncClearButton();
+    // Suggestions are not debounced: the consumer's source is an in-memory array
+    // and a delayed list feels broken while typing. Only the query delivery waits.
+    renderSuggestions();
     scheduleDelivery();
   };
 
@@ -409,10 +681,50 @@ export function initializeSearch(container, options = {}) {
   input.addEventListener(
     "keydown",
     (event) => {
+      const listOpen = Boolean(suggestionsElement && !suggestionsElement.hidden);
+
+      if (event.key === "ArrowDown" && suggestionSource) {
+        event.preventDefault();
+
+        if (listOpen && suggestionItems.length > 0) {
+          setActiveSuggestion(activeSuggestion + 1);
+        } else {
+          renderSuggestions({ activateFirst: true });
+        }
+
+        return;
+      }
+
+      if (event.key === "ArrowUp" && listOpen && suggestionItems.length > 0) {
+        event.preventDefault();
+        setActiveSuggestion(activeSuggestion <= 0 ? suggestionItems.length - 1 : activeSuggestion - 1);
+        return;
+      }
+
+      if (event.key === "Enter" && listOpen && activeSuggestion >= 0) {
+        // Enter activates the highlighted suggestion; with nothing highlighted it
+        // still submits the typed query, which is what the field promises.
+        event.preventDefault();
+        selectSuggestion(activeSuggestion);
+        return;
+      }
+
+      if (event.key === "Escape" && listOpen) {
+        // First Escape only closes the list: the query the visitor typed stays.
+        event.preventDefault();
+        closeSuggestions();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        closeSuggestions();
+      }
+
       if (event.key === "Enter") {
         // Enter inside a form would reload the page; the query is submitted
         // through the consumer callback instead.
         event.preventDefault();
+        closeSuggestions();
         flushDelivery("submit");
 
         if (typeof options.onSubmit === "function") {
@@ -444,6 +756,18 @@ export function initializeSearch(container, options = {}) {
           clearValue({ notify: true, focus: true });
         }
       }
+    },
+    { signal }
+  );
+
+  // A click elsewhere must not leave a stale listbox floating over the page. A
+  // short delay lets a suggestion's pointerdown/click finish first.
+  window.addEventListener("resize", positionSuggestions, { signal });
+
+  input.addEventListener(
+    "blur",
+    () => {
+      window.setTimeout(() => closeSuggestions(), 120);
     },
     { signal }
   );
@@ -496,6 +820,11 @@ export function initializeSearch(container, options = {}) {
     const hadValue = input.value !== "";
     input.value = "";
     syncClearButton();
+    closeSuggestions();
+
+    if (options.suggestOnEmpty === true) {
+      renderSuggestions();
+    }
 
     if (focus) {
       input.focus();
@@ -589,6 +918,7 @@ export function initializeSearch(container, options = {}) {
     setValue(value, setOptions = {}) {
       input.value = value === null || typeof value === "undefined" ? "" : String(value);
       syncClearButton();
+      closeSuggestions();
 
       if (setOptions.notify === true) {
         flushDelivery("set");
@@ -604,6 +934,14 @@ export function initializeSearch(container, options = {}) {
     /** @param {string|null} text @param {"neutral"|"error"} [tone] */
     setStatus,
 
+    closeSuggestions,
+
+    /** @returns {boolean} True while the suggestion list is visible. */
+    isSuggestionsOpen: () => Boolean(suggestionsElement && !suggestionsElement.hidden),
+
+    /** Recomputes the list for the current value, e.g. after records change. */
+    refreshSuggestions: () => renderSuggestions(),
+
     focus: () => input.focus(),
 
     /** Input and wrapper, for a consumer that needs to measure or label them. */
@@ -617,6 +955,12 @@ export function initializeSearch(container, options = {}) {
 
       for (const node of ownedNodes) {
         node.remove();
+      }
+
+      if (suggestionsAttributesAdded) {
+        for (const attribute of ["role", "aria-autocomplete", "aria-expanded", "aria-controls", "aria-haspopup", "aria-activedescendant"]) {
+          input.removeAttribute(attribute);
+        }
       }
 
       searchElement.classList.remove(
