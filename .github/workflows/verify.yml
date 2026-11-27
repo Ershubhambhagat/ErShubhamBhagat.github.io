@@ -4,14 +4,21 @@ name: Verify
 # first version of this file gated only `gh-pages` while the work happened on
 # `New_Version` - so a push of the actual code ran no check (quality audit C1).
 #
-# Every branch push and every pull request now runs the same commands a developer
-# runs locally. No build step, no dependencies, no deployment.
+# Why the automatic triggers are off (2026-11-28): the owner asked for the running
+# verification to be paused. The job itself is kept, intact, behind a manual trigger:
+# nothing runs on push or pull request, so a branch is never blocked by this workflow.
 #
-# Deploying is separate and manual: .github/workflows/deploy.yml.
+# The failure that prompted the pause was the bookmark check in
+# `scripts/validate-data.mjs`: it required the legacy folders (Project/, BookMark/,
+# Future/, CSSEditer/, CodeSnippet/, Sangrampur/) to exist, but those are git-ignored,
+# so no CI runner could ever have them. That check now distinguishes a dead link from a
+# folder absent from the checkout, so the job passes on a fresh clone. Re-enabling is
+# therefore one line: put `push:` and `pull_request:` back under `on:`.
+#
+# The same gates still run in .github/workflows/deploy.yml before a publish, so a
+# deployment cannot ship data that fails validation.
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 
 permissions:
