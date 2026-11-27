@@ -1,0 +1,27 @@
+/* ==========================================================================
+   CERTIFICATES SECTION - css/sections/certificates.css
+
+   A filtered grid of shared cards. The section stylesheet only owns the filter
+   row and the grid's top spacing; the card face is components/cards.css.
+   ========================================================================== */
+
+/* ---- Toolbar ---- */
+.certificates-toolbar {
+  margin-block-end: var(--spacing-lg);
+}
+
+/* ---- Grid ---- */
+.certificates-grid {
+  margin-block-start: var(--spacing-sm);
+}
+
+/* Certificates carry less text than projects, so a lower minimum track keeps
+   three of them on one row instead of two very wide cards. */
+.certificates-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
+}
+
+/* A single-select filter does not need the full content width. */
+.certificates-toolbar .filter {
+  max-inline-size: 20rem;
+}

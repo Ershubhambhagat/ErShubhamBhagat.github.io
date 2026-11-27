@@ -1,0 +1,24 @@
+/* ==========================================================================
+   TOOLTIPS  ·  css/components/tooltips.css
+   ==========================================================================
+
+   PLACEHOLDER — no rules yet, on purpose.
+
+   Filled by: agent `builder-component-tooltips`, Phase 4 (shared components and
+   layout) of the sequence in Prompt/PORTFOLIO_ARCHITECTURE.md § 14.
+
+   Will own: the small label bubble used by icon-only controls (header actions,
+   copy buttons, back-to-top) and by truncated skill/badge labels, positioned
+   above the trigger with a short delay and an arrow.
+
+   GAP TO CLOSE FIRST: no Prompt/components/TOOLTIP_COMPONENT.md exists in this
+   repository, so the component contract is not written yet. Whoever implements
+   this file should document the trigger/role/aria-describedby contract before
+   styling it, and register the file in the component documentation registry
+   (Prompt/PORTFOLIO_ARCHITECTURE.md § 5.1).
+
+   Token rule: --color-surface-raised background, --color-border outline,
+   --font-body at 0.8125rem, --shadow-md, --z-header + 1 (tooltips must sit
+   above the header but below the modal scrim at --z-overlay). A tooltip is
+   never the only way to reach information: no essential text only on hover.
+   ========================================================================== */

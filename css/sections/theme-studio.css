@@ -1,0 +1,103 @@
+/* ==========================================================================
+   THEME STUDIO - css/sections/theme-studio.css
+
+   The palette chooser rendered inside a dialog. Each option is a label wrapping
+   a native radio, a name, a description and three swatches. Native radios are
+   kept (not replaced by divs): arrow-key group navigation and the announced
+   role come for free.
+   ========================================================================== */
+
+/* ---- Panel ---- */
+.theme-studio {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.theme-studio__note {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.theme-studio__fieldset {
+  display: grid;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.theme-studio__legend {
+  padding: 0;
+  margin-block-end: var(--spacing-xs);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---- Palette option ---- */
+.theme-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast) var(--ease-standard);
+}
+
+.theme-option:hover {
+  border-color: var(--color-primary);
+}
+
+/* :has() is the only selector that can style the label from the checked child.
+   Browsers without it still show the radio itself, so the state is never lost. */
+.theme-option:has(.theme-option__radio:checked) {
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-raised);
+}
+
+.theme-option__radio {
+  margin-block-start: 0.3rem;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.theme-option__body {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.theme-option__name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.theme-option__text {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.theme-option__swatches {
+  display: flex;
+  gap: 0.25rem;
+  margin-block-start: 0.2rem;
+}
+
+.theme-option__swatch {
+  inline-size: 14px;
+  block-size: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+/* ---- Actions ---- */
+.theme-studio__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-block-start: var(--spacing-sm);
+  border-block-start: 1px solid var(--color-border);
+}

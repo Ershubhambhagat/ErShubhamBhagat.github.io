@@ -1,0 +1,125 @@
+/* ==========================================================================
+   CONTACT - css/sections/contact.css
+
+   Contact cards, the social row and the mailto form. The form is a real <form>
+   with a submit button; js/sections/contact.js validates it and hands the message
+   to the visitor's mail client. Nothing here may look like a server-side send,
+   which is why there is no "sending" spinner state to style.
+   ========================================================================== */
+
+/* ---- Details cards ---- */
+.contact-cards {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  margin-block-end: var(--spacing-xl);
+}
+
+.contact-card {
+  display: grid;
+  gap: var(--spacing-xs);
+  align-content: start;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.contact-card__label {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.contact-card__value {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.contact-card > .btn {
+  justify-self: start;
+}
+
+/* ---- Social links ---- */
+.contact-socials {
+  margin-block-end: var(--spacing-xl);
+}
+
+.contact-socials__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---- Form --------------------------------------------------------------- */
+
+.contact-form {
+  display: grid;
+  gap: var(--spacing-md);
+  max-inline-size: 40rem;
+  padding: var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.contact-form__title {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.contact-form__help {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* The error block is a live region (role=alert) and keeps its own border: colour
+   alone would not signal the problem in forced-colours mode. */
+.contact-form__errors {
+  display: grid;
+  gap: 0.2rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+}
+
+.contact-form__errors[hidden] {
+  display: none;
+}
+
+.contact-form__status {
+  min-block-size: 1.3rem;
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.contact-form > .btn {
+  justify-self: start;
+}
+
+@media (min-width: 768px) {
+  .contact-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-form__title,
+  .contact-form__help,
+  .field--message,
+  .contact-form__errors,
+  .contact-form__status,
+  .contact-form > .btn {
+    grid-column: 1 / -1;
+  }
+}

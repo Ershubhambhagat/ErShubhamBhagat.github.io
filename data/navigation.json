@@ -1,0 +1,126 @@
+{
+  "_guide": [
+    "// navigation.json - header brand, the eleven navigation links, and the footer.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// brand: { label, href, showLabel, showImage, image }.",
+    "// navigation.items[] REQUIRED: id, label, target, order, enabled.",
+    "// target: must equal a <section id> in index.html (profile, skills, ... contact).",
+    "// order: 1-11; the header and footer render in this order.",
+    "// header.showBrand / showGlobalSearch / showThemeToggle: reserved switches.",
+    "// layout.scrollOffset: sticky-header offset in px used by the active-section indicator.",
+    "// footer: { enabled, showCopyright, showSocialLinks, showBackToTop, copyrightText }.",
+    "// Do not rename or reorder the eleven ids: search and the timeline depend on them."
+  ],
+  "schemaVersion": 1,
+  "brand": {
+    "label": "Er Shubham Bhagat",
+    "href": "#profile",
+    "showLabel": true,
+    "showImage": false,
+    "image": null
+  },
+  "navigation": {
+    "enabled": true,
+    "sticky": true,
+    "activeIndicator": true,
+    "closeOnNavigate": true,
+    "closeOnEscape": true,
+    "showOnMobile": true,
+    "showOnDesktop": true,
+    "items": [
+      {
+        "id": "profile",
+        "label": "Home",
+        "target": "profile",
+        "enabled": true,
+        "order": 1
+      },
+      {
+        "id": "skills",
+        "label": "Skills",
+        "target": "skills",
+        "enabled": true,
+        "order": 2
+      },
+      {
+        "id": "experience",
+        "label": "Experience",
+        "target": "experience",
+        "enabled": true,
+        "order": 3
+      },
+      {
+        "id": "projects",
+        "label": "Projects",
+        "target": "projects",
+        "enabled": true,
+        "order": 4
+      },
+      {
+        "id": "certificates",
+        "label": "Certificates",
+        "target": "certificates",
+        "enabled": true,
+        "order": 5
+      },
+      {
+        "id": "education",
+        "label": "Education",
+        "target": "education",
+        "enabled": true,
+        "order": 6
+      },
+      {
+        "id": "learning-journey",
+        "label": "Learning Journey",
+        "target": "learning-journey",
+        "enabled": true,
+        "order": 7
+      },
+      {
+        "id": "career-timeline",
+        "label": "Timeline",
+        "target": "career-timeline",
+        "enabled": true,
+        "order": 8
+      },
+      {
+        "id": "github-importer",
+        "label": "GitHub",
+        "target": "github-importer",
+        "enabled": true,
+        "order": 9
+      },
+      {
+        "id": "bookmarks",
+        "label": "Bookmarks",
+        "target": "bookmarks",
+        "enabled": true,
+        "order": 10
+      },
+      {
+        "id": "contact",
+        "label": "Contact",
+        "target": "contact",
+        "enabled": true,
+        "order": 11
+      }
+    ]
+  },
+  "header": {
+    "showBrand": true,
+    "showGlobalSearch": false,
+    "showThemeToggle": false,
+    "showResumeAction": false
+  },
+  "layout": {
+    "scrollOffset": "90px"
+  },
+  "footer": {
+    "enabled": true,
+    "showCopyright": true,
+    "showSocialLinks": true,
+    "showBackToTop": true,
+    "copyrightText": ""
+  }
+}

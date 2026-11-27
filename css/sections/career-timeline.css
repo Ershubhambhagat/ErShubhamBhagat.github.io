@@ -1,0 +1,29 @@
+/* ==========================================================================
+   CAREER TIMELINE - css/sections/career-timeline.css
+
+   Filter row plus the shared timeline. The mount is a plain div so re-rendering
+   the filtered list replaces only the list, never the filter control that holds
+   focus.
+   ========================================================================== */
+
+/* ---- Panel ---- */
+.timeline-panel {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.timeline-panel__filters {
+  max-inline-size: 52rem;
+}
+
+/* Only the mount is replaced on filter changes; the filter control itself stays
+   put so focus and scroll position survive a re-render. */
+/* ---- Mount ---- */
+.timeline-panel__mount {
+  max-inline-size: 72ch;
+}
+
+/* A single-select filter does not need the full content width. */
+.timeline-panel__filters {
+  max-inline-size: 24rem;
+}

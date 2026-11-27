@@ -1,0 +1,106 @@
+{
+  "_guide": [
+    "// education.json - one card per qualification in the Education section.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: heading text plus on/off switches for search, filters, sorting and detail views.",
+    "// REQUIRED per record: id, qualification. Everything else is optional and hidden when empty.",
+    "// id: unique and stable, prefix edu- (edu-001). Career Timeline references it.",
+    "// institution.name: school or university. Empty hides the institution line.",
+    "// institution.website: full https URL; empty hides the link.",
+    "// institution.logo: image path, e.g. ./assets/images/institutions/example.webp.",
+    "// institution.location: city/region of the institution.",
+    "// qualification: the award itself, e.g. 'Bachelor of Technology'.",
+    "// fieldOfStudy: subject, e.g. 'Computer Science'.",
+    "// educationType: 'degree', 'school' or 'course'.",
+    "// studyMode: 'full-time', 'part-time' or 'distance'.",
+    "// dates: YYYY, YYYY-MM or YYYY-MM-DD. isCurrent true renders 'Present'.",
+    "// grade: { value, scale, display } e.g. { 'value': '8.5', 'scale': '10', 'display': '8.5/10' }.",
+    "// coursework: list of subjects shown as tags.",
+    "// achievements: [{ id, title, description }] optional awards.",
+    "// order: manual position. enabled: false hides the record.",
+    "// isSample: true marks example content; the section then shows a notice."
+  ],
+  "schemaVersion": 1,
+  "section": {
+    "enabled": true,
+    "title": "Education",
+    "subtitle": "Academic background. The first record is the published degree; the second shows every optional field filled with sample data.",
+    "layout": "timeline",
+    "showSearch": false,
+    "showFilters": false,
+    "showSort": false,
+    "showInstitutionLogo": true,
+    "showFieldOfStudy": true,
+    "showGrade": false,
+    "showAchievements": true,
+    "defaultSort": "newest",
+    "itemsPerPage": 6,
+    "showLoadMore": false
+  },
+  "education": [
+    {
+      "id": "edu-001",
+      "isSample": false,
+      "institution": {
+        "name": "",
+        "logo": "",
+        "website": "",
+        "location": ""
+      },
+      "qualification": "Bachelor of Technology",
+      "fieldOfStudy": "",
+      "educationType": "degree",
+      "studyMode": "",
+      "startDate": null,
+      "endDate": null,
+      "isCurrent": false,
+      "grade": null,
+      "description": "",
+      "coursework": [],
+      "achievements": [],
+      "relatedSkillIds": [],
+      "featured": true,
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "edu-002",
+      "isSample": true,
+      "institution": {
+        "name": "Example Institute of Technology",
+        "logo": "",
+        "website": "",
+        "location": "Bihar, India"
+      },
+      "qualification": "Higher Secondary (Class 12)",
+      "fieldOfStudy": "Science (Physics, Chemistry, Mathematics)",
+      "educationType": "school",
+      "studyMode": "full-time",
+      "startDate": "2019-06",
+      "endDate": "2021-03",
+      "isCurrent": false,
+      "grade": {
+        "value": "78",
+        "scale": "100",
+        "display": "78%"
+      },
+      "description": "Sample record showing a completed qualification with dates, grade and coursework. Replace it with your own school record or delete it.",
+      "coursework": [
+        "Physics",
+        "Chemistry",
+        "Mathematics"
+      ],
+      "achievements": [
+        {
+          "id": "achievement-example-01",
+          "title": "Sample achievement",
+          "description": "Replace with an award, a rank or a subject prize."
+        }
+      ],
+      "relatedSkillIds": [],
+      "featured": false,
+      "order": 2,
+      "enabled": true
+    }
+  ]
+}

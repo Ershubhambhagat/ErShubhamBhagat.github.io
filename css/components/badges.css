@@ -1,0 +1,120 @@
+/* ==========================================================================
+   BADGES - css/components/badges.css
+
+   Styles js/components/badge.js:
+     .badge .badge--<variant> .badge--<size> [.badge--interactive]
+     .badge__icon, .badge__label
+
+   Variants are pinned by BADGE_VARIANTS in the module: neutral, primary,
+   success, warning, danger, info, outline. Outline is the default for
+   technology tags, so it must stay legible at the small size.
+   ========================================================================== */
+
+/* One line per badge: tags sit in card footers and wrapping a single label
+   would make rows of cards different heights. Long values are the dataset's
+   responsibility, not the badge's. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.badge__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge__icon svg {
+  display: block;
+  inline-size: 0.9em;
+  block-size: 0.9em;
+}
+
+.badge__label {
+  display: inline-block;
+}
+
+/* ---- Variants ----------------------------------------------------------- */
+
+.badge--neutral {
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border);
+}
+
+.badge--primary {
+  color: var(--color-primary);
+  background-color: transparent;
+  border-color: var(--color-primary);
+}
+
+.badge--info {
+  color: var(--color-secondary);
+  background-color: transparent;
+  border-color: var(--color-secondary);
+}
+
+.badge--success {
+  color: var(--color-success);
+  background-color: transparent;
+  border-color: var(--color-success);
+}
+
+.badge--warning {
+  color: var(--color-warning);
+  background-color: transparent;
+  border-color: var(--color-warning);
+}
+
+.badge--danger {
+  color: var(--color-danger);
+  background-color: transparent;
+  border-color: var(--color-danger);
+}
+
+.badge--outline {
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border-color: var(--color-border);
+}
+
+/* ---- Sizes -------------------------------------------------------------- */
+
+.badge--small {
+  padding: 0.1rem 0.5rem;
+  font-size: 0.6875rem;
+}
+
+.badge--large {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8125rem;
+}
+
+/* ---- Interactive -------------------------------------------------------- */
+
+.badge--interactive {
+  cursor: pointer;
+  transition: border-color var(--transition-fast) var(--ease-standard),
+    color var(--transition-fast) var(--ease-standard);
+}
+
+.badge--interactive:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
+
+.badge--interactive[aria-pressed="true"] {
+  color: var(--color-primary-contrast);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}

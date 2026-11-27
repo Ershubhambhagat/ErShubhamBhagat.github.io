@@ -1,0 +1,152 @@
+/* ==========================================================================
+   SITE FOOTER - css/layout/footer.css
+
+   Owns footer#site-footer (rendered by js/core/navigation.js) and the floating
+   #back-to-top control from index.html.
+
+   Footer markup is:
+     .site-footer > .site-footer__inner.container
+       .site-footer__top      (.site-footer__name + nav .site-footer__nav)
+       .site-footer__contact  (email link + .site-footer__social)
+       .site-footer__copyright
+
+   #back-to-top sits bottom-LEFT: the tools dock (css/main.css section 16) owns
+   the bottom-right corner, and two floating controls in one corner would overlap
+   on a phone.
+   ========================================================================== */
+
+.site-footer {
+  margin-block-start: var(--spacing-2xl);
+  padding-block: var(--spacing-xl);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-surface);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.site-footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.site-footer__name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-link {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.footer-link--email {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.site-footer__contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding-block-start: var(--spacing-md);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-social__link {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.footer-social__link:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  text-decoration: none;
+}
+
+.site-footer__copyright {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ---- Back to top -------------------------------------------------------- */
+
+#back-to-top {
+  position: fixed;
+  inset-block-end: var(--spacing-md);
+  inset-inline-start: var(--spacing-md);
+  z-index: 800;
+  display: grid;
+  place-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 0;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: color var(--transition-fast) var(--ease-standard),
+    border-color var(--transition-fast) var(--ease-standard);
+}
+
+#back-to-top:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* The module removes [hidden] once the page can scroll. This rule has to stay
+   after the display:grid above, otherwise the button would show immediately. */
+#back-to-top[hidden] {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .site-footer {
+    padding-block: var(--spacing-2xl);
+  }
+}

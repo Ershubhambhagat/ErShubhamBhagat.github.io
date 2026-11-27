@@ -1,0 +1,99 @@
+{
+  "_guide": [
+    "// theme-presets.json - palettes offered by the Theme Studio.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// REQUIRED per theme: id, name. mode is 'dark' or 'light'.",
+    "// tokens: only the colour tokens below may be overridden; anything else is ignored.",
+    "//   --color-primary, --color-primary-contrast, --color-secondary, --color-accent,",
+    "//   --color-background, --color-surface, --color-surface-raised, --color-overlay,",
+    "//   --color-text-primary, --color-text-secondary, --color-text-muted, --color-border,",
+    "//   --color-focus-ring, --color-success, --color-warning, --color-danger",
+    "// values: hex (#7c8cff), rgb()/rgba(), hsl()/hsla() or a CSS colour keyword.",
+    "//        url() and var() chains are rejected so a preset cannot inject other properties.",
+    "// swatches: optional three colours for the preview dots when tokens is empty.",
+    "// Empty tokens means the theme falls back to css/variables.css defaults."
+  ],
+  "schemaVersion": 1,
+  "themes": [
+    {
+      "id": "dark",
+      "name": "Dark",
+      "mode": "dark",
+      "description": "The default palette in css/variables.css.",
+      "tokens": {},
+      "swatches": [
+        "#08090c",
+        "#7c8cff",
+        "#58e6c8"
+      ]
+    },
+    {
+      "id": "light",
+      "name": "Light",
+      "mode": "light",
+      "description": "Same layout on a light surface.",
+      "tokens": {
+        "--color-primary": "#3f4bd8",
+        "--color-primary-contrast": "#ffffff",
+        "--color-secondary": "#7c3aed",
+        "--color-accent": "#0e9384",
+        "--color-background": "#fafafb",
+        "--color-surface": "#ffffff",
+        "--color-surface-raised": "#f3f4f7",
+        "--color-overlay": "rgba(15, 18, 26, 0.55)",
+        "--color-text-primary": "#0e1118",
+        "--color-text-secondary": "#3d4553",
+        "--color-text-muted": "#5f6775",
+        "--color-border": "#e1e4ea",
+        "--color-focus-ring": "#3f4bd8",
+        "--color-success": "#15803d",
+        "--color-danger": "#b42318",
+        "--color-warning": "#a4620a"
+      }
+    },
+    {
+      "id": "midnight",
+      "name": "Midnight",
+      "mode": "dark",
+      "description": "Deep blue surfaces with a cyan accent.",
+      "tokens": {
+        "--color-primary": "#5ee7ff",
+        "--color-primary-contrast": "#03151a",
+        "--color-secondary": "#9d8bff",
+        "--color-accent": "#63f5b5",
+        "--color-background": "#050b14",
+        "--color-surface": "#0b1622",
+        "--color-surface-raised": "#12202f",
+        "--color-text-primary": "#eaf4ff",
+        "--color-text-secondary": "#b4c6d8",
+        "--color-text-muted": "#7f93a8",
+        "--color-border": "#1e3145",
+        "--color-focus-ring": "#5ee7ff"
+      }
+    },
+    {
+      "id": "warm",
+      "name": "Warm paper",
+      "mode": "light",
+      "description": "A low-glare light theme with warm neutrals.",
+      "tokens": {
+        "--color-primary": "#a1431f",
+        "--color-primary-contrast": "#ffffff",
+        "--color-secondary": "#7a4a8f",
+        "--color-accent": "#0f766e",
+        "--color-background": "#fbf6ee",
+        "--color-surface": "#fffdf8",
+        "--color-surface-raised": "#f4ece0",
+        "--color-overlay": "rgba(43, 32, 20, 0.5)",
+        "--color-text-primary": "#241d15",
+        "--color-text-secondary": "#554736",
+        "--color-text-muted": "#7c6b57",
+        "--color-border": "#e3d6c3",
+        "--color-focus-ring": "#a1431f",
+        "--color-success": "#2f6b3a",
+        "--color-danger": "#a3241c",
+        "--color-warning": "#8a5a08"
+      }
+    }
+  ]
+}

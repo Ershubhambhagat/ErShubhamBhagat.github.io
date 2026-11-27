@@ -1,0 +1,336 @@
+{
+  "_guide": [
+    "// skills.json - groups of skills shown in the Skills section.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: { title, subtitle, showFilters } controls the heading and the category filter.",
+    "// categories[] REQUIRED: id, name. description and order are optional.",
+    "// skills[] REQUIRED: id, name. Everything else is optional.",
+    "// id: unique and stable, prefix skill- (skill-001).",
+    "// categoryId: must match a category id below, or the skill groups under Other.",
+    "// proficiency: a number 0-100, or null. null renders a tag, NOT a 0% bar.",
+    "// proficiencyLabel: text beside the bar, e.g. 'Advanced'. Optional.",
+    "// description: one sentence shown under the name.",
+    "// tags: used for level-less tools, e.g. ['framework'].",
+    "// featured / currentlyLearning: booleans read by the section.",
+    "// order: manual position. enabled: false hides the skill.",
+    "// Only the six published percentages carry a number; do not invent levels for the rest."
+  ],
+  "schemaVersion": 1,
+  "section": {
+    "enabled": true,
+    "title": "Skills & technologies",
+    "subtitle": "The six levels below are the ones already published on this site. The tags without a level are tools I work with, listed without a score because no score was ever stated.",
+    "showSearch": false,
+    "showFilters": true,
+    "showFeatured": true,
+    "showLearning": false
+  },
+  "categories": [
+    {
+      "id": "frontend",
+      "name": "Front end",
+      "description": "Interfaces, layout and interaction.",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "backend",
+      "name": "Back end",
+      "description": "Application logic and scripting.",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "database",
+      "name": "Database",
+      "description": "Relational storage and queries.",
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "id": "tools",
+      "name": "Tools & platforms",
+      "description": "Editors, source control and runtime platforms.",
+      "order": 4,
+      "enabled": true
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-001",
+      "name": "CSS",
+      "categoryId": "frontend",
+      "description": "Responsive layout and visual design.",
+      "icon": "css3",
+      "proficiency": 90,
+      "proficiencyLabel": "Advanced",
+      "featured": true,
+      "currentlyLearning": false,
+      "order": 1,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "skill-002",
+      "name": "React",
+      "categoryId": "frontend",
+      "description": "Component-driven user interfaces.",
+      "icon": "react",
+      "proficiency": 80,
+      "proficiencyLabel": "Advanced",
+      "featured": true,
+      "currentlyLearning": false,
+      "order": 2,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "skill-003",
+      "name": "JavaScript",
+      "categoryId": "frontend",
+      "description": "Interactive behaviour, ES modules and DOM APIs.",
+      "icon": "javascript",
+      "proficiency": 75,
+      "proficiencyLabel": "Proficient",
+      "featured": true,
+      "currentlyLearning": false,
+      "order": 3,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "skill-004",
+      "name": ".Net Core",
+      "categoryId": "backend",
+      "description": "Server-side applications and APIs.",
+      "icon": "dotnet",
+      "proficiency": 80,
+      "proficiencyLabel": "Advanced",
+      "featured": true,
+      "currentlyLearning": false,
+      "order": 4,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "skill-005",
+      "name": "Python",
+      "categoryId": "backend",
+      "description": "Scripting and automation.",
+      "icon": "python",
+      "proficiency": 80,
+      "proficiencyLabel": "Advanced",
+      "featured": true,
+      "currentlyLearning": false,
+      "order": 5,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "skill-006",
+      "name": "SQL Server",
+      "categoryId": "database",
+      "description": "Schema design, queries and stored procedures.",
+      "icon": "sqlserver",
+      "proficiency": 90,
+      "proficiencyLabel": "Advanced",
+      "featured": true,
+      "currentlyLearning": false,
+      "order": 6,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "skill-007",
+      "name": "C#",
+      "categoryId": "backend",
+      "description": "Language used with .NET Core.",
+      "icon": "csharp",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 7,
+      "enabled": true,
+      "tags": [
+        "language"
+      ]
+    },
+    {
+      "id": "skill-008",
+      "name": ".NET",
+      "categoryId": "backend",
+      "description": "Application framework.",
+      "icon": "dotnet",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 8,
+      "enabled": true,
+      "tags": [
+        "framework"
+      ]
+    },
+    {
+      "id": "skill-009",
+      "name": "AngularJS",
+      "categoryId": "frontend",
+      "description": "Older JavaScript framework.",
+      "icon": "angularjs",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 9,
+      "enabled": true,
+      "tags": [
+        "framework"
+      ]
+    },
+    {
+      "id": "skill-010",
+      "name": "Git",
+      "categoryId": "tools",
+      "description": "Version control.",
+      "icon": "git",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 10,
+      "enabled": true,
+      "tags": [
+        "version control"
+      ]
+    },
+    {
+      "id": "skill-011",
+      "name": "GitHub",
+      "categoryId": "tools",
+      "description": "Repositories and Pages hosting.",
+      "icon": "github",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 11,
+      "enabled": true,
+      "tags": [
+        "platform"
+      ]
+    },
+    {
+      "id": "skill-012",
+      "name": "Visual Studio",
+      "categoryId": "tools",
+      "description": "IDE for .NET and C#.",
+      "icon": "visualstudio",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 12,
+      "enabled": true,
+      "tags": [
+        "ide"
+      ]
+    },
+    {
+      "id": "skill-013",
+      "name": "Azure",
+      "categoryId": "tools",
+      "description": "Cloud platform.",
+      "icon": "azure",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 13,
+      "enabled": true,
+      "tags": [
+        "cloud"
+      ]
+    },
+    {
+      "id": "skill-014",
+      "name": "PostgreSQL",
+      "categoryId": "database",
+      "description": "Relational database.",
+      "icon": "postgresql",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 14,
+      "enabled": true,
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "skill-015",
+      "name": "MySQL",
+      "categoryId": "database",
+      "description": "Relational database.",
+      "icon": "mysql",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 15,
+      "enabled": true,
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "skill-016",
+      "name": "Oracle",
+      "categoryId": "database",
+      "description": "Relational database.",
+      "icon": "oracle",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 16,
+      "enabled": true,
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "id": "skill-017",
+      "name": "Arduino",
+      "categoryId": "tools",
+      "description": "Microcontroller prototyping.",
+      "icon": "arduino",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 17,
+      "enabled": true,
+      "tags": [
+        "hardware"
+      ]
+    },
+    {
+      "id": "skill-018",
+      "name": "Anaconda",
+      "categoryId": "tools",
+      "description": "Python distribution.",
+      "icon": "anaconda",
+      "proficiency": null,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": false,
+      "order": 18,
+      "enabled": true,
+      "tags": [
+        "python"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+/* ==========================================================================
+   css/animations.css  ·  SHARED ENTRANCE MOTION
+   ==========================================================================
+
+   Owner: builder-shell-css — Phase 3 (Foundation / Design System).
+   Depends on: css/variables.css (--transition-slow, --ease-out-soft,
+   --animation-intensity).
+
+   HOW INTENSITY IS APPLIED
+   --animation-intensity is a unitless 0-1 multiplier written by Theme Studio.
+   Every entrance duration is `calc(var(--transition-slow) * var(...))`, so
+   intensity 0 collapses to 0s and intensity 0.5 halves the animation without
+   needing a second keyframe set. JavaScript does not need to read the value —
+   it only toggles the utility class.
+
+   WHY UTILITY CLASSES AND NOT SECTIONS
+   Entrance motion is opt-in per rendered element: a section module adds
+   `.animate-fade-in-up` to the node it just created. Keyframes are global so
+   eleven sections share one definition, and nothing animates automatically —
+   no section can accidentally animate a whole page on first paint.
+
+   MOTION BUDGET
+   Transforms and opacity only. Nothing here animates width, height, top or
+   left; those force layout on every frame and are the usual cause of jank on
+   mid-range phones.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. KEYFRAMES
+   ========================================================================== */
+
+/* Subtle opacity-only entrance for large blocks (section shells, cards in a
+   grid) where movement would compete with the content. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Default entrance for cards and list rows: 16px rise reads as "settling"
+   without the element appearing to fly in. */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Used for dropdown panels and the mobile menu, which grow downwards. */
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Side entrances for the profile lockup and timeline rows. Kept at 20px so
+   they do not trigger horizontal overflow inside a narrow column. */
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translate3d(20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Modals and modal-hosted detail views. Scale starts at 0.96, not 0.8: a
+   deeper zoom draws attention to the animation instead of the content. */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Not an entrance: skeleton placeholder for data that is still loading
+   (GitHub importer results, search results). Linear and infinite, and the
+   reduced-motion block below turns it into a static surface. */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ==========================================================================
+   2. UTILITY CLASSES
+   --------------------------------------------------------------------------
+   `both` fill mode holds the `from` state before the animation starts (no
+   flash of visible content) and the `to` state after it ends (the element
+   stays visible even though the keyframe ends at opacity 1).
+   ========================================================================== */
+
+.animate-fade-in,
+.animate-fade-in-up,
+.animate-fade-in-down,
+.animate-fade-in-left,
+.animate-fade-in-right,
+.animate-scale-in {
+  animation-duration: calc(var(--transition-slow) * var(--animation-intensity));
+  animation-timing-function: var(--ease-out-soft);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+
+.animate-fade-in {
+  animation-name: fade-in;
+}
+
+.animate-fade-in-up {
+  animation-name: fade-in-up;
+}
+
+.animate-fade-in-down {
+  animation-name: fade-in-down;
+}
+
+.animate-fade-in-left {
+  animation-name: fade-in-left;
+}
+
+.animate-fade-in-right {
+  animation-name: fade-in-right;
+}
+
+.animate-scale-in {
+  animation-name: scale-in;
+}
+
+/* Stagger helpers for a rendered list. Delays are one fast transition apart
+   (140ms) and capped at four steps: a longer cascade makes lower items feel
+   broken rather than sequenced. Modules add the class while rendering, so the
+   delay never applies to content the visitor did not ask for. */
+.animate-delay-1 {
+  animation-delay: calc(var(--transition-fast) * var(--animation-intensity));
+}
+
+.animate-delay-2 {
+  animation-delay: calc(var(--transition-fast) * 2 * var(--animation-intensity));
+}
+
+.animate-delay-3 {
+  animation-delay: calc(var(--transition-fast) * 3 * var(--animation-intensity));
+}
+
+.animate-delay-4 {
+  animation-delay: calc(var(--transition-fast) * 4 * var(--animation-intensity));
+}
+
+/* Loading skeleton surface. Uses the two surface tokens so it themes with
+   everything else instead of baking in a grey. */
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  animation: shimmer calc(var(--transition-slow) * 6) linear infinite;
+}
+
+/* ==========================================================================
+   3. REDUCED MOTION
+   --------------------------------------------------------------------------
+   This block neutralises BOTH animation duration and scroll-behavior, because
+   either one alone still leaves motion on screen:
+   - duration: an entrance that lasts 420ms is still motion even if it moves
+     only 16px, and `shimmer` repeats forever.
+   - scroll-behavior: smooth scrolling is the most common vestibular trigger
+     on a long single-page portfolio with eleven sections.
+
+   !important is deliberate here: an accessibility override must beat every
+   component duration without each component knowing it exists. This is the
+   only place in the stylesheet where a blanket !important is justified, and
+   the contract forbids excessive !important elsewhere.
+
+   0.01ms rather than 0s: some engines never fire `animationend` for a 0s
+   duration, which would strand any section module waiting on that event.
+   With `both` fill mode the element still lands on its final keyframe, so the
+   visible result is identical to no animation.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

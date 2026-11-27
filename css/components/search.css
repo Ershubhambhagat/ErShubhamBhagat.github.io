@@ -1,0 +1,153 @@
+/* ==========================================================================
+   SEARCH FIELD - css/components/search.css
+
+   Styles js/components/search.js:
+     form.search [.search--labelled] [.search--small|--large] [.search--<variant>]
+       .search__field, .search__label, .search__icon, .search__input,
+       .search__clear, .search__status, .search__loading
+
+   This is the shared input used when a section embeds a search box. The Global
+   Search dialog uses the field primitive directly (css/main.css § 12) because
+   it is a single input, not a form.
+   ========================================================================== */
+
+.search {
+  display: block;
+}
+
+.search__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  transition: border-color var(--transition-fast) var(--ease-standard);
+}
+
+.search__field:focus-within {
+  border-color: var(--color-primary);
+}
+
+.search__label {
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  padding-inline-start: var(--spacing-md);
+}
+
+/* Visible labels take space; hidden ones must not, so the icon or the input
+   starts at the left edge instead of after an invisible gap. */
+/* A visible label takes horizontal space; a hidden one must not, otherwise the
+   input starts after an invisible gap and the field looks misaligned. */
+.search__label.visually-hidden {
+  padding: 0;
+}
+
+.search__icon {
+  display: inline-flex;
+  align-items: center;
+  padding-inline-start: var(--spacing-md);
+  color: var(--color-text-muted);
+}
+
+.search__icon svg {
+  display: block;
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+.search__input {
+  flex: 1;
+  min-inline-size: 0;
+  padding: 0.6rem var(--spacing-md);
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.search__input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.search__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  inline-size: 32px;
+  block-size: 32px;
+  margin-inline-end: 0.3rem;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.search__clear:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
+}
+
+.search__status {
+  margin-block-start: var(--spacing-xs);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.search__loading {
+  flex-shrink: 0;
+  inline-size: 16px;
+  block-size: 16px;
+  margin-inline-end: var(--spacing-md);
+  border: 2px solid var(--color-text-muted);
+  border-block-start-color: transparent;
+  border-radius: var(--radius-full);
+  animation: search-spin 0.8s linear infinite;
+}
+
+@keyframes search-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search__loading {
+    animation: none;
+  }
+}
+
+/* ---- Sizes -------------------------------------------------------------- */
+
+.search--small .search__input {
+  padding-block: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.search--large .search__input {
+  padding-block: 0.85rem;
+  font-size: 1rem;
+}
+
+/* ---- Variants ----------------------------------------------------------- */
+
+.search--minimal .search__field {
+  background: none;
+  border-color: transparent;
+  border-radius: var(--radius-sm);
+}
+
+.search--minimal .search__field:focus-within {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}

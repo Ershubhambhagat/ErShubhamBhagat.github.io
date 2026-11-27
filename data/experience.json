@@ -1,0 +1,126 @@
+{
+  "_guide": [
+    "// experience.json - one timeline entry per role in the Experience section.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: heading text plus on/off switches for search, filters, sorting and detail views.",
+    "// REQUIRED per role: id, role. Everything else is optional and hidden when empty.",
+    "// id: unique and stable, prefix exp- (exp-001). Career Timeline references it.",
+    "// role: job title, e.g. 'Freelance web developer'.",
+    "// company.name: employer name. Empty hides the company badge.",
+    "// company.website / company.logo: optional; website must be a full https URL.",
+    "// employmentType: 'Full-time', 'Part-time', 'Freelance', 'Internship'.",
+    "// workArrangement: 'Remote', 'Hybrid' or 'On-site'.",
+    "// location: where the role was based.",
+    "// dates: YYYY, YYYY-MM or YYYY-MM-DD. current true with no endDate renders 'Present'.",
+    "// shortDescription: one line on the timeline card.",
+    "// description: longer text behind 'Show details'.",
+    "// responsibilities: bullet list of what you did.",
+    "// achievements: bullet list of results, e.g. 'Cut report time from 10 to 2 minutes'.",
+    "// skills: technology names shown as badges.",
+    "// relatedSkillIds / relatedProjectIds: ids from the other datasets, used by search and the timeline.",
+    "// featured: true emphasises the marker.",
+    "// order: manual position. enabled: false hides the record.",
+    "// isSample: true marks example content; the section then shows a notice."
+  ],
+  "schemaVersion": 1,
+  "sampleData": true,
+  "section": {
+    "enabled": true,
+    "title": "Experience",
+    "subtitle": "Professional and freelance work. Both records are examples that show every field; replace them with real roles.",
+    "layout": "timeline",
+    "sortOrder": "newest-first",
+    "showSearch": false,
+    "showFilters": false,
+    "showAchievements": true,
+    "showTechnologies": true,
+    "expandableDetails": true
+  },
+  "experiences": [
+    {
+      "id": "exp-001",
+      "isSample": true,
+      "role": "Example — Freelance web developer",
+      "company": {
+        "name": "Independent (example record)",
+        "website": "",
+        "logo": "",
+        "location": ""
+      },
+      "employmentType": "Freelance",
+      "workArrangement": "Remote",
+      "location": "Bihar, India",
+      "startDate": "2024-01",
+      "endDate": null,
+      "current": true,
+      "shortDescription": "Example record: building responsive interfaces with React and JavaScript.",
+      "description": "Example record shipped with the template. Replace it with a real role: employer, dates, responsibilities and achievements. Nothing in this record describes a real engagement.",
+      "responsibilities": [
+        "Building responsive interfaces with React, JavaScript and CSS.",
+        "Implementing server-side features with .NET Core and SQL Server."
+      ],
+      "achievements": [
+        "Sample achievement: describe a result with a number, e.g. cut a manual process from hours to minutes.",
+        "Sample achievement: name something you shipped or improved."
+      ],
+      "skills": [
+        "React",
+        "JavaScript",
+        "CSS",
+        ".NET Core",
+        "SQL Server"
+      ],
+      "relatedSkillIds": [
+        "skill-002",
+        "skill-003",
+        "skill-004",
+        "skill-006"
+      ],
+      "relatedProjectIds": [
+        "project-001"
+      ],
+      "featured": true,
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "exp-002",
+      "isSample": true,
+      "role": "Example — Junior developer",
+      "company": {
+        "name": "Example Company",
+        "website": "",
+        "logo": "",
+        "location": ""
+      },
+      "employmentType": "Full-time",
+      "workArrangement": "On-site",
+      "location": "Bihar, India",
+      "startDate": "2022-06",
+      "endDate": "2023-12",
+      "current": false,
+      "shortDescription": "Example record: maintained an internal web application.",
+      "description": "Example record shipped with the template. It is here to show the layout, not to claim employment.",
+      "responsibilities": [
+        "Maintaining an internal web application.",
+        "Writing SQL queries and stored procedures."
+      ],
+      "achievements": [
+        "Sample achievement: describe a result with a number, e.g. cut a manual process from hours to minutes.",
+        "Sample achievement: name something you shipped or improved."
+      ],
+      "skills": [
+        "JavaScript",
+        "SQL Server"
+      ],
+      "relatedSkillIds": [
+        "skill-003",
+        "skill-006"
+      ],
+      "relatedProjectIds": [],
+      "featured": false,
+      "order": 2,
+      "enabled": true
+    }
+  ]
+}

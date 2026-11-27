@@ -1,0 +1,132 @@
+/* ==========================================================================
+   PRIMARY NAVIGATION - css/layout/navigation.css
+
+   Owns the link list rendered into nav#site-navigation by
+   js/core/navigation.js, its active state, and the mobile panel.
+
+   The mobile panel is a disclosure, not a modal: the toggle sets
+   aria-expanded and the header gets `.is-menu-open`. CSS only reacts to that
+   class, so the visual state cannot disagree with the announced one.
+
+   Breakpoint: 1120px, identical to DESKTOP_QUERY in js/core/navigation.js and
+   the media query in css/layout/header.css. All three must change together.
+   ========================================================================== */
+
+#site-navigation {
+  order: 3;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-list__item {
+  margin: 0;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.6rem var(--spacing-md);
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast) var(--ease-standard),
+    background-color var(--transition-fast) var(--ease-standard);
+}
+
+.nav-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
+  text-decoration: none;
+}
+
+/* Active section. aria-current is set by the module; the visual state is tied
+   to it rather than to a separate class so assistive tech and sighted visitors
+   always agree. */
+.nav-link.is-active,
+.nav-link[aria-current="true"],
+.nav-link[aria-current="page"] {
+  color: var(--color-primary);
+  background-color: var(--color-surface-raised);
+}
+
+/* ---- Mobile panel (below the breakpoint) -------------------------------- */
+
+@media (max-width: 1119px) {
+  #site-navigation {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    z-index: var(--z-header);
+    display: none;
+    max-block-size: calc(100vh - var(--header-height));
+    overflow-y: auto;
+    padding: var(--spacing-sm) var(--gutter) var(--spacing-md);
+    background-color: var(--color-surface);
+    border-block-end: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* The header is the containing block for the panel. It is `position: sticky`,
+     which already establishes one, so no extra positioning is needed here. */
+  .site-header.is-menu-open #site-navigation {
+    display: block;
+  }
+
+  .nav-link {
+    padding-block: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+/* ---- Desktop row -------------------------------------------------------- */
+
+@media (min-width: 1120px) {
+  #site-navigation {
+    position: static;
+    display: block;
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.1rem;
+  }
+
+  .nav-link {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.875rem;
+  }
+
+  /* The indicator is a line under the label, not a filled pill: eleven filled
+     pills in a row would out-shout the page content. */
+  .nav-link.is-active,
+  .nav-link[aria-current="true"],
+  .nav-link[aria-current="page"] {
+    color: var(--color-primary);
+    background-color: transparent;
+    box-shadow: inset 0 -2px 0 var(--color-primary);
+    border-radius: 0;
+  }
+}
+
+/* Forced colours: the active state must not rely on colour alone. */
+@media (forced-colors: active) {
+  .nav-link.is-active,
+  .nav-link[aria-current="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

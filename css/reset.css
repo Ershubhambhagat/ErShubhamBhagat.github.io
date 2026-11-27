@@ -1,0 +1,117 @@
+/* ==========================================================================
+   css/reset.css  ·  BROWSER NORMALISATION
+   ==========================================================================
+
+   Owner: builder-shell-css — Phase 3 (Foundation / Design System).
+   Loaded after css/variables.css and before css/main.css, so every rule here
+   is a starting point that the design system is allowed to override.
+
+   SCOPE
+   Neutralise cross-browser defaults only. Anything that expresses intent —
+   type scale, colour, spacing rhythm, focus rings — belongs to main.css.
+   A reset that also styles is the reason later files need !important.
+
+   WHY :where()
+   The wrap rules below use :where() so they carry zero specificity. A
+   component can then set `overflow-wrap: normal` or `list-style: disc` on the
+   same element without a specificity fight, which is the whole point of a
+   reset in a token-driven system.
+   ========================================================================== */
+
+/* Predictable box maths everywhere, including pseudo-elements that component
+   stylesheets use for badges, dividers and overlays. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove the UA margins that differ between engines (body, p, h1-h6, ul, ...).
+   main.css re-introduces the spacing the design actually wants, in tokens. */
+* {
+  margin: 0;
+}
+
+html {
+  /* Stop mobile Safari and Chrome from inflating text in landscape, which
+     otherwise breaks the fluid clamp() scale in main.css. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+
+body {
+  /* 100vh is still the fallback for browsers without dynamic viewport units;
+     the second declaration wins where supported. */
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Media defaults: no baseline gap under inline images, never wider than the
+   container. `svg` is deliberately excluded from display:block — icon-only
+   buttons and inline icons rely on inline flow inside text. */
+:where(img, picture, video, canvas) {
+  display: block;
+  max-width: 100%;
+}
+
+:where(img, video) {
+  height: auto;
+}
+
+:where(svg) {
+  max-width: 100%;
+}
+
+/* Form controls do not inherit typography from the page by default, which is
+   why unstyled inputs look like a different product. */
+:where(input, button, textarea, select) {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+/* Buttons are stripped so css/components/buttons.css is the only source of
+   button appearance. Until that file is implemented a <button> renders as
+   plain text — intentional: a half-styled default would be harder to remove
+   than an absent one. `cursor: pointer` stays because losing it is a
+   usability regression, not a visual choice. */
+:where(button) {
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: inherit;
+}
+
+:where(textarea) {
+  resize: vertical;
+}
+
+:where(fieldset) {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Lists keep their markers by default; only lists that declare themselves as
+   lists for assistive technology are stripped, which is the pattern the
+   navigation and section renderers use for <ul role="list">. */
+:where(ul[role="list"], ol[role="list"]) {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+/* Long unbroken strings (URLs in Bookmarks and the GitHub importer, hashes in
+   the JSON Manager) must wrap instead of widening the page. */
+:where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td) {
+  overflow-wrap: break-word;
+}
+
+/* [hidden] must win against any component display rule, hence !important.
+   The attribute is how optional JSON fields are hidden per the contract
+   ("Optional fields are hidden completely when absent"). */
+[hidden] {
+  display: none !important;
+}

@@ -1,0 +1,428 @@
+/* ==========================================================================
+   MODALS  ·  css/components/modals.css
+   ==========================================================================
+
+   Owner: the shared Modal component (Prompt/components/MODAL_COMPONENT.md).
+   Markup producer: js/core/modal-manager.js builds the <dialog> and mounts it in
+   #modal-root; js/components/modal.js adds the size/variant classes. No section
+   may build its own overlay, so every rule here applies to every dialog on the
+   page (project details, certificate preview, bookmark preview, JSON review).
+
+   Structure produced by the manager:
+
+     <dialog class="modal modal--lg" aria-labelledby="...">
+       <div class="modal__container">
+         <header class="modal__header">…<button data-modal-close>×</button></header>
+         <div class="modal__body">…</div>
+         <footer class="modal__footer">…</footer>
+       </div>
+     </dialog>
+
+   STACKING
+   A native <dialog> opened with showModal() is painted in the top layer, so it
+   sits above the sticky header and the toast stack without relying on z-index.
+   --z-modal is still declared for the fallback path where the manager opened the
+   dialog with the `open` attribute because showModal() was unavailable: there
+   the element is an ordinary fixed-position box and needs a layer of its own.
+
+   TOKENS ONLY
+   Panel colour --color-surface-raised, scrim --color-overlay, radius --radius-lg,
+   elevation --shadow-lg, motion --transition-normal x --animation-intensity.
+   A hardcoded colour here would silently opt the dialog out of Theme Studio.
+
+   MOTION
+   Only the entrance is animated. A native dialog disappears the moment close()
+   runs, so an exit animation would have to delay the close with a timer - the
+   component specification forbids delaying access to content, and a delayed
+   close also risks the visitor reopening while the old dialog is still leaving.
+   ========================================================================== */
+
+/* #modal-root itself must never occupy space in the page flow. */
+#modal-root:empty {
+  display: none;
+}
+
+/* ==========================================================================
+   1. DIALOG PANEL
+   ========================================================================== */
+
+dialog.modal {
+  /* Fixed + inset + margin auto keeps the fallback path centred; native
+     dialogs are centred by the UA in the same way. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+
+  width: min(calc(100% - 2 * var(--spacing-md)), 40rem); /* medium default */
+  max-width: none;
+  /* vh first for browsers without dynamic viewport units, dvh second so the
+     panel is not pushed off-screen by a mobile URL bar. */
+  max-height: calc(100vh - 2 * var(--spacing-md));
+  max-height: calc(100dvh - 2 * var(--spacing-md));
+
+  padding: 0;
+  overflow: hidden;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+
+  /* Only matters on the `open`-attribute fallback; in the top layer the element
+     is already above everything. */
+  z-index: var(--z-modal);
+}
+
+/* The scrim. ::backdrop exists only while the dialog is in the top layer. */
+dialog.modal::backdrop {
+  background: var(--color-overlay);
+}
+
+/* ---- Sizes (MODAL_COMPONENT.md § 6) ------------------------------------- */
+
+.modal--sm {
+  width: min(calc(100% - 2 * var(--spacing-md)), 26.25rem); /* 420px */
+}
+
+.modal--md {
+  width: min(calc(100% - 2 * var(--spacing-md)), 40rem); /* 640px */
+}
+
+.modal--lg {
+  width: min(calc(100% - 2 * var(--spacing-md)), 56.25rem); /* 900px */
+}
+
+.modal--xl {
+  width: min(calc(100% - 2 * var(--spacing-md)), 70rem); /* 1120px */
+}
+
+/* Full-screen dialogs keep a gutter so the scrim and the panel edge stay
+   distinguishable - a panel flush with the viewport reads as a page, not a dialog. */
+.modal--full {
+  width: calc(100% - 2 * var(--spacing-md));
+  height: calc(100vh - 2 * var(--spacing-md));
+  height: calc(100dvh - 2 * var(--spacing-md));
+  max-height: none;
+}
+
+/* ==========================================================================
+   2. INTERNAL LAYOUT
+   The container is the flex column that lets the body scroll while the header
+   and footer stay in place: a long certificate description must not push the
+   close button or the actions out of reach.
+   ========================================================================== */
+
+.modal__container {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+  min-height: 0;
+}
+
+.modal--full .modal__container {
+  height: 100%;
+}
+
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+
+  flex: none;
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+
+  border-block-end: 1px solid var(--color-border);
+}
+
+/*
+ * The manager always appends a header element, even when a dialog has neither a
+ * title nor a close control. An empty strip with a divider would look like a
+ * rendering bug, so an effectively empty header is removed from view. :has() is
+ * used because CSS cannot otherwise inspect the header's contents; where it is
+ * unsupported the header simply renders at its natural (still small) height.
+ */
+.modal__header:not(:has(.modal__title)):not(:has([data-modal-close])) {
+  display: none;
+}
+
+.modal__header > div {
+  min-width: 0;
+}
+
+.modal__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.25;
+  color: var(--color-text-primary);
+  /* Long owner-provided titles must wrap instead of pushing the close button out. */
+  overflow-wrap: anywhere;
+}
+
+/* The title receives programmatic focus (tabindex="-1") when a dialog opens;
+   a ring around a heading would be visual noise, and the keyboard focus ring
+   rule in css/main.css already excludes non-keyboard focus. */
+.modal__title:focus {
+  outline: none;
+}
+
+.modal__description {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.modal__body {
+  /* min-height: 0 is what actually allows this box to shrink and scroll inside
+     the flex column. Removing it makes long content overflow the panel. */
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  padding: var(--spacing-lg);
+  /* Long URLs and unbroken identifiers from JSON must wrap, never widen the
+     dialog or create a horizontal scrollbar. */
+  overflow-wrap: anywhere;
+}
+
+.modal__body > * {
+  max-width: 100%;
+}
+
+.modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+
+  flex: none;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-block-start: 1px solid var(--color-border);
+}
+
+/* Footer content built by js/components/modal.js: a plain action row. */
+.modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-inline-start: auto;
+}
+
+/* ==========================================================================
+   3. CLOSE CONTROL
+   The manager renders <button class="btn btn--icon" data-modal-close>.
+   css/components/buttons.css owns the shared button appearance, but the dialog
+   must remain closable and recognisable before that stylesheet exists, so this
+   block gives the header control its own shape (circular hit area, 44px target).
+   buttons.css can retune colours freely; only size and placement are fixed here.
+   ========================================================================== */
+
+.modal__header [data-modal-close] {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  padding: 0;
+
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-text-secondary);
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+
+  transition:
+    color var(--transition-fast) var(--ease-standard),
+    background-color var(--transition-fast) var(--ease-standard);
+}
+
+.modal__header [data-modal-close]:hover {
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+}
+
+/* ==========================================================================
+   4. PREVIEW CONTENT
+   Built by openPreviewModal(): a figure that preserves the image's own ratio.
+   ========================================================================== */
+
+.modal__figure {
+  display: grid;
+  gap: var(--spacing-sm);
+  margin: 0;
+  justify-items: center;
+}
+
+.modal__media {
+  display: block;
+  /* Both bounds, so a portrait screenshot is limited by height and a wide one
+     by width - neither is stretched. */
+  max-inline-size: 100%;
+  max-block-size: min(70vh, 34rem);
+  max-block-size: min(70dvh, 34rem);
+  inline-size: auto;
+  block-size: auto;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.modal__caption {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Shown instead of a broken image; deliberately styled as message text, not as
+   an empty image frame. */
+.modal__media-error {
+  margin: 0;
+  padding: var(--spacing-lg);
+  color: var(--color-text-secondary);
+  text-align: center;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   5. CONFIRMATION
+   The consequence sentence is the visual weight of the dialog; the buttons stay
+   at the bottom right so cancel-then-confirm reads left to right.
+   ========================================================================== */
+
+.modal--confirm .modal__body {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.modal--confirm .modal__footer {
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   6. ENTRANCE MOTION
+   Gated on prefers-reduced-motion: no-preference so a visitor who asked for
+   less motion never sees the transition at all, and the dialog is usable
+   instantly. --animation-intensity is Theme Studio's 0-1 multiplier; 0 makes
+   the duration 0, which is equivalent to no animation.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog.modal[open] {
+    animation: modal-enter calc(var(--transition-normal) * var(--animation-intensity, 1))
+      var(--ease-out-soft) both;
+  }
+
+  dialog.modal[open]::backdrop {
+    animation: modal-scrim-enter calc(var(--transition-normal) * var(--animation-intensity, 1))
+      var(--ease-standard) both;
+  }
+}
+
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes modal-scrim-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Explicit opt-out, per MODAL_COMPONENT.md § 19: the component must also honour
+   a reduction request that arrives after load. */
+@media (prefers-reduced-motion: reduce) {
+  dialog.modal,
+  dialog.modal::backdrop {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE
+   Below 640px a dialog is nearly the full viewport: a 420px "small" dialog with
+   1rem side margins leaves too little text width on a 320px screen.
+   ========================================================================== */
+
+@media (max-width: 639px) {
+  dialog.modal,
+  .modal--sm,
+  .modal--md,
+  .modal--lg,
+  .modal--xl {
+    width: calc(100% - 2 * var(--spacing-sm));
+    max-height: calc(100vh - 2 * var(--spacing-sm));
+    max-height: calc(100dvh - 2 * var(--spacing-sm));
+    border-radius: var(--radius-md);
+  }
+
+  .modal--full {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .modal__header {
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
+  }
+
+  .modal__body {
+    padding: var(--spacing-md);
+  }
+
+  .modal__footer {
+    padding: var(--spacing-md);
+  }
+
+  /* Actions stack full-width so neither button becomes a narrow tap target. */
+  .modal__actions {
+    inline-size: 100%;
+    margin-inline-start: 0;
+  }
+
+  .modal__actions > * {
+    flex: 1 1 auto;
+  }
+}
+
+/*
+ * Short viewports (landscape phones, split screens): trim vertical padding
+ * before the body loses its scrollable area entirely.
+ */
+@media (max-height: 480px) {
+  .modal__header,
+  .modal__footer {
+    padding-block: var(--spacing-sm);
+  }
+
+  .modal__body {
+    padding-block: var(--spacing-md);
+  }
+
+  .modal--full {
+    height: calc(100dvh - 2 * var(--spacing-xs));
+  }
+}

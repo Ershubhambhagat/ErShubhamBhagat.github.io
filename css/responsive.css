@@ -1,0 +1,118 @@
+/* ==========================================================================
+   css/responsive.css  ·  BREAKPOINT LAYER
+   ==========================================================================
+
+   Owner: builder-shell-css — Phase 3 (Foundation / Design System).
+   Depends on: css/variables.css, css/main.css. Loaded after main.css so these
+   rules win at equal specificity.
+
+   WHY MOBILE-FIRST WITH min-width ONLY
+   The mobile layout is the base design in main.css; each query here *adds*
+   room. Max-width queries would force main.css to describe a phone layout and
+   then undo it, and mixing both directions is how breakpoint conflicts appear.
+   No max-width query exists in this project for that reason.
+
+   BREAKPOINT MAP
+   ---------------------------------------------------------------------------
+   < 480   base        single column; 68px header; 1.25rem minimum gutter;
+                       one card per row; compact section rhythm.
+   >= 480  large phone two cards per row become possible
+                       (--auto-grid-min 14rem); gutter floor 1.5rem; taller
+                       placeholder surface.
+   >= 768  tablet      header grows to 76px; side-by-side section layouts fit;
+                       section rhythm and gutter grow; --auto-grid-min 16rem.
+   >= 1024 laptop      header 84px; three card columns; gutter reaches 3rem;
+                       rhythm grows again; --auto-grid-min 18rem.
+   >= 1200 desktop     container is fully used (--container-max 1200px);
+                       rhythm 7rem; --auto-grid-min 20rem for four columns on
+                       wide screens.
+
+   WHAT IS NOT HERE
+   Font sizes: the clamp() type scale in main.css is continuous, so restating
+   sizes per breakpoint would only create a visible jump. Section internals
+   (their own grids, sticky columns, card density) belong to
+   css/sections/<section>.css and must declare their own queries using the
+   same four numbers.
+   ---------------------------------------------------------------------------
+   Dev note: every rule below changes exactly one of four things —
+   --header-height, --gutter, --section-space, --auto-grid-min — or a
+   placeholder height. If a future change needs a fifth kind of adjustment,
+   prefer a token over a new selector.
+   ========================================================================== */
+
+/* ==========================================================================
+   >= 480px — LARGE PHONE
+   Two 14rem cards fit side by side once the gutter stops eating the width,
+   and a 1.5rem gutter stops the text from touching the screen edge on
+   landscape phones.
+   ========================================================================== */
+@media (min-width: 480px) {
+  :root {
+    --gutter: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .auto-grid {
+    --auto-grid-min: 14rem;
+  }
+
+  .section-placeholder {
+    min-height: 11rem;
+  }
+}
+
+/* ==========================================================================
+   >= 768px — TABLET
+   The header gains height because navigation becomes horizontal here
+   (css/layout/navigation.css), and the taller bar must stay subtracted from
+   anchor scroll offsets in main.css. The larger rhythm gives the two-column
+   section layouts room to breathe.
+   ========================================================================== */
+@media (min-width: 768px) {
+  :root {
+    --header-height: 76px;
+    --section-space: clamp(3.5rem, 6vw, 5rem);
+  }
+
+  .auto-grid {
+    --auto-grid-min: 16rem;
+  }
+
+  .section-placeholder {
+    min-height: 13rem;
+  }
+}
+
+/* ==========================================================================
+   >= 1024px — LAPTOP
+   Three card columns and the full gutter width. This is the first breakpoint
+   where a 1200px container can show content and 2.5rem+ gutters at once, so
+   the rhythm grows with it.
+   ========================================================================== */
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 84px;
+    --gutter: clamp(2rem, 4vw, 3rem);
+    --section-space: clamp(4.5rem, 5.5vw, 6rem);
+  }
+
+  .auto-grid {
+    --auto-grid-min: 18rem;
+  }
+}
+
+/* ==========================================================================
+   >= 1200px — DESKTOP
+   The container reaches --container-max and no longer grows, so the extra
+   width goes into whitespace: a 7rem section rhythm and a 20rem card track
+   that yields four columns inside 1200px.
+   ========================================================================== */
+@media (min-width: 1200px) {
+  :root {
+    --gutter: 3.5rem;
+    --section-space: 7rem;
+  }
+
+  .auto-grid {
+    --auto-grid-min: 20rem;
+  }
+}

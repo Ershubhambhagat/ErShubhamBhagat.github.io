@@ -1,0 +1,151 @@
+{
+  "_guide": [
+    "// career-timeline.json - events shown on the My Journey timeline.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: heading text plus on/off switches for search, filters, sorting and detail views.",
+    "// Each event points at a record in another dataset; the section reads that record's title and text.",
+    "// REQUIRED per event: id, type, referenceId, date.",
+    "// id: unique and stable, prefix event- (event-001).",
+    "// type: one of experience, project, certificate, education, learning.",
+    "// referenceId: id of the record, e.g. project-001 or exp-001. It must exist.",
+    "// date / endDate: YYYY, YYYY-MM or YYYY-MM-DD. An event without a valid date is skipped.",
+    "// featured: true emphasises the marker. order: manual position.",
+    "// enabled: false hides the event.",
+    "// eventTypes[] below controls the filter labels; keep the five ids above."
+  ],
+  "schemaVersion": 1,
+  "sampleData": true,
+  "section": {
+    "enabled": true,
+    "title": "My journey",
+    "subtitle": "Work, study and projects on one timeline. Each entry is resolved from the dataset that owns it, so titles never drift.",
+    "layout": "vertical",
+    "defaultSort": "newest",
+    "showSearch": false,
+    "showFilters": true,
+    "showYearGroups": true,
+    "showFeaturedOnlyOption": true,
+    "showLoadMore": false,
+    "itemsPerPage": 10,
+    "showDescriptions": true
+  },
+  "eventTypes": [
+    {
+      "id": "experience",
+      "label": "Experience",
+      "enabled": true
+    },
+    {
+      "id": "project",
+      "label": "Project",
+      "enabled": true
+    },
+    {
+      "id": "certificate",
+      "label": "Certificate",
+      "enabled": true
+    },
+    {
+      "id": "education",
+      "label": "Education",
+      "enabled": true
+    },
+    {
+      "id": "learning",
+      "label": "Learning",
+      "enabled": true
+    }
+  ],
+  "events": [
+    {
+      "id": "event-001",
+      "type": "learning",
+      "referenceId": "journey-001",
+      "date": "2026-02",
+      "endDate": null,
+      "featured": true,
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "event-002",
+      "type": "certificate",
+      "referenceId": "cert-001",
+      "date": "2025-03-14",
+      "endDate": null,
+      "featured": false,
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "event-003",
+      "type": "experience",
+      "referenceId": "exp-001",
+      "date": "2024-01",
+      "endDate": null,
+      "featured": true,
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "id": "event-004",
+      "type": "learning",
+      "referenceId": "journey-003",
+      "date": "2024-04",
+      "endDate": "2024-08",
+      "featured": false,
+      "order": 4,
+      "enabled": true
+    },
+    {
+      "id": "event-005",
+      "type": "project",
+      "referenceId": "project-006",
+      "date": "2024-05",
+      "endDate": "2024-08",
+      "featured": false,
+      "order": 5,
+      "enabled": true
+    },
+    {
+      "id": "event-006",
+      "type": "project",
+      "referenceId": "project-001",
+      "date": "2023-01",
+      "endDate": "2023-05",
+      "featured": false,
+      "order": 6,
+      "enabled": true
+    },
+    {
+      "id": "event-007",
+      "type": "experience",
+      "referenceId": "exp-002",
+      "date": "2022-06",
+      "endDate": "2023-12",
+      "featured": false,
+      "order": 7,
+      "enabled": true
+    },
+    {
+      "id": "event-008",
+      "type": "project",
+      "referenceId": "project-003",
+      "date": "2022-09",
+      "endDate": "2022-12",
+      "featured": false,
+      "order": 8,
+      "enabled": true
+    },
+    {
+      "id": "event-009",
+      "type": "education",
+      "referenceId": "edu-002",
+      "date": "2019-06",
+      "endDate": "2021-03",
+      "featured": false,
+      "order": 9,
+      "enabled": true
+    }
+  ]
+}

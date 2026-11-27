@@ -1,0 +1,214 @@
+/* ==========================================================================
+   PROFILE SECTION - css/sections/profile.css
+
+   The hero built by js/sections/profile.js. Two columns on wide screens: the
+   introduction, then an "at a glance" card with the monogram and the facts.
+
+   The monogram stands in for a portrait on purpose. .build/FACTS.md records that
+   the old photo may not be reused without an explicit decision, and a dashed
+   frame with initials is honest about being a placeholder for the owner, while
+   still looking deliberate to a visitor.
+   ========================================================================== */
+
+/* Two columns only at 900px and up. Below that the fact card follows the intro:
+   at 440px a side-by-side layout would squeeze both to unreadable widths. */
+.profile-hero {
+  display: grid;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+.profile-hero__intro {
+  display: grid;
+  gap: var(--spacing-sm);
+  max-width: 64ch;
+}
+
+.profile-hero__eyebrow {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.profile-hero__name {
+  margin: 0;
+  font-size: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.profile-hero__alias {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.profile-hero__role {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.profile-hero__summary {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.profile-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-block-start: var(--spacing-sm);
+}
+
+/* ---- Social links ------------------------------------------------------- */
+
+.social-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem 0.25rem 0.3rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  transition: color var(--transition-fast) var(--ease-standard),
+    border-color var(--transition-fast) var(--ease-standard);
+}
+
+.social-link:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+  text-decoration: none;
+}
+
+.social-link__mark {
+  display: inline-grid;
+  place-content: center;
+  inline-size: 22px;
+  block-size: 22px;
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-full);
+}
+
+/* ---- At a glance card --------------------------------------------------- */
+
+.profile-card {
+  display: grid;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-card__portrait {
+  display: grid;
+  place-content: center;
+  inline-size: min(100%, 11rem);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  /* A dashed frame says "placeholder for the owner" without looking broken. */
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-raised);
+}
+
+.profile-card__initials {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.03em;
+  color: var(--color-primary);
+}
+
+.profile-facts {
+  display: grid;
+  gap: var(--spacing-sm);
+  margin: 0;
+}
+
+.profile-facts__row {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.profile-facts__label {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.profile-facts__value {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.profile-facts__link {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.profile-facts__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- About -------------------------------------------------------------- */
+
+.profile-about {
+  max-width: 70ch;
+  margin-block-start: var(--spacing-xl);
+  padding-block-start: var(--spacing-lg);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.profile-about__title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---- Wide screens ------------------------------------------------------- */
+
+@media (min-width: 900px) {
+  .profile-hero {
+    grid-template-columns: minmax(0, 1.4fr) minmax(250px, 0.6fr);
+    gap: var(--spacing-2xl);
+  }
+
+  .profile-card {
+    position: sticky;
+    inset-block-start: calc(var(--header-height) + var(--spacing-lg));
+  }
+}

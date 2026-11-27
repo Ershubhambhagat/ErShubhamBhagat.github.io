@@ -1,0 +1,197 @@
+{
+  "_guide": [
+    "// bookmarks.json - the Site & tools collection.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: heading text plus on/off switches for search, filters, sorting and detail views.",
+    "// REQUIRED per bookmark: id, name, url. Everything else is optional.",
+    "// id: unique and stable, prefix bookmark- (bookmark-001).",
+    "// url: full https URL, or a path inside this repository starting with ./ .",
+    "//      A ./ path must point at a file that exists; scripts/validate-data.mjs checks it.",
+    "// description: one sentence on what the page offers.",
+    "// categoryId: must match an id in categories[] below.",
+    "// faviconUrl / image / screenshot: optional image paths; empty removes the slot.",
+    "// tags: short labels shown as badges.",
+    "// featured / favorite: booleans used for ordering. Visitor favourites are stored in the browser.",
+    "// order: manual position. enabled: false hides the bookmark."
+  ],
+  "schemaVersion": 1,
+  "section": {
+    "enabled": true,
+    "title": "Site & tools",
+    "description": "The pages that already live in this repository.",
+    "defaultView": "grid",
+    "showFavoritesFirst": true
+  },
+  "categories": [
+    {
+      "id": "site",
+      "name": "This site",
+      "description": "Pages built and maintained here.",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "tools",
+      "name": "Tools",
+      "description": "Small utilities that run in the browser.",
+      "order": 2,
+      "enabled": true
+    }
+  ],
+  "bookmarks": [
+    {
+      "id": "bookmark-001",
+      "name": "Blog",
+      "url": "./Blog/HTML/blog.html",
+      "description": "Notes on web tools, AI services and things worth trying.",
+      "categoryId": "site",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": true,
+      "favorite": true,
+      "tags": [
+        "writing"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "bookmark-002",
+      "name": "Project page",
+      "url": "./Project/MyProject.html",
+      "description": "The original list of projects, from which the Projects section above is filled.",
+      "categoryId": "site",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": true,
+      "favorite": false,
+      "tags": [
+        "projects"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "bookmark-003",
+      "name": "Bookmarks",
+      "url": "./BookMark/index.html",
+      "description": "The first version of the bookmark collection.",
+      "categoryId": "site",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": false,
+      "favorite": false,
+      "tags": [
+        "links"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "id": "bookmark-004",
+      "name": "Sangrampur",
+      "url": "./Sangrampur/index.html",
+      "description": "A page about Sangrampur.",
+      "categoryId": "site",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": false,
+      "favorite": false,
+      "tags": [
+        "place"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 4,
+      "enabled": true
+    },
+    {
+      "id": "bookmark-005",
+      "name": "Screenshot tool",
+      "url": "./Future/HTML/Screenshot.html",
+      "description": "In-browser screenshot utility.",
+      "categoryId": "tools",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": false,
+      "favorite": false,
+      "tags": [
+        "image"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 5,
+      "enabled": true
+    },
+    {
+      "id": "bookmark-006",
+      "name": "CSS editor",
+      "url": "./CSSEditer/Editer.html",
+      "description": "A small editor for trying CSS in the browser.",
+      "categoryId": "tools",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": false,
+      "favorite": false,
+      "tags": [
+        "css"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 6,
+      "enabled": true
+    },
+    {
+      "id": "bookmark-007",
+      "name": "Code snippet",
+      "url": "./CodeSnippet/CodeSnippet.html",
+      "description": "Stored snippets, kept in one place.",
+      "categoryId": "tools",
+      "faviconUrl": "",
+      "image": "",
+      "screenshot": "",
+      "featured": false,
+      "favorite": false,
+      "tags": [
+        "code"
+      ],
+      "preview": {
+        "enabled": false,
+        "mode": "link"
+      },
+      "notes": "",
+      "order": 7,
+      "enabled": true
+    }
+  ]
+}

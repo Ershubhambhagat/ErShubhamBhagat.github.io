@@ -1,0 +1,893 @@
+/* ==========================================================================
+   css/main.css  ·  DOCUMENT DEFAULTS, TYPE SCALE, LAYOUT SHELL
+   ==========================================================================
+
+   Owner: builder-shell-css — Phase 3 (Foundation / Design System).
+   Depends on: css/variables.css (every value below is a token reference or a
+   member of the type scale defined in this file). Loaded after css/reset.css.
+
+   LOAD ORDER REQUIRED BY THE FOUNDATION-OWNED index.html
+     css/variables.css
+     css/reset.css
+     css/main.css
+     css/responsive.css
+     css/animations.css
+     css/layout/header.css, footer.css, navigation.css
+     css/components/<name>.css   (one file per shared component)
+     css/sections/<name>.css     (one file per section id)
+   This file does not @import the later files: one hidden @import chain per
+   page is slower and makes the real cascade invisible in the HTML. The
+   foundation agent owns the <link> list; layout/component/section files are
+   placeholders at this phase and carry no rules yet.
+
+   WHAT IS DELIBERATELY ABSENT
+   No component or section selector appears here. This file only knows about
+   the document, the type scale, the container, the vertical rhythm between
+   <section> children of #main-content, focus visibility and four utilities.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. DOCUMENT DEFAULTS
+   ========================================================================== */
+
+html {
+  /* Keep rem tied to the visitor's browser text size (accessibility), and let
+     Theme Studio scale the whole rem-based scale by changing this one value. */
+  font-size: 100%;
+
+  /* Smooth anchor navigation is the documented behaviour for hash links
+     (Prompt/sections/01_FOUNDATION.md § 11). animations.css switches this
+     back to `auto` under prefers-reduced-motion. */
+  scroll-behavior: smooth;
+
+  /* Sticky header offset for native #section jumps. Both properties are needed:
+     scroll-padding handles keyboard/script scrolling, and the per-section
+     scroll-margin in § 4 handles direct hash loads. */
+  scroll-padding-block-start: calc(var(--header-height) + var(--spacing-md));
+
+  background-color: var(--color-background);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: var(--font-weight-normal);
+  line-height: 1.65;
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+
+  /* `clip` rather than `hidden`: hidden on <body> turns the body into a scroll
+     container and breaks `position: sticky` for the header in some engines.
+     This only guards against decorative overflow at narrow widths. */
+  overflow-x: clip;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection uses the brand fill so copied text looks intentional rather than
+   like an OS default leaking into a dark canvas. */
+::selection {
+  color: var(--color-primary-contrast);
+  background-color: var(--color-primary);
+}
+
+/* ==========================================================================
+   2. TYPE SCALE
+   --------------------------------------------------------------------------
+   Fluid scale: every heading interpolates between a small-screen and a
+   large-screen value, so no breakpoint in responsive.css has to restate font
+   sizes. The vw term carries the growth; the rem term keeps the minimum tied
+   to the visitor's text size.
+
+   The scale is rem-based, so raising html's font-size for accessibility (or
+   from Theme Studio) enlarges headings and body text together.
+   ========================================================================== */
+
+:where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 1.55rem + 2.9vw, 3.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 1.35rem + 1.7vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.375rem, 1.2rem + 0.9vw, 1.75rem);
+  line-height: 1.25;
+}
+
+h4 {
+  font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3125rem);
+  line-height: 1.3;
+  letter-spacing: -0.008em;
+}
+
+h5 {
+  font-size: 1rem;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+h6 {
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Display size for the profile name only. Kept separate from h1 so a section
+   can use a visually smaller h1 without losing semantic order. */
+.display {
+  font-family: var(--font-heading);
+  font-size: clamp(2.75rem, 1.6rem + 5vw, 5rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* Small uppercase kicker used above section titles. */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Intro paragraph: one step above body size, secondary ink. */
+.lead {
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Heading spacing is intentionally minimal: section stylesheets own the
+   spacing inside their own header block, this only stops headings from
+   touching the following text in unstyled content. */
+:where(h1, h2, h3, h4, h5, h6) + :where(p, ul, ol, div, figure, .lead) {
+  margin-block-start: var(--spacing-md);
+}
+
+/* ==========================================================================
+   3. PROSE
+   --------------------------------------------------------------------------
+   Opt-in wrapper (.prose) for long-form rendered content: project
+   descriptions, certificate detail modals, the JSON Manager's help text.
+   Sections must not restyle raw p/code/hr globally; they wrap in .prose.
+   ========================================================================== */
+
+.prose {
+  color: var(--color-text-secondary);
+}
+
+.prose > * + * {
+  margin-block-start: var(--spacing-md);
+}
+
+.prose :where(h2, h3, h4) {
+  color: var(--color-text-primary);
+  margin-block-start: var(--spacing-lg);
+}
+
+.prose :where(ul, ol) {
+  padding-inline-start: 1.25rem;
+}
+
+.prose :where(li) + :where(li) {
+  margin-block-start: var(--spacing-xs);
+}
+
+.prose :where(strong, b) {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.prose blockquote {
+  padding-inline-start: var(--spacing-md);
+  border-inline-start: 2px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* Inline code and fenced blocks: the GitHub importer and JSON Manager render
+   repository names and raw JSON, which must be monospaced to be scannable. */
+.prose :where(code, kbd, samp) {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.prose pre {
+  padding: var(--spacing-md);
+  overflow-x: auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 0.875rem;
+}
+
+.prose hr {
+  border: 0;
+  border-block-start: 1px solid var(--color-border);
+  margin-block: var(--spacing-xl);
+}
+
+.prose :where(img, figure img) {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.prose figcaption {
+  margin-block-start: var(--spacing-sm);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   4. LINKS
+   --------------------------------------------------------------------------
+   Underlines stay visible: colour alone is not an accessible link affordance,
+   and most links in this portfolio sit inside muted body copy. Navigation and
+   buttons opt out locally where they are already unmistakable controls.
+   ========================================================================== */
+
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.2em;
+  transition: color var(--transition-fast) var(--ease-standard),
+    text-underline-offset var(--transition-fast) var(--ease-standard);
+}
+
+a:hover {
+  color: var(--color-secondary);
+  text-underline-offset: 0.3em;
+}
+
+/* ==========================================================================
+   5. FOCUS VISIBILITY
+   --------------------------------------------------------------------------
+   One ring for the whole application so keyboard users see a consistent
+   target on links, buttons, inputs and the search field. Components must not
+   redefine the ring; they may only change outline-offset when the ring would
+   be clipped by an overflow container.
+   ========================================================================== */
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Pointer users get no ring on mouse click; keyboard users always do. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Windows High Contrast / forced-colours mode replaces author colours, so the
+   ring must be expressed with a system colour to stay visible. */
+@media (forced-colors: active) {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* ==========================================================================
+   6. LAYOUT CONTAINER
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* For prose-heavy blocks (contact copy, importer help) where 1200px would be
+   an unreadable line length. */
+.container--narrow {
+  max-width: 68ch;
+}
+
+/* Opt-in responsive grid for card collections. `min(100%, …)` prevents the
+   classic overflow when the viewport is narrower than one track; the track
+   minimum is a custom property so a section can tune density without writing
+   its own media queries. */
+.auto-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--auto-grid-min, 17rem)), 1fr)
+  );
+}
+
+/* ==========================================================================
+   7. SECTION RHYTHM
+   --------------------------------------------------------------------------
+   The eleven <section> children of #main-content are generated by their own
+   modules, so the vertical rhythm between them is owned centrally here: one
+   uniform block padding that grows with the viewport. Individual sections
+   must not set their own outer padding, otherwise the rhythm desynchronises
+   the moment one section changes.
+   ========================================================================== */
+
+#main-content {
+  display: block;
+}
+
+#main-content > section {
+  position: relative;
+  /* Vertical rhythm is a token (--section-space) so responsive.css can step
+     it per breakpoint without restating this clamp. */
+  padding-block: var(--section-space);
+
+  /* Direct hash loads (#projects) and navigation clicks both land below the
+     sticky header instead of underneath it. */
+  scroll-margin-block-start: calc(var(--header-height) + var(--spacing-md));
+}
+
+/* An empty section must not leave a gap while its module has not rendered yet.
+   `:empty` only matches truly empty element content, so a rendered section
+   with a loading placeholder keeps its padding. */
+#main-content > section:empty {
+  display: none;
+}
+
+/* ==========================================================================
+   8. PLACEHOLDER SURFACE
+   --------------------------------------------------------------------------
+   Until a section module renders real content, #main-content would otherwise
+   be a blank page with no hint that the shell is working. A section module (or
+   the temporary index.html markup) can drop this in to make the empty state
+   readable and obviously unfinished. It must not survive the section's
+   implementation phase.
+   ========================================================================== */
+
+.section-placeholder {
+  display: grid;
+  place-content: center;
+  gap: var(--spacing-sm);
+  min-height: clamp(9rem, 18vh, 13rem);
+  padding: clamp(var(--spacing-lg), 5vw, var(--spacing-xl));
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.section-placeholder :where(h2, h3, h4) {
+  font-size: 1.0625rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0;
+}
+
+/* ==========================================================================
+   9. UTILITIES
+   ========================================================================== */
+
+/* Accessible label for icon-only controls and section headings that are
+   visually redundant. Standard clip-path pattern: still in the accessibility
+   tree, occupies no space, cannot be scrolled into view. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Page-level skip link. Lives here because it is part of the document shell,
+   not of the header component: css/layout/header.css must not redefine it, and
+   the markup must be the first focusable element in <body>. Off-screen by
+   transform (not display:none) so it stays focusable, and it becomes visible
+   on keyboard focus. */
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--spacing-sm);
+  inset-inline-start: var(--spacing-sm);
+  z-index: var(--z-skip-link);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-contrast);
+  background-color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transform: translateY(calc(-100% - var(--spacing-xl)));
+  transition: transform var(--transition-fast) var(--ease-standard);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   10. NOSCRIPT NOTICE
+   --------------------------------------------------------------------------
+   index.html ships a <noscript> banner as the very first child of <body>, and
+   it is the only content a visitor without JavaScript can read. It therefore
+   belongs to the document shell, like .skip-link above, not to a section.
+
+   The <noscript> wrapper is display:inline by default, so the banner is set
+   to block and given the gutter itself: it sits outside .container (it has to
+   precede the header for a screen reader to announce it first) and would
+   otherwise start at the viewport edge.
+
+   The warning border is the only status signal that survives without colour
+   perception, so it is not decorative and must not be removed in favour of a
+   tinted background alone.
+   ========================================================================== */
+
+.noscript-notice {
+  display: block;
+  padding: var(--spacing-md) var(--gutter);
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-raised);
+  border-block-end: 3px solid var(--color-warning);
+}
+
+/* Cap the line length: this banner spans the full viewport, and an unbroken
+   140-character line is the one place a reader cannot skip past it. */
+.noscript-notice p {
+  max-width: 68ch;
+}
+
+.noscript-notice strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================================================
+   11. SECTION SCAFFOLDING
+   --------------------------------------------------------------------------
+   Every section module builds this shape through js/core/section-kit.js:
+
+     section > .container.section__inner > .section__header + .section__body
+
+   The outer <section> keeps #main-content's rhythm (§ 7). The container caps the
+   line length and aligns the content with the header and footer. The header block
+   is owned here so eleven sections cannot drift apart typographically.
+
+   A section without a title (the profile hero owns its own h1) simply has no
+   .section__header; the body still sits in the container.
+   ========================================================================== */
+
+.section__header {
+  max-width: 68ch;
+  margin-block-end: var(--spacing-xl);
+}
+
+.section__eyebrow {
+  margin-block-end: var(--spacing-xs);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.section__title {
+  margin: 0;
+}
+
+.section__intro {
+  margin-block-start: var(--spacing-sm);
+  max-width: 66ch;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   12. FORM FIELD PRIMITIVE
+   --------------------------------------------------------------------------
+   Shared by the contact form, the project search, Global Search and the JSON
+   Manager. Lives here rather than in a component file because there is no
+   forms.css in the contract's path list and every consumer needs the identical
+   control: same height, same focus treatment, same placeholder colour.
+   ========================================================================== */
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field__label {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.field__input {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast) var(--ease-standard);
+}
+
+.field__input:hover {
+  border-color: var(--color-text-muted);
+}
+
+.field__input:focus-visible {
+  border-color: var(--color-primary);
+}
+
+.field__input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.field__input--textarea {
+  min-block-size: 8rem;
+  resize: vertical;
+}
+
+/* Native search inputs draw their own clear button in WebKit; the site's
+   controls are styled, so it is removed to avoid two different X marks. */
+.field__input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ==========================================================================
+   13. TAGS, META LISTS, PROGRESS
+   --------------------------------------------------------------------------
+   Small shared data displays. All three are built by js/core/section-kit.js and
+   must look the same in a card, a timeline item and a modal.
+   ========================================================================== */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meta-list {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+}
+
+.meta-list__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  font-size: 0.875rem;
+}
+
+.meta-list__label {
+  color: var(--color-text-muted);
+}
+
+.meta-list__value {
+  margin: 0;
+  text-align: end;
+  color: var(--color-text-secondary);
+}
+
+.progress {
+  position: relative;
+  block-size: 8px;
+  margin-block: var(--spacing-sm) 1.15rem;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.progress__fill {
+  block-size: 100%;
+  background-color: var(--color-primary);
+  border-radius: inherit;
+  transition: inline-size var(--transition-slow) var(--ease-out-soft);
+}
+
+.progress__caption {
+  position: absolute;
+  inset-block-start: calc(100% + 2px);
+  inset-inline-end: 0;
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   14. EMPTY STATE, SAMPLE NOTICE, STATUS CHIPS
+   ========================================================================== */
+
+.empty-state {
+  display: grid;
+  gap: var(--spacing-xs);
+  place-content: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  text-align: center;
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.empty-state__title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.empty-state__text {
+  max-width: 52ch;
+  margin-inline: auto;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+/* The example-record notice is deliberately not an error style: nothing is
+   broken, but the visitor must be able to tell a sample from a real claim. */
+.sample-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-block-end: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+}
+
+.sample-notice__dismiss {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.status-pill {
+  display: inline-flex;
+  /* Grid/flex parents stretch inline-flex children; keep the pill hugging its
+     label instead of becoming a full-width bar. */
+  justify-self: start;
+  align-self: start;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.status-pill__dot {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  background-color: var(--color-success);
+  border-radius: var(--radius-full);
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.status-chip--active {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.status-chip--done {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* ==========================================================================
+   15. CARD GRID
+   --------------------------------------------------------------------------
+   A named alias for the usual auto-fill collection. Kept separate from
+   .auto-grid because cards need a slightly wider minimum track, and because a
+   section may opt into .card-grid without inheriting .auto-grid's density.
+   ========================================================================== */
+
+.card-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, 18rem), 1fr)
+  );
+}
+
+/* ==========================================================================
+   16. TOOLS DOCK
+   --------------------------------------------------------------------------
+   The three cross-section features (search, theme, data) insert their launcher
+   buttons here (js/core/section-kit.js, ensureToolsDock). One fixed column at
+   the bottom-right keeps them from overlapping and leaves the bottom-left free
+   for #back-to-top (css/layout/footer.css).
+
+   z-index: below the modal layer, above the page. The dock must never sit on top
+   of a dialog.
+   ========================================================================== */
+
+.tools-dock {
+  position: fixed;
+  inset-block-end: var(--spacing-md);
+  inset-inline-end: var(--spacing-md);
+  z-index: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+}
+
+.tools-dock__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 0.5rem 0.85rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: color var(--transition-fast) var(--ease-standard),
+    border-color var(--transition-fast) var(--ease-standard);
+}
+
+.tools-dock__button:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
+
+.tools-dock__button svg {
+  flex-shrink: 0;
+}
+
+.tools-dock__shortcut {
+  padding: 0.05rem 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 599px) {
+  .tools-dock {
+    /* Three stacked pills would cover a third of a phone screen; a single row
+       of icon buttons along the bottom-right is out of the reading column and
+       still thumb-reachable. */
+    flex-direction: row;
+    inset-block-end: var(--spacing-sm);
+    inset-inline-end: var(--spacing-sm);
+    gap: 0.35rem;
+  }
+
+  .tools-dock__label,
+  .tools-dock__shortcut {
+    display: none;
+  }
+
+  .tools-dock__button {
+    padding: 0.6rem;
+  }
+
+  /* Keep the last line of the footer clear of the fixed row. */
+  body {
+    padding-block-end: 4rem;
+  }
+}
+
+/* ==========================================================================
+   17. LINK WITH ICON
+   ========================================================================== */
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.link__icon {
+  display: inline-flex;
+}
+
+.link__icon svg {
+  display: block;
+}
+
+/* ==========================================================================
+   18. DETAIL PANEL (modal body)
+   ========================================================================== */
+
+.details-panel {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.details-panel__text {
+  color: var(--color-text-secondary);
+}
+
+.details-panel__heading {
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.details-panel__facts,
+.details-panel__list {
+  display: grid;
+  gap: 0.35rem;
+  padding-inline-start: 1.1rem;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.details-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
