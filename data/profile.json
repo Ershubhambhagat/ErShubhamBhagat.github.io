@@ -25,13 +25,13 @@
   "schemaVersion": 1,
   "profile": {
     "id": "profile-main",
-    "name": "Er Shubham",
+    "name": "Er Shubham ",
     "alternateName": "Shubham Kumar",
     "professionalTitle": "React Web Developer",
     "tagline": "Designer · Developer · Freelancer",
     "shortIntroduction": "I build responsive, accessible web interfaces with React and JavaScript, and back them with .NET Core, Python and SQL Server.",
     "biography": "I am a React web developer from Bihar, India. I work on the front end with React, JavaScript and CSS, and on the server side with .NET Core, Python and SQL Server. I also take on freelance work part time.",
-    "profileImage": "",
+    "profileImage": "https://avatars.githubusercontent.com/u/40725950?v=5",
     "location": "Bihar, India",
     "email": "er.shubhambhagat@gmail.com",
     "availability": {
