@@ -1,0 +1,393 @@
+/* ==========================================================================
+   FILTERS  ·  css/components/filters.css
+   --------------------------------------------------------------------------
+   Shared filter controls for every section that narrows a record list:
+   projects, certificates, experience, learning journey, career timeline,
+   github importer, bookmarks, Global Search and JSON Manager.
+
+   This file is the only place filter appearance lives. Sections must not
+   restyle these controls; they pass a configuration to
+   js/components/filter.js and let the shared classes do the work.
+
+   Token rule: every colour, radius, shadow and duration comes from
+   css/variables.css, so Theme Studio can re-theme the panel by overriding
+   :root. No literal colour appears here.
+
+   Selected state is never colour-only: the native radio/checkbox keeps its
+   tick, the active chip carries its label text plus a × affordance, and the
+   clear-all button is a separate real button rather than a colour change.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ROOT AND HEADER
+   The root is a plain block flow: sections place it in a sidebar, a toolbar
+   or a mobile drawer without changing behaviour.
+   -------------------------------------------------------------------------- */
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.filter__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.filter__heading {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* The collapse toggle is filter-owned rather than a shared Button: it is a
+   compact panel affordance, not a page action. aria-expanded drives the state
+   so the chevron is purely decorative. */
+.filter__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: 2.25rem;
+  padding: 0 var(--spacing-md);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast) var(--ease-standard),
+    background-color var(--transition-fast) var(--ease-standard);
+}
+
+.filter__toggle:hover {
+  border-color: var(--color-primary);
+}
+
+.filter__toggle::after {
+  content: "\25BE";
+  font-size: 0.7em;
+  line-height: 1;
+  transition: transform var(--transition-fast) var(--ease-standard);
+}
+
+.filter__toggle[aria-expanded="true"] {
+  border-color: var(--color-primary);
+}
+
+.filter__toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+/* --------------------------------------------------------------------------
+   2. PANEL AND GROUPS
+   fieldset/legend give a screen reader the group name before its options, so
+   the wrapper keeps native semantics and only removes the default chrome.
+   -------------------------------------------------------------------------- */
+
+.filter__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  min-width: 0;
+}
+
+/* The panel is a flex container, so the UA [hidden] rule loses against
+   display: flex. This rule keeps the collapsible panel genuinely hidden. */
+.filter__panel[hidden] {
+  display: none;
+}
+
+.filter__group {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filter__group-title {
+  display: block;
+  width: 100%;
+  margin: 0 0 var(--spacing-sm);
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   3. OPTIONS AND NATIVE CONTROLS
+   Native inputs keep their keyboard behaviour, focus ring and checked
+   indicator; only the colour is themed through accent-color.
+   -------------------------------------------------------------------------- */
+
+.filter__option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  min-height: 2.25rem;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.filter__option:hover {
+  color: var(--color-text-primary);
+}
+
+.filter__control {
+  flex: 0 0 auto;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: inherit;
+}
+
+.filter__label {
+  min-width: 0;
+  line-height: 1.4;
+  /* Long imported category names must wrap instead of widening the panel. */
+  overflow-wrap: anywhere;
+}
+
+.filter__option-count {
+  margin-inline-start: auto;
+  padding-inline-start: var(--spacing-xs);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.filter__select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0 var(--spacing-sm);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.filter__select:hover {
+  border-color: var(--color-primary);
+}
+
+.filter__apply,
+.filter__clear-all,
+.filter__select {
+  /* Layout-only guarantees: the look of the two buttons comes from the shared
+     Button component, while the touch target stays usable if that stylesheet
+     is not loaded yet. */
+  min-height: 2.5rem;
+}
+
+.filter__apply,
+.filter__clear-all {
+  cursor: pointer;
+}
+
+/* [hidden] must beat the shared Button's display rule, or "Clear all" would
+   stay visible with no filters selected. */
+.filter__clear-all[hidden],
+.filter__apply[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. LAYOUTS
+   -------------------------------------------------------------------------- */
+
+/* Horizontal toolbar: groups sit in equal columns beside the results. */
+@media (min-width: 768px) {
+  .filter--horizontal .filter__panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    align-items: start;
+    gap: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .filter--horizontal .filter__actions,
+  .filter--horizontal .filter__active-list,
+  .filter--horizontal .filter__result-count {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Compact: a narrow sidebar or an inline toolbar above a card grid. */
+.filter--compact {
+  gap: var(--spacing-sm);
+}
+
+.filter--compact .filter__panel {
+  gap: var(--spacing-md);
+}
+
+.filter--compact .filter__option {
+  min-height: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. ACTIONS
+   -------------------------------------------------------------------------- */
+
+.filter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* --------------------------------------------------------------------------
+   6. ACTIVE FILTER CHIPS
+   A chip is a real button that removes exactly one selection; the accessible
+   name ("Remove JavaScript filter") is set in JavaScript, the × is visual.
+   -------------------------------------------------------------------------- */
+
+.filter__active-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs) var(--spacing-sm);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.filter__active-list[hidden] {
+  display: none;
+}
+
+.filter__active-label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.filter__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.filter__active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  max-width: 100%;
+  min-height: 1.85rem;
+  padding: 0.15rem 0.6rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  color: var(--color-primary-contrast);
+  background: var(--color-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: opacity var(--transition-fast) var(--ease-standard);
+}
+
+.filter__active-chip:hover {
+  opacity: 0.88;
+}
+
+.filter__active-chip-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.filter__active-chip-icon {
+  flex: 0 0 auto;
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   7. RESULT COUNT
+   role="status" in the markup; the text comes from the consuming section's
+   real match count, so this rule only styles the slot.
+   -------------------------------------------------------------------------- */
+
+.filter__result-count {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.filter__result-count[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. FOCUS
+   Visible focus on every interactive filter control (FILTER_COMPONENT.md §19).
+   -------------------------------------------------------------------------- */
+
+.filter__active-chip:focus-visible,
+.filter__toggle:focus-visible,
+.filter__select:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   9. NARROW SCREENS
+   Below the shared 480px breakpoint the panel is only ever a stacked column,
+   so option labels get the full width and the actions stay left-aligned.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 479px) {
+  .filter__actions {
+    justify-content: stretch;
+  }
+
+  .filter__apply,
+  .filter__clear-all {
+    flex: 1 1 auto;
+  }
+
+  .filter__active-list {
+    align-items: flex-start;
+  }
+
+  .filter__active-label {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. REDUCED MOTION
+   The toggle's chevron and the chip's hover fade are the only motion here.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .filter__toggle,
+  .filter__toggle::after,
+  .filter__active-chip {
+    transition: none;
+  }
+}

@@ -1,0 +1,90 @@
+/* ==========================================================================
+   LEARNING JOURNEY - css/sections/learning-journey.css
+
+   Activity cards with a progress bar. The bar is a real progressbar role, and
+   the numeric caption sits under it so the self-assessed value is readable
+   without hovering.
+   ========================================================================== */
+
+/* ---- Toolbar ---- */
+.journey-toolbar {
+  margin-block-end: var(--spacing-lg);
+}
+
+.journey-list {
+  align-items: start;
+}
+
+/* Cards start at the top of their track so a card with goals does not stretch a
+   shorter sibling to the same height; cards are independent records. */
+/* ---- Card ---- */
+.journey-card {
+  display: grid;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.journey-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.journey-card__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.35;
+}
+
+.journey-card__meta {
+  padding-block: var(--spacing-xs);
+  border-block: 1px solid var(--color-border);
+}
+
+.journey-card__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.journey-card__note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.journey-card__subtitle {
+  margin: var(--spacing-xs) 0 0;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.journey-card__goals {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.journey-card__source {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.journey-card__link {
+  color: var(--color-primary);
+}
+
+/* A single-select filter does not need the full content width. */
+.journey-toolbar .filter {
+  max-inline-size: 20rem;
+}

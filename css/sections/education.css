@@ -1,0 +1,75 @@
+/* ==========================================================================
+   EDUCATION SECTION - css/sections/education.css
+
+   Cards built by js/sections/education.js. Deliberately not a timeline: the only
+   attested record has no dates, and an undated marker rail reads as broken.
+   ========================================================================== */
+
+/* Cards, not a timeline: the published record has no dates, and an undated
+   marker rail reads as broken rather than sparse. */
+/* ---- List ---- */
+.education-list {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+}
+
+/* ---- Card ---- */
+.education-card {
+  display: grid;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.education-card__institution {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.education-card__link {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.education-card__link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.education-card__qualification {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  color: var(--color-text-primary);
+}
+
+.education-card__field {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.education-card__meta {
+  padding-block: var(--spacing-xs);
+  border-block: 1px solid var(--color-border);
+}
+
+.education-card__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.education-card__text--muted {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.education-card__coursework {
+  padding: 0;
+}

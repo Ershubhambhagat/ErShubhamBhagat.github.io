@@ -1,0 +1,45 @@
+/* ==========================================================================
+   BOOKMARKS - css/sections/bookmarks.css
+
+   Categories rendered as groups, each with a card grid. The favourite toggle is
+   a ghost button with aria-pressed; its pressed state is the only visual change,
+   so the star never disappears (a control that vanishes on use is a bad control).
+   ========================================================================== */
+
+/* ---- Groups ---- */
+.bookmarks-groups {
+  display: grid;
+  gap: var(--spacing-2xl);
+}
+
+.bookmarks-group__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.bookmarks-group__text {
+  margin: 0.2rem 0 var(--spacing-md);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.bookmarks-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+
+/* ---- Favourite toggle ---- */
+.bookmark-favorite {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* The star never disappears on click; only its colour and aria-pressed change,
+   so the control cannot look like it vanished. */
+.bookmark-favorite[aria-pressed="true"] {
+  color: var(--color-warning);
+}
+
+.bookmarks-grid .card__footer {
+  gap: var(--spacing-xs);
+}

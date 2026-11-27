@@ -1,0 +1,15 @@
+/* ==========================================================================
+   EXPERIENCE SECTION - css/sections/experience.css
+
+   The timeline component owns almost everything here. This file only tunes the
+   section-level spacing and the empty state's distance from the heading, so the
+   section does not look like a component demo pasted into a page.
+   ========================================================================== */
+
+#experience .section__body > .timeline {
+  max-inline-size: 72ch;
+}
+
+#experience .empty-state {
+  max-inline-size: 52ch;
+}

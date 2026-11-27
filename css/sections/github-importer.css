@@ -1,0 +1,81 @@
+/* ==========================================================================
+   GITHUB IMPORTER - css/sections/github-importer.css
+
+   Controls, a status line and a repository grid. The section makes no request
+   until the button is pressed, so the first thing a visitor sees is the control
+   and the explanation, not an empty grid.
+   ========================================================================== */
+
+/* ---- Controls ---- */
+.github-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-block-end: var(--spacing-sm);
+}
+
+/* Reserved height: the status line changes from "Loading..." to a result or an
+   error, and a zero-height line would shift the grid each time. */
+/* ---- Status line ---- */
+.github-status {
+  min-block-size: 1.5rem;
+  margin: 0 0 var(--spacing-lg);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.github-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+}
+
+/* ---- Repository card ---- */
+.github-card {
+  display: grid;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.github-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.github-card__link {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.github-card__link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.github-card__text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.github-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-md);
+  margin: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  list-style: none;
+}
+
+.github-card__topics {
+  margin-block-start: var(--spacing-xs);
+}
+
+.github-results > .btn {
+  margin-block-start: var(--spacing-md);
+}

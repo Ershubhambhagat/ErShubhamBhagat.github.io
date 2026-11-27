@@ -1,0 +1,44 @@
+/* ==========================================================================
+   PROJECTS SECTION - css/sections/projects.css
+
+   Toolbar (search + category filter + result count) and the card grid. The card
+   surface itself comes from css/components/cards.css; this file only owns the
+   layout above the grid.
+   ========================================================================== */
+
+/* ---- Toolbar ---- */
+.projects-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+  margin-block-end: var(--spacing-sm);
+}
+
+.projects-toolbar__search {
+  flex: 1 1 16rem;
+  max-inline-size: 24rem;
+}
+
+.projects-toolbar__filters {
+  flex: 1 1 18rem;
+  max-inline-size: 24rem;
+}
+
+.projects-toolbar__count {
+  margin-block-end: var(--spacing-md);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+/* ---- Grid ---- */
+.projects-grid {
+  margin-block-start: var(--spacing-sm);
+}
+
+/* Cards without a description would otherwise collapse to a title and make the
+   grid look broken. Reserving a body height keeps every footer on one line; it
+   is a floor, not a fixed height, so longer text still grows the card. */
+.projects-grid .card__body {
+  min-block-size: 4.5rem;
+}

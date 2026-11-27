@@ -1,0 +1,94 @@
+/* ==========================================================================
+   GLOBAL SEARCH - css/sections/global-search.css
+
+   The dialog body created by js/features/global-search.js. The dialog chrome
+   (surface, close button, focus trap) belongs to css/components/modals.css; this
+   file styles the search field, the live status line and the result list.
+
+   The result list scrolls inside the dialog instead of growing it, so the close
+   button and the field stay in place while a visitor arrows through 30 items.
+   ========================================================================== */
+
+/* ---- Dialog body ---- */
+.global-search {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.global-search__field {
+  display: grid;
+}
+
+.global-search__input {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+}
+
+.global-search__status {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+/* Results scroll inside the dialog so the field and the close button stay in
+   place; overscroll containment stops the page behind from scrolling too. */
+/* ---- Results ---- */
+.global-search__results {
+  display: grid;
+  gap: 0.25rem;
+  max-block-size: min(55vh, 24rem);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+
+.global-search__item {
+  margin: 0;
+}
+
+.global-search__result {
+  display: grid;
+  gap: 0.1rem;
+  inline-size: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font: inherit;
+  text-align: start;
+  color: var(--color-text-primary);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.global-search__result:hover,
+.global-search__result:focus-visible {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border);
+}
+
+.global-search__result-title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.global-search__result-text {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.global-search__result-where {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.global-search__empty {
+  padding: var(--spacing-md);
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-sm);
+}

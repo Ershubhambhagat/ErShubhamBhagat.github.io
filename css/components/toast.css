@@ -1,0 +1,347 @@
+/* ==========================================================================
+   TOASTS  ·  css/components/toast.css
+   ==========================================================================
+
+   Owner: the shared Toast component (Prompt/components/TOAST_COMPONENT.md).
+   Producer: js/components/toast.js. The stack lives in #toast-root, the single
+   live region (aria-live="polite" aria-atomic="true" in index.html), so one
+   message is announced once and no second region exists.
+
+   TWO CONSUMERS, ONE STYLESHEET
+   The component adds .toast-container + a position modifier to #toast-root.
+   js/app.js still ships a minimal fallback renderer that appends .toast and
+   .toast__dismiss nodes to the same element without adding those classes, so
+   #toast-root carries the base layout here: the page never depends on the
+   component having initialized for its notifications to be placed correctly.
+
+   STACKING
+   --z-toast is the highest content layer (above --z-modal). Toasts are transient
+   feedback and must stay readable when a dialog is open - a save confirmation
+   for an action taken inside the dialog is exactly that case.
+
+   TOKENS ONLY
+   Surface --color-surface-raised, border --color-border, elevation --shadow-lg,
+   tones --color-success / --color-danger / --color-warning / --color-primary.
+   The tone also appears as a text glyph and a left border, so colour is never
+   the only signal (TOAST_COMPONENT.md § 22).
+   ========================================================================== */
+
+/* ==========================================================================
+   1. STACK CONTAINER
+   ========================================================================== */
+
+#toast-root {
+  position: fixed;
+  inset-block-start: max(var(--spacing-md), env(safe-area-inset-top));
+  inset-inline-end: max(var(--spacing-md), env(safe-area-inset-right));
+  z-index: var(--z-toast);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+
+  inline-size: min(24rem, calc(100vw - 2 * var(--spacing-md)));
+  max-block-size: calc(100vh - 2 * var(--spacing-md));
+  overflow: hidden;
+
+  /* The empty strip around the toasts must not swallow clicks on the page;
+     each .toast re-enables pointer events for itself. */
+  pointer-events: none;
+}
+
+/*
+ * Placement modifiers written by initializeToastManager(). Exposed as classes
+ * rather than inline styles so Theme Studio and the responsive block below can
+ * override them without specificity fights.
+ */
+.toast-container--top-center {
+  inset-inline-start: 50%;
+  inset-inline-end: auto;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.toast-container--bottom-right {
+  inset-block-start: auto;
+  inset-block-end: max(var(--spacing-md), env(safe-area-inset-bottom));
+}
+
+.toast-container--bottom-center {
+  inset-block-start: auto;
+  inset-block-end: max(var(--spacing-md), env(safe-area-inset-bottom));
+  inset-inline-start: 50%;
+  inset-inline-end: auto;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+/* ==========================================================================
+   2. NOTIFICATION
+   Grid: icon | content | close. minmax(0, 1fr) on the middle column is what
+   lets a long unbroken string wrap instead of widening the toast.
+   ========================================================================== */
+
+.toast {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--spacing-sm);
+  align-items: start;
+
+  padding: var(--spacing-md);
+  /* Room for the progress bar so it never overlaps the last text line. */
+  padding-block-end: calc(var(--spacing-md) + 0.25rem);
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-inline-start: 3px solid var(--toast-tone, var(--color-primary));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  /* One notification must never grow past a share of the viewport; the message
+     stays readable, the stack stays a stack. */
+  max-block-size: 50vh;
+
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+/* Tones. The custom property is inherited by the icon, the progress bar and the
+   border, so a theme change updates all three through the tokens. */
+.toast--success {
+  --toast-tone: var(--color-success);
+}
+
+.toast--error {
+  --toast-tone: var(--color-danger);
+}
+
+.toast--warning {
+  --toast-tone: var(--color-warning);
+}
+
+.toast--info {
+  --toast-tone: var(--color-primary);
+}
+
+/* Legacy tone name used by the app.js fallback renderer. */
+.toast--danger {
+  --toast-tone: var(--color-danger);
+}
+
+/* ---- Icon ---------------------------------------------------------------- */
+
+.toast__icon {
+  display: inline-grid;
+  place-items: center;
+
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--toast-tone, var(--color-primary)) 20%, transparent);
+  color: var(--toast-tone, var(--color-primary));
+
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
+/* ---- Content ------------------------------------------------------------- */
+
+.toast__content {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.toast__title {
+  margin: 0 0 var(--spacing-xs);
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.35;
+  color: var(--color-text-primary);
+}
+
+.toast__message {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+/* Message directly under the icon row when there is no title: keep the
+   baseline aligned with the icon instead of leaving a gap. */
+.toast__title + .toast__message {
+  margin-block-start: 0;
+}
+
+.toast__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-block-start: var(--spacing-sm);
+}
+
+/*
+ * The optional one-shot action. Styled as an inline text action rather than a
+ * filled button: it sits inside a notification, and a second primary button
+ * there would compete with the page's real actions. css/components/buttons.css
+ * still owns every .btn inside the page.
+ */
+.toast__action {
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.toast__action:hover {
+  color: var(--color-secondary);
+}
+
+/* 44px-equivalent touch comfort without a visible 44px box. */
+.toast__action::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+}
+
+/* ---- Close control ------------------------------------------------------- */
+
+/* .toast__close is the component's control; .toast__dismiss is the name the
+   app.js fallback renderer uses. Both get the same appearance and hit area. */
+.toast__close,
+.toast__dismiss {
+  display: inline-grid;
+  place-items: center;
+
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+
+  font-size: 1.125rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+
+  transition:
+    color var(--transition-fast) var(--ease-standard),
+    background-color var(--transition-fast) var(--ease-standard);
+}
+
+.toast__close:hover,
+.toast__dismiss:hover {
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+}
+
+/* ---- Progress ------------------------------------------------------------ */
+
+/*
+ * Thin bar that empties over the notification's lifetime. It is hidden from
+ * assistive technology (aria-hidden in the JS): it repeats timing information
+ * that is already conveyed by the notification's disappearance.
+ */
+.toast__progress {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 2px;
+
+  background: var(--toast-tone, var(--color-primary));
+  opacity: 0.45;
+  transform-origin: left center;
+
+  animation: toast-progress var(--toast-duration, 4000ms) linear forwards;
+}
+
+@keyframes toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* ==========================================================================
+   3. MOTION
+   Entrance only: a notification that is dismissed is removed from the DOM by the
+   service, and an exit animation would mean keeping a dead node on screen while
+   a second message could already be queued.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: toast-enter calc(var(--transition-normal) * var(--animation-intensity, 1))
+      var(--ease-out-soft) both;
+  }
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast__progress {
+    animation: none;
+    transition: none;
+  }
+
+  /* Without the progress animation the bar would show as a full static line,
+     which reads as a decorative stripe rather than a timer. */
+  .toast__progress {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   4. RESPONSIVE
+   On a phone the stack is nearly full width: a 24rem column plus margins would
+   leave the message wrapped into a narrow strip, and the bottom placements need
+   the safe-area inset so a gesture bar does not cover the close control.
+   ========================================================================== */
+
+@media (max-width: 600px) {
+  #toast-root {
+    inset-inline-start: max(var(--spacing-sm), env(safe-area-inset-left));
+    inset-inline-end: max(var(--spacing-sm), env(safe-area-inset-right));
+    inline-size: auto;
+    max-block-size: calc(100dvh - 2 * var(--spacing-md));
+  }
+
+  .toast-container--top-center,
+  .toast-container--bottom-center {
+    transform: none;
+    align-items: stretch;
+  }
+
+  .toast {
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-block-end: calc(var(--spacing-sm) + 0.25rem);
+  }
+}

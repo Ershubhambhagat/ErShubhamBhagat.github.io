@@ -1,0 +1,302 @@
+/* ==========================================================================
+   CARDS - css/components/cards.css
+
+   Styles js/components/card.js:
+     .card .card--<variant> [.card--interactive .card--stretched]
+     .card__media (--wide/--square/--portrait, --contain), .card__image,
+     .card__media-fallback, .card__header, .card__category,
+     .card__body, .card__title, .card__link, .card__subtitle,
+     .card__description, .card__badges, .card__meta, .card__meta-row,
+     .card__meta-label, .card__meta-value, .card__footer, .card__actions,
+     .card--skeleton, .card__skeleton-*
+
+   The component makes the title the only interactive element and stretches it
+   over the card (.card--stretched). Action links in the footer therefore need
+   their own stacking context, or the stretched overlay would swallow them.
+   ========================================================================== */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ---- Variants ----------------------------------------------------------- */
+
+.card--standard {
+  background-color: var(--color-surface);
+}
+
+.card--elevated {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+
+.card--featured {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-primary);
+}
+
+.card--compact {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+}
+
+/* Media beside the body rather than above it. The media keeps a fixed share so
+   a long description cannot squash the image to nothing. */
+.card--horizontal {
+  flex-direction: row;
+}
+
+.card--horizontal .card__media {
+  inline-size: 38%;
+  flex-shrink: 0;
+  aspect-ratio: auto;
+  block-size: auto;
+}
+
+.card--horizontal .card__body {
+  flex: 1;
+}
+
+@media (max-width: 599px) {
+  .card--horizontal {
+    flex-direction: column;
+  }
+
+  .card--horizontal .card__media {
+    inline-size: 100%;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* ---- Media -------------------------------------------------------------- */
+
+.card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: var(--color-surface-raised);
+}
+
+.card__media--square {
+  aspect-ratio: 1 / 1;
+}
+
+.card__media--portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.card__media--wide {
+  aspect-ratio: 21 / 9;
+}
+
+.card__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.card__media--contain .card__image {
+  object-fit: contain;
+}
+
+/* Shown when an image fails or is absent: an initial, not a broken icon. The
+   component only renders this slot when it has something to show. */
+.card__media-fallback {
+  display: grid;
+  place-content: center;
+  inline-size: 100%;
+  block-size: 100%;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-raised);
+}
+
+/* ---- Header ------------------------------------------------------------- */
+
+.card__header {
+  padding: var(--spacing-md) var(--spacing-lg) 0;
+}
+
+.card__category {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ---- Body --------------------------------------------------------------- */
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.card__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* The title control is a link or a button. It carries the card's whole hit area
+   through ::after, so it must be positioned against .card. */
+.card__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card__link:hover {
+  color: var(--color-primary);
+}
+
+/* The title link covers the card so the whole surface is clickable, while the
+   footer keeps its own stacking context (below) so action links stay reachable. */
+.card--stretched .card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.card--stretched .card__link:focus-visible {
+  outline-offset: 4px;
+}
+
+.card__subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.card__description {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+/* ---- Meta --------------------------------------------------------------- */
+
+.card__meta {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0 var(--spacing-lg) var(--spacing-sm);
+}
+
+.card__meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  font-size: 0.8125rem;
+}
+
+.card__meta-label {
+  color: var(--color-text-muted);
+}
+
+.card__meta-value {
+  margin: 0;
+  text-align: end;
+  color: var(--color-text-secondary);
+}
+
+.card__badges {
+  padding: 0 var(--spacing-lg) var(--spacing-md);
+}
+
+/* Push the footer to the bottom so cards in one row line up even when the
+   descriptions differ in height. */
+.card__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-block-start: auto;
+  padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-lg);
+}
+
+.card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+/* ---- Interactive -------------------------------------------------------- */
+
+.card--interactive {
+  transition: transform var(--transition-normal) var(--ease-out-soft),
+    border-color var(--transition-fast) var(--ease-standard),
+    box-shadow var(--transition-normal) var(--ease-out-soft);
+}
+
+.card--interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card--interactive:hover {
+    transform: none;
+  }
+}
+
+.card--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+/* ---- Skeleton ----------------------------------------------------------- */
+
+/* Skeleton blocks are only used while a fetch is in flight (GitHub importer);
+   they reserve the card's shape so the grid does not jump when data lands. */
+.card--skeleton {
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+.card__skeleton-media {
+  block-size: 8rem;
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-md);
+}
+
+.card__skeleton-line {
+  block-size: 0.75rem;
+  inline-size: 100%;
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-full);
+}
+
+.card__skeleton-line--title {
+  block-size: 1rem;
+  inline-size: 60%;
+}
+
+.card--loading {
+  opacity: 0.7;
+  pointer-events: none;
+}

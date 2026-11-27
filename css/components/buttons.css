@@ -1,0 +1,210 @@
+/* ==========================================================================
+   BUTTONS - css/components/buttons.css
+
+   Styles the markup produced by js/components/button.js:
+     .btn .btn--<variant> .btn--<size>   (plus .btn--full, .btn--icon)
+     .btn__icon--leading / .btn__icon--trailing, .btn__label, .btn__spinner
+
+   Variants come from BUTTON_VARIANTS in that module, so the names here are not
+   free choices: primary, secondary, outline, ghost, destructive, link.
+
+   Tokens only. The primary button uses --color-primary-contrast for its text,
+   which css/variables.css defines per theme, so a light theme does not end up
+   with white text on a pale fill.
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.05rem;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast) var(--ease-standard),
+    border-color var(--transition-fast) var(--ease-standard),
+    color var(--transition-fast) var(--ease-standard),
+    transform var(--transition-fast) var(--ease-standard);
+}
+
+.btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* ---- Variants ----------------------------------------------------------- */
+
+.btn--primary {
+  color: var(--color-primary-contrast);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn--primary:hover {
+  color: var(--color-primary-contrast);
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.btn--secondary {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border);
+}
+
+.btn--outline {
+  color: var(--color-text-primary);
+  background-color: transparent;
+  border-color: var(--color-border);
+}
+
+.btn--outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn--ghost {
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn--ghost:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
+  border-color: transparent;
+}
+
+/* Destructive actions stay outline-only at rest: a solid red button next to a
+   primary action reads as the recommended choice, which it never is. */
+.btn--destructive {
+  color: var(--color-text-primary);
+  background-color: transparent;
+  border-color: var(--color-danger);
+}
+
+.btn--destructive:hover {
+  color: var(--color-background);
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+/* A link-styled action: same hit area as a button, no chrome. Used where the
+   affordance is navigation rather than a command. */
+.btn--link {
+  padding: 0;
+  color: var(--color-primary);
+  background: none;
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.btn--link:hover {
+  color: var(--color-secondary);
+  background: none;
+}
+
+/* ---- Sizes -------------------------------------------------------------- */
+
+.btn--small {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8125rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn--large {
+  padding: 0.85rem 1.35rem;
+  font-size: 1rem;
+}
+
+.btn--full {
+  inline-size: 100%;
+}
+
+/* Icon-only control: square, so a glyph cannot produce a letterboxed pill.
+   44px matches the mobile menu button's minimum touch target. */
+.btn--icon {
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 0;
+}
+
+.btn--small.btn--icon {
+  inline-size: 36px;
+  block-size: 36px;
+}
+
+/* ---- Icon and label ----------------------------------------------------- */
+
+.btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn__icon svg {
+  display: block;
+  inline-size: 1.1em;
+  block-size: 1.1em;
+}
+
+.btn__label {
+  display: inline-block;
+}
+
+/* ---- Loading ------------------------------------------------------------ */
+
+.btn__spinner {
+  inline-size: 1em;
+  block-size: 1em;
+  border: 2px solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: var(--radius-full);
+  animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* The spinner is decorative motion; a reduced-motion visitor gets the label
+   change and the disabled state instead of a rotating element. */
+@media (prefers-reduced-motion: reduce) {
+  .btn__spinner {
+    animation: none;
+  }
+}
+
+.btn[aria-busy="true"],
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Forced-colours mode strips the fills above; the border is what keeps a button
+   recognisable as a control there. */
+@media (forced-colors: active) {
+  .btn {
+    border: 1px solid ButtonBorder;
+  }
+}

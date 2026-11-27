@@ -1,0 +1,242 @@
+/* ==========================================================================
+   SITE HEADER  ·  css/layout/header.css
+   ==========================================================================
+
+   Owns: the sticky header shell, the brand lockup, the mobile menu button and
+   the scrolled state chrome. The link list, the active indicator and the mobile
+   panel live in css/layout/navigation.css; the footer and the floating
+   back-to-top control live in css/layout/footer.css.
+
+   Depends on: css/variables.css (every colour, radius, shadow and duration
+   below is a token), css/main.css (container width, focus ring, .visually-hidden),
+   css/responsive.css (overrides --header-height per breakpoint).
+
+   Markup: header#site-header in index.html, with three element children in this
+   source order - .site-brand, #mobile-menu-toggle, #site-navigation. The visual
+   order is set with `order` below, not by moving the elements: the toggle must
+   stay before the nav in the DOM so Tab moves from it into the panel it opens.
+
+   THE HEADER IS ALWAYS IN THE LAYOUT. It is sticky, not fixed, so it occupies
+   its own row and no section needs a compensating top margin. Anchor offsets are
+   handled once, by `scroll-margin-block-start` in css/main.css § 7, which reads
+   --header-height - the same token that sets the height here. Change the token,
+   never this file's min-height, or headings will start hiding under the bar.
+
+   Z-INDEX: --z-header only. #modal-root (--z-modal) and the skip link
+   (--z-skip-link) must stay above the header; css/variables.css § 12 owns the
+   order.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. HEADER SHELL
+   ========================================================================== */
+
+.site-header {
+  /* Sticky rather than fixed: the header keeps its own place in the flow, which
+     is what stops the page from jumping when it becomes stuck. */
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+
+  min-height: var(--header-height);
+
+  /*
+   * Container alignment without a wrapper element.
+   *
+   * The header must span the full viewport (its sticky background and its mobile
+   * panel do), while its content has to start on the same vertical line as every
+   * .container section. The max() does both: on narrow screens the --gutter
+   * wins; once the viewport is wider than --container-max the extra width is
+   * split evenly, exactly as `margin-inline: auto` would.
+   *
+   * A .container wrapper inside the header is not used because #site-navigation
+   * and #mobile-menu-toggle are pinned mount points and must stay direct
+   * children of header#site-header.
+   */
+  padding-inline: max(
+    var(--gutter),
+    calc((100% - var(--container-max)) / 2 + var(--gutter))
+  );
+
+  /* Solid surface, not a translucent blur: a backdrop-filter repaint on every
+     scroll frame is the expensive thing on a low-end phone, and the dark palette
+     already separates #111319 from #08090c. */
+  background-color: var(--color-surface);
+  border-block-end: 1px solid var(--color-border);
+  transition: box-shadow var(--transition-fast) var(--ease-standard);
+}
+
+/* Applied by js/core/navigation.js once the page has moved a few pixels. The
+   shadow is the only change: a colour shift would fight Theme Studio. */
+.site-header.is-scrolled {
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   2. BRAND
+   --------------------------------------------------------------------------
+   Text-only by design. The owner name is the identity here; a logo would be a
+   second asset to keep in sync with data/navigation.json, which already owns the
+   label. set by the module; the static markup carries the same text so the
+   header is readable before JavaScript runs.
+
+   `min-width: 0` plus the ellipsis on the label is what keeps a long name from
+   pushing the menu button off a 320px screen.
+   ========================================================================== */
+
+.site-brand {
+  order: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  max-width: 60%;
+  flex-shrink: 1;
+
+  font-family: var(--font-heading);
+  font-size: 1.0625rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.site-brand:hover {
+  /* Matches the global link hover in css/main.css § 4 rather than inventing a
+     brand-specific hover colour. */
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+
+.site-brand__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * Optional brand image, rendered only when data/navigation.json sets
+ * brand.showImage and a valid URL. The dimensions are reserved here so a late
+ * image load cannot shift the header row.
+ */
+.site-brand__image {
+  inline-size: 28px;
+  block-size: 28px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   3. MOBILE MENU BUTTON
+   --------------------------------------------------------------------------
+   Icon-only control, so the accessible name is supplied by the module
+   (aria-label) and the bars are decorative (aria-hidden on the span in
+   index.html). 44px is the minimum comfortable touch target; the three bars are
+   one element plus its two pseudo-elements, which keeps the markup to the single
+   span the shell already ships.
+
+   The open/closed animation is driven by aria-expanded, the same attribute the
+   module keeps truthful, so the icon can never contradict the announced state.
+   ========================================================================== */
+
+#mobile-menu-toggle {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  inline-size: 44px;
+  block-size: 44px;
+
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast) var(--ease-standard),
+    background-color var(--transition-fast) var(--ease-standard);
+}
+
+#mobile-menu-toggle:hover {
+  border-color: var(--color-primary);
+}
+
+/* The middle bar. Its pseudo-elements are the outer two. */
+#mobile-menu-toggle > span {
+  position: relative;
+  display: block;
+  inline-size: 18px;
+  block-size: 2px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  transition: background-color var(--transition-fast) var(--ease-standard);
+}
+
+#mobile-menu-toggle > span::before,
+#mobile-menu-toggle > span::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  block-size: 2px;
+  border-radius: inherit;
+  background-color: currentColor;
+  transition: transform var(--transition-fast) var(--ease-standard);
+}
+
+#mobile-menu-toggle > span::before {
+  inset-block-start: -6px;
+}
+
+#mobile-menu-toggle > span::after {
+  inset-block-start: 6px;
+}
+
+/* Open state: the middle bar fades out and the outer two cross into an X. */
+#mobile-menu-toggle[aria-expanded="true"] > span {
+  background-color: transparent;
+}
+
+#mobile-menu-toggle[aria-expanded="true"] > span::before {
+  transform: translateY(6px) rotate(45deg);
+}
+
+#mobile-menu-toggle[aria-expanded="true"] > span::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   4. DESKTOP
+   --------------------------------------------------------------------------
+   The breakpoint matches DESKTOP_QUERY in js/core/navigation.js and the
+   min-width in css/layout/navigation.css. It is 1120px, not 1024px, because the
+   eleven configured labels plus the brand do not fit in a 1024px row without
+   shrinking the text below a comfortable size; between 1024px and 1119px the
+   header therefore keeps the mobile button. If items are removed from
+   navigation.json, this number can be lowered - all three places together.
+   ========================================================================== */
+
+@media (min-width: 1120px) {
+  .site-header {
+    /* A single row means the brand and the link list can share the height. */
+    gap: var(--spacing-md);
+  }
+
+  .site-brand {
+    /* At desktop widths the name is never truncated; the nav has its own
+       available space and the flex row keeps the brand at its natural width. */
+    max-width: none;
+  }
+
+  /* The nav is the visible control above this width, so the button would be a
+     second, redundant way to reach the same links. */
+  #mobile-menu-toggle {
+    display: none;
+  }
+}

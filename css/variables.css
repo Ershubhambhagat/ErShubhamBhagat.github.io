@@ -1,0 +1,282 @@
+/* ==========================================================================
+   css/variables.css  ·  DESIGN TOKENS
+   ==========================================================================
+
+   Owner: builder-shell-css — Phase 3 (Foundation / Design System).
+   Source of truth for names: .build/CONTRACT.md § "Design tokens".
+   Behaviour reference: Prompt/sections/01_FOUNDATION.md § 5.2.
+
+   HOW TO CONSUME
+   Every section and component stylesheet must reference these custom
+   properties instead of literal colours or font families
+   (".build/CONTRACT.md": "Section CSS never hardcodes a colour or font
+   family"). Theme Studio writes overrides for these same names on :root at
+   runtime, so a hardcoded hex anywhere silently opts that element out of
+   theming. Values here are the fallback that applies before any theme
+   override lands.
+
+   WHY DARK IS THE DEFAULT
+   The visual direction is dark-first. :root therefore carries the dark
+   palette so the first paint is already correct when JavaScript has not run
+   yet (or fails). There is deliberately no `prefers-color-scheme` query: the
+   visitor's theme is an explicit, stored choice (localStorage key
+   `portfolio.theme`), and an OS-level switch must not repaint the page
+   mid-session. Only the two [data-theme] blocks below change appearance,
+   and js/app.js is responsible for writing that attribute on <html>.
+
+   TOKEN NAMES THEME STUDIO MUST MAP
+   Prompt/sections/13_THEME_STUDIO.md still uses older names. The contract
+   wins; the mapping is:
+     --color-text             -> --color-text-primary
+     --color-surface-elevated -> --color-surface-raised
+     --container-width        -> --container-max
+     --radius-card            -> --radius-md (use --radius-lg for large cards)
+     --shadow-card            -> --shadow-md
+     --spacing-section        -> --spacing-2xl
+   Do not add the old names as aliases: two names for one value means an
+   override can land on the one nobody reads.
+
+   TOKENS MARKED "extension" are not in the contract's list. They exist
+   because a theme override of a single contract token cannot express them
+   (text colour on a primary fill, focus ring hue, stacking order) and are
+   overridable by Theme Studio in the same way.
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. COLOR — BRAND
+     Dark-theme values. Brand hues are re-declared per theme because a hue
+     that reads as "electric" on #08090C turns muddy on #FAFAFB.
+     --color-primary-contrast is the text/icon colour that sits *on* a
+     primary fill (extension, required by theme overrides).
+     ---------------------------------------------------------------------- */
+  --color-primary: #7c8cff;
+  --color-primary-contrast: #0a0b10;
+  --color-secondary: #c08bff;
+  --color-accent: #58e6c8;
+
+  /* ------------------------------------------------------------------------
+     2. COLOR — SURFACES
+     Three depth steps only: page background, resting surface (cards, inputs),
+     raised surface (hover, popovers, dropdown panels). A fourth depth step
+     would have no reliable visual difference on a near-black canvas.
+     --color-overlay is the modal scrim (extension).
+     ---------------------------------------------------------------------- */
+  --color-background: #08090c;
+  --color-surface: #111319;
+  --color-surface-raised: #191c24;
+  --color-overlay: rgba(6, 7, 10, 0.72);
+
+  /* ------------------------------------------------------------------------
+     3. COLOR — TEXT
+     Muted is reserved for metadata that is still body text at >=14px; it is
+     the lightest step allowed to carry real words (5.2:1 on --color-background
+     — see the check recorded in .build/CONTRACT.md's accessibility rule).
+     ---------------------------------------------------------------------- */
+  --color-text-primary: #f3f5fa;
+  --color-text-secondary: #b7becc;
+  --color-text-muted: #828b9c;
+
+  /* ------------------------------------------------------------------------
+     4. COLOR — BORDER AND FOCUS
+     A single border tone keeps dividers from competing with card edges.
+     --color-focus-ring is separated from --color-primary so focus stays
+     visible on top of a primary-coloured surface (extension).
+     ---------------------------------------------------------------------- */
+  --color-border: #262a34;
+  --color-focus-ring: #9aa6ff;
+
+  /* ------------------------------------------------------------------------
+     5. COLOR — STATUS
+     Used by toasts, form/validation states and the GitHub importer's error
+     rows. --color-warning is an extension: the contract lists only success
+     and danger, but a rate-limit notice is neither.
+     ---------------------------------------------------------------------- */
+  --color-success: #4ade80;
+  --color-danger: #fb7a7a;
+  --color-warning: #f5b74e;
+
+  /* ------------------------------------------------------------------------
+     6. TYPOGRAPHY
+     No @font-face and no CDN (contract: no CDN). Both stacks resolve to the
+     platform UI font, which is the only webfont-free way to stay premium on
+     every OS. They are separate tokens so Theme Studio can diverge them
+     without touching any rule.
+     ---------------------------------------------------------------------- */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-heading: "Segoe UI", system-ui, -apple-system, Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo,
+    Consolas, monospace;
+
+  /* Extension: weights are referenced by name across components so a theme
+     can soften the whole hierarchy in one place. */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ------------------------------------------------------------------------
+     7. RADIUS
+     --radius-full is for pills and circular icon buttons; anything larger
+     than --radius-lg would break the card/label relationship.
+     ---------------------------------------------------------------------- */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.375rem;
+  --radius-full: 999px;
+
+  /* ------------------------------------------------------------------------
+     8. SPACING
+     A 4px-rooted scale. Section rhythm multiplies these values; components
+     must use them rather than inventing intermediate steps, otherwise the
+     vertical rhythm drifts between sections.
+     ---------------------------------------------------------------------- */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
+  --spacing-2xl: 4rem;
+
+  /* ------------------------------------------------------------------------
+     9. ELEVATION
+     Dark surfaces need a much larger, softer shadow than light ones to read
+     as "above" the page, so alpha and spread differ per theme. Shadows are
+     never combined with a border in the same rule when both are provided by
+     these tokens — that produces a double edge on 1px borders.
+     ---------------------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.75);
+  --shadow-lg: 0 32px 64px -24px rgba(0, 0, 0, 0.85);
+
+  /* ------------------------------------------------------------------------
+     10. MOTION
+     Durations are stored WITHOUT an easing function so that
+     --animation-intensity can scale them with calc() (a time value is the
+     only thing that can be multiplied by a unitless number). Compose like:
+         transition: color var(--transition-fast) var(--ease-standard);
+     Easing lives in its own extension tokens.
+
+     --animation-intensity is a unitless 0-1 multiplier written by Theme
+     Studio (contract token). animations.css multiplies every entrance
+     duration by it; 0 means "instant". Transitions intentionally do not use
+     it: feedback that survives at intensity 0 keeps the UI operable.
+     ---------------------------------------------------------------------- */
+  --transition-fast: 140ms;
+  --transition-normal: 240ms;
+  --transition-slow: 420ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animation-intensity: 1;
+
+  /* ------------------------------------------------------------------------
+     11. LAYOUT
+     --container-max is the readable content width; --gutter is the fluid page
+     inset (extension) used by .container in main.css so gutters never need a
+     hardcoded padding at any breakpoint. --header-height is overridden per
+     breakpoint in responsive.css and must stay a plain length: main.css and
+     the navigation module both subtract it from scroll offsets.
+     ---------------------------------------------------------------------- */
+  --container-max: 1200px;
+  --header-height: 68px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+
+  /* Extension: vertical padding between two sections. A token (not a clamp in
+     main.css) so responsive.css can step the rhythm at each breakpoint
+     without duplicating the calc — see the breakpoint table there. */
+  --section-space: clamp(2.5rem, 7vw, 4rem);
+
+  /* ------------------------------------------------------------------------
+     12. LAYER ORDER (extension)
+     Kept centrally because #modal-root and #toast-root are siblings of the
+     header in the document, so a component-local z-index cannot be compared
+     against the header's. Ordered: header 100, scrim 900, modal 1000,
+     toast 1100, skip-link 1200.
+     ---------------------------------------------------------------------- */
+  --z-header: 100;
+  --z-overlay: 900;
+  --z-modal: 1000;
+  --z-toast: 1100;
+  --z-skip-link: 1200;
+
+  /* Native form controls, scrollbars and the caret follow this. */
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   THEME: DARK  ·  [data-theme="dark"]
+   --------------------------------------------------------------------------
+   Written explicitly so that switching light -> dark is a pure attribute
+   swap and each theme block is self-contained: neither block relies on the
+   other or on the order the attributes were applied in.
+
+   MAINTENANCE: the values below must stay identical to the dark palette in
+   :root. If you change one, change both — :root is the pre-JavaScript
+   fallback, this block is the runtime override.
+   ========================================================================== */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-primary: #7c8cff;
+  --color-primary-contrast: #0a0b10;
+  --color-secondary: #c08bff;
+  --color-accent: #58e6c8;
+
+  --color-background: #08090c;
+  --color-surface: #111319;
+  --color-surface-raised: #191c24;
+  --color-overlay: rgba(6, 7, 10, 0.72);
+
+  --color-text-primary: #f3f5fa;
+  --color-text-secondary: #b7becc;
+  --color-text-muted: #828b9c;
+
+  --color-border: #262a34;
+  --color-focus-ring: #9aa6ff;
+
+  --color-success: #4ade80;
+  --color-danger: #fb7a7a;
+  --color-warning: #f5b74e;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 12px 28px -12px rgba(0, 0, 0, 0.75);
+  --shadow-lg: 0 32px 64px -24px rgba(0, 0, 0, 0.85);
+}
+
+/* ==========================================================================
+   THEME: LIGHT  ·  [data-theme="light"]
+   --------------------------------------------------------------------------
+   Same token set, re-tuned for a #FAFAFB canvas: brand hues are deepened so
+   text and 1px borders keep >=4.5:1 contrast, and shadows lose most of their
+   alpha because a soft grey shadow reads as dirt on a light surface.
+   ========================================================================== */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-primary: #3f4bd8;
+  --color-primary-contrast: #ffffff;
+  --color-secondary: #7c3aed;
+  --color-accent: #0e9384;
+
+  --color-background: #fafafb;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f3f4f7;
+  --color-overlay: rgba(15, 18, 26, 0.55);
+
+  --color-text-primary: #0e1118;
+  --color-text-secondary: #3d4553;
+  --color-text-muted: #5f6775;
+
+  --color-border: #e1e4ea;
+  --color-focus-ring: #3f4bd8;
+
+  --color-success: #15803d;
+  --color-danger: #b42318;
+  --color-warning: #a4620a;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 12px 24px -12px rgba(16, 24, 40, 0.14);
+  --shadow-lg: 0 28px 56px -24px rgba(16, 24, 40, 0.2);
+}

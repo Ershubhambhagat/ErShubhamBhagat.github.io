@@ -1,0 +1,128 @@
+{
+  "_guide": [
+    "// profile.json - the one person this site belongs to. `profile` is an OBJECT, not an array.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// REQUIRED: profile.name. Everything else is optional; an empty value is hidden, never rendered blank.",
+    "// name: full display name, used as the page <h1> and in the document title.",
+    "// alternateName: a second attested name, shown as 'Also known as ...'. Remove if not wanted.",
+    "// professionalTitle: role line, e.g. 'React Web Developer'.",
+    "// tagline: short uppercase kicker above the name.",
+    "// shortIntroduction: one or two sentences; also becomes the meta description.",
+    "// biography: the About paragraph. Empty removes the About block.",
+    "// profileImage: path to a photo (e.g. ./assets/images/profile.webp). Empty draws initials instead.",
+    "// location: region-level only, e.g. 'Bihar, India'. Do not put a street address here.",
+    "// email: plain address; rendered as a mailto link and in the footer.",
+    "// availability: { enabled, label }. enabled false hides the status pill.",
+    "// resume: { enabled, file, label }. Point file at a real PDF before enabling.",
+    "// primaryActions: buttons that jump to a section; target must be a section id.",
+    "// socialLinks: { id, platform, url, icon, enabled }. Only http(s) URLs are rendered.",
+    "// highlights: extra { label, value } rows in the at-a-glance card.",
+    "// This file contains no dates and no phone number on purpose."
+  ],
+  "schemaVersion": 1,
+  "profile": {
+    "id": "profile-main",
+    "name": "Er Shubham Bhagat",
+    "alternateName": "Shubham Kumar",
+    "professionalTitle": "React Web Developer",
+    "tagline": "Designer · Developer · Freelancer",
+    "shortIntroduction": "I build responsive, accessible web interfaces with React and JavaScript, and back them with .NET Core, Python and SQL Server.",
+    "biography": "I am a React web developer from Bihar, India. I work on the front end with React, JavaScript and CSS, and on the server side with .NET Core, Python and SQL Server. I also take on freelance work part time.",
+    "profileImage": "",
+    "location": "Bihar, India",
+    "email": "er.shubhambhagat@gmail.com",
+    "availability": {
+      "enabled": true,
+      "label": "Part time available"
+    },
+    "resume": {
+      "enabled": false,
+      "file": "",
+      "label": "Download resume"
+    },
+    "primaryActions": [
+      {
+        "id": "action-projects",
+        "label": "View projects",
+        "type": "section",
+        "target": "projects",
+        "enabled": true
+      },
+      {
+        "id": "action-contact",
+        "label": "Get in touch",
+        "type": "section",
+        "target": "contact",
+        "enabled": true
+      }
+    ],
+    "socialLinks": [
+      {
+        "id": "social-github",
+        "platform": "GitHub",
+        "url": "https://github.com/Ershubhambhagat",
+        "icon": "github",
+        "enabled": true
+      },
+      {
+        "id": "social-linkedin",
+        "platform": "LinkedIn",
+        "url": "https://in.linkedin.com/in/ershubhambhagat",
+        "icon": "linkedin",
+        "enabled": true
+      },
+      {
+        "id": "social-blogger",
+        "platform": "Blogger",
+        "url": "https://ershubhambhagat.blogspot.com/",
+        "icon": "blogger",
+        "enabled": true
+      },
+      {
+        "id": "social-twitter",
+        "platform": "X (Twitter)",
+        "url": "https://twitter.com/ErShubhamBhagat",
+        "icon": "twitter",
+        "enabled": true
+      },
+      {
+        "id": "social-facebook",
+        "platform": "Facebook",
+        "url": "https://www.facebook.com/ErShubhamkumarBhagat/",
+        "icon": "facebook",
+        "enabled": true
+      },
+      {
+        "id": "social-instagram",
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/ershubhambhagat/",
+        "icon": "instagram",
+        "enabled": true
+      },
+      {
+        "id": "social-telegram",
+        "platform": "Telegram",
+        "url": "https://t.me/ershubhambhagat",
+        "icon": "telegram",
+        "enabled": true
+      }
+    ],
+    "highlights": [
+      {
+        "id": "highlight-frontend",
+        "label": "Front end",
+        "value": "React, JavaScript, CSS"
+      },
+      {
+        "id": "highlight-backend",
+        "label": "Back end",
+        "value": ".NET Core, Python"
+      },
+      {
+        "id": "highlight-database",
+        "label": "Database",
+        "value": "SQL Server"
+      }
+    ]
+  }
+}

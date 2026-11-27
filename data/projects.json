@@ -1,0 +1,242 @@
+{
+  "_guide": [
+    "// projects.json - one card per project in the Projects section.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: heading text plus on/off switches for search, filters, sorting and detail views.",
+    "// REQUIRED per project: id, title. Everything else is optional and is hidden when empty.",
+    "// id: unique and stable, prefix project- (project-001). Career Timeline and search reference it.",
+    "// title: card heading. Keep it short; it wraps.",
+    "// shortDescription: one sentence shown on the card.",
+    "// description: longer text shown in the details dialog.",
+    "// categoryId: must match an id in categories[] below.",
+    "// coverImage: path such as ./assets/images/projects/project-001/cover.webp. Empty = no image slot.",
+    "// imageAlt: describe the image for screen readers; required when coverImage is set.",
+    "// gallery: [{ id, src, alt }] extra screenshots for the details dialog.",
+    "// technologies: plain names shown as tags, e.g. ['React', 'SQL Server'].",
+    "// role: your part, e.g. 'Developer'.",
+    "// contributions: list of what you built, shown in the dialog.",
+    "// links: { liveDemo, sourceCode, documentation }. Any URL left empty is not rendered.",
+    "// status: 'completed' or 'in-progress'.",
+    "// dates: YYYY, YYYY-MM or YYYY-MM-DD. endDate null = not finished.",
+    "// featured: true puts a badge on the card.",
+    "// order: manual sort position (lowest first).",
+    "// enabled: false hides the record without deleting it.",
+    "// isSample: true marks example content; the section then shows a notice."
+  ],
+  "schemaVersion": 1,
+  "section": {
+    "enabled": true,
+    "title": "Projects",
+    "subtitle": "Six projects from the project page, with sample details so every field is visible. Replace the sample text with the real story.",
+    "showSearch": true,
+    "showFilters": true,
+    "showFeatured": true,
+    "showStatus": false,
+    "showTechnologies": true,
+    "showDetails": true,
+    "defaultSort": "manual",
+    "projectsPerPage": 9
+  },
+  "categories": [
+    {
+      "id": "web-applications",
+      "name": "Web applications",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "iot",
+      "name": "IoT & hardware",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "developer-tools",
+      "name": "Developer tools",
+      "order": 3,
+      "enabled": true
+    }
+  ],
+  "projects": [
+    {
+      "id": "project-001",
+      "isSample": true,
+      "title": "Student Management System",
+      "shortDescription": "Student records, courses and printable results in one application.",
+      "description": "A management application for student records: enrolment, course assignment, marks and printable result sheets. Built to practise forms, validation and relational data modelling.",
+      "categoryId": "web-applications",
+      "coverImage": "",
+      "imageAlt": "",
+      "gallery": [],
+      "technologies": [
+        "C#",
+        ".NET Core",
+        "SQL Server"
+      ],
+      "relatedSkillIds": [],
+      "role": "Developer",
+      "contributions": [
+        "Designed the relational schema for students, courses and marks.",
+        "Built the record forms with server-side validation.",
+        "Added result lookup by roll number and a printable report."
+      ],
+      "links": {},
+      "status": "completed",
+      "featured": true,
+      "startDate": "2023-01",
+      "endDate": "2023-05",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "project-002",
+      "isSample": true,
+      "title": "Water Billing System",
+      "shortDescription": "Billing and payment tracking for a water supply office.",
+      "description": "A billing application that issues water bills from meter readings, records payments and lists outstanding balances per connection.",
+      "categoryId": "web-applications",
+      "coverImage": "",
+      "imageAlt": "",
+      "gallery": [],
+      "technologies": [
+        "C#",
+        ".NET Core",
+        "SQL Server"
+      ],
+      "relatedSkillIds": [],
+      "role": "Developer",
+      "contributions": [
+        "Modelled connections, tariff slabs and monthly readings.",
+        "Generated bills and tracked partial payments.",
+        "Added an outstanding-balance report by area."
+      ],
+      "links": {},
+      "status": "completed",
+      "featured": true,
+      "startDate": "2023-08",
+      "endDate": "2023-12",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "project-003",
+      "isSample": true,
+      "title": "Auto Street Light Control",
+      "shortDescription": "Street lights that switch on at dusk and off at dawn.",
+      "description": "An Arduino prototype that uses a light sensor to switch street lights automatically, with a manual override and a delay to avoid flicker.",
+      "categoryId": "iot",
+      "coverImage": "",
+      "imageAlt": "",
+      "gallery": [],
+      "technologies": [
+        "Arduino",
+        "C++",
+        "LDR sensor"
+      ],
+      "relatedSkillIds": [],
+      "role": "Developer",
+      "contributions": [
+        "Wired the light sensor and relay module.",
+        "Wrote the threshold logic with hysteresis.",
+        "Tested the override switch and power failure behaviour."
+      ],
+      "links": {},
+      "status": "completed",
+      "featured": false,
+      "startDate": "2022-09",
+      "endDate": "2022-12",
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "id": "project-004",
+      "isSample": true,
+      "title": "Smart Car Parking System",
+      "shortDescription": "Slot detection and an availability display for a small car park.",
+      "description": "A prototype that detects free parking slots with sensors and shows the count at the entrance, so drivers do not enter a full lot.",
+      "categoryId": "iot",
+      "coverImage": "",
+      "imageAlt": "",
+      "gallery": [],
+      "technologies": [
+        "Arduino",
+        "C++",
+        "IR sensors"
+      ],
+      "relatedSkillIds": [],
+      "role": "Developer",
+      "contributions": [
+        "Placed IR sensors per slot and debounced the readings.",
+        "Built the entrance display logic.",
+        "Documented the wiring for a rebuild."
+      ],
+      "links": {},
+      "status": "completed",
+      "featured": false,
+      "startDate": "2022-06",
+      "endDate": "2022-09",
+      "order": 4,
+      "enabled": true
+    },
+    {
+      "id": "project-005",
+      "isSample": true,
+      "title": "Room Light Automation (IoT)",
+      "shortDescription": "Phone-controlled room lighting over Wi-Fi.",
+      "description": "An IoT prototype that switches room lights from a phone over the local network, with a schedule and a physical switch fallback.",
+      "categoryId": "iot",
+      "coverImage": "",
+      "imageAlt": "",
+      "gallery": [],
+      "technologies": [
+        "Arduino",
+        "ESP8266",
+        "C++"
+      ],
+      "relatedSkillIds": [],
+      "role": "Developer",
+      "contributions": [
+        "Connected the relay board to an ESP8266.",
+        "Built a small web control page served by the board.",
+        "Kept a physical switch working when the network is down."
+      ],
+      "links": {},
+      "status": "completed",
+      "featured": false,
+      "startDate": "2023-02",
+      "endDate": "2023-04",
+      "order": 5,
+      "enabled": true
+    },
+    {
+      "id": "project-006",
+      "isSample": true,
+      "title": "Walk API",
+      "shortDescription": "A small REST API for walking distance and daily goals.",
+      "description": "A REST API that stores walks, sums daily distance and returns progress against a goal. Used to practise API design, validation and pagination.",
+      "categoryId": "developer-tools",
+      "coverImage": "",
+      "imageAlt": "",
+      "gallery": [],
+      "technologies": [
+        ".NET Core",
+        "C#",
+        "SQL Server"
+      ],
+      "relatedSkillIds": [],
+      "role": "Developer",
+      "contributions": [
+        "Designed the endpoints and request validation.",
+        "Added daily aggregation queries.",
+        "Wrote the API documentation."
+      ],
+      "links": {},
+      "status": "completed",
+      "featured": false,
+      "startDate": "2024-05",
+      "endDate": "2024-08",
+      "order": 6,
+      "enabled": true
+    }
+  ]
+}

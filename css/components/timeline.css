@@ -1,0 +1,203 @@
+/* ==========================================================================
+   TIMELINE - css/components/timeline.css
+
+   Styles the output of js/components/timeline-item.js and the <ol> built by
+   js/core/section-kit.js (createTimeline):
+
+     ol.timeline.timeline--vertical
+       li.timeline__event[data-event-type] (.timeline__event--featured)
+         .timeline__marker
+         .timeline__content.card
+           .timeline__date, .timeline__badges (.badge.timeline__type),
+           h3, .timeline__description, .timeline__expand,
+           .timeline__details, .timeline__actions, .timeline__image
+
+   One vertical rail, a dot per event, and the event card offset to the right.
+   The rail is a pseudo-element on the list, so an event does not need to know
+   whether it is first or last.
+   ========================================================================== */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-lg);
+  margin: 0;
+  padding: 0 0 0 var(--spacing-lg);
+  list-style: none;
+}
+
+/* The rail. Inset from the left edge by half the marker width so the dots sit
+   centred on it. */
+.timeline::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.4rem 0.4rem;
+  inset-inline-start: 0.3rem;
+  inline-size: 2px;
+  background-color: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.timeline__event {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-xs);
+}
+
+/* The dot. It is decorative: the date is in the card and is what a screen
+   reader reads. */
+/* The dot is positioned against the list's padding, so the negative offset is
+   the padding plus half the dot: changing --spacing-lg here would silently move
+   the markers off the rail. */
+.timeline__marker {
+  position: absolute;
+  inset-block-start: 0.55rem;
+  inset-inline-start: calc(-1 * var(--spacing-lg) + 0.3rem - 3px);
+  inline-size: 0.65rem;
+  block-size: 0.65rem;
+  background-color: var(--color-surface-raised);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.timeline__event--featured .timeline__marker {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* The card is the shared card surface; the timeline only changes its density. */
+.timeline__content {
+  display: grid;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+}
+
+.timeline__date {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.timeline__content > h3,
+.timeline__content > h4 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.timeline__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline__description {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.timeline__expand {
+  justify-self: start;
+  padding: 0.2rem 0;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.timeline__details {
+  display: grid;
+  gap: var(--spacing-xs);
+  padding-block-start: var(--spacing-xs);
+  border-block-start: 1px solid var(--color-border);
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.timeline__details p {
+  margin: 0;
+}
+
+.timeline__image {
+  display: block;
+  inline-size: 100%;
+  max-block-size: 18rem;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.timeline__image--failed {
+  display: none;
+}
+
+.timeline__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  padding-block-start: var(--spacing-xs);
+}
+
+/* Type badges keep their own colour per event type. The attribute is set by the
+   component from the normalized type, so an unknown type falls back to the
+   neutral badge instead of breaking the rule. */
+.timeline__event[data-event-type="experience"] .timeline__type {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.timeline__event[data-event-type="project"] .timeline__type {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.timeline__event[data-event-type="certificate"] .timeline__type {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.timeline__event[data-event-type="education"] .timeline__type {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.timeline__event[data-event-type="learning"] .timeline__type,
+.timeline__event[data-event-type="learning"] .timeline__badge {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* Grouped layout (timeline--grouped sets data-group headings). */
+.timeline__group {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.timeline__group > h3 {
+  margin: 0;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .timeline {
+    padding-inline-start: var(--spacing-xl);
+  }
+
+  .timeline__marker {
+    inset-inline-start: calc(-1 * var(--spacing-xl) + 0.3rem - 3px);
+  }
+}

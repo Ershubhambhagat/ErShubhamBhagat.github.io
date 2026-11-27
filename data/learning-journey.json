@@ -1,0 +1,167 @@
+{
+  "_guide": [
+    "// learning-journey.json - one card per learning activity in the Learning Journey section.",
+    "// schemaVersion: always 1. It tells the loader which shape to expect; do not change it.",
+    "// section: heading text plus on/off switches for search, filters, sorting and detail views.",
+    "// REQUIRED per activity: id, title. Everything else is optional and hidden when empty.",
+    "// id: unique and stable, prefix journey- (journey-001). Career Timeline references it.",
+    "// title: what you studied, e.g. 'Modern JavaScript patterns'.",
+    "// categoryId: must match an id in categories[] below.",
+    "// topic: the concrete subject, e.g. 'JavaScript'.",
+    "// description: one or two sentences on what and why.",
+    "// learningType: 'self-study', 'course', 'book' or 'workshop'.",
+    "// source: { name, url } where you studied; url must be a full https link.",
+    "// dates: YYYY, YYYY-MM or YYYY-MM-DD.",
+    "// status: 'in-progress' or 'completed'; completed renders a green chip.",
+    "// progress: { enabled, value 0-100, unit, description }. enabled false = no bar.",
+    "// goals: what you set out to learn. keyLearnings: what you actually took away.",
+    "// relatedSkillIds: ids from skills.json, used by search.",
+    "// featured: true highlights the card. order: manual position.",
+    "// isSample: true marks example content; the section then shows a notice."
+  ],
+  "schemaVersion": 1,
+  "sampleData": true,
+  "section": {
+    "enabled": true,
+    "title": "Learning journey",
+    "subtitle": "What I am studying, and what I finished. Every record is an example that shows the progress bar, goals and source link.",
+    "layout": "timeline",
+    "showSearch": false,
+    "showFilters": true,
+    "showSort": true,
+    "showProgress": true,
+    "showGoals": true,
+    "showRelatedItems": true,
+    "defaultSort": "newest",
+    "itemsPerPage": 8,
+    "showLoadMore": false
+  },
+  "categories": [
+    {
+      "id": "frontend",
+      "label": "Front end"
+    },
+    {
+      "id": "backend",
+      "label": "Back end"
+    },
+    {
+      "id": "database",
+      "label": "Database"
+    }
+  ],
+  "learningActivities": [
+    {
+      "id": "journey-001",
+      "isSample": true,
+      "title": "Example — Modern JavaScript patterns",
+      "categoryId": "frontend",
+      "topic": "JavaScript",
+      "description": "Example record shipped with the template. Replace it with something you actually studied.",
+      "learningType": "self-study",
+      "source": {
+        "name": "MDN Web Docs",
+        "url": "https://developer.mozilla.org/"
+      },
+      "startDate": "2026-02",
+      "endDate": null,
+      "status": "in-progress",
+      "progress": {
+        "enabled": true,
+        "value": 60,
+        "unit": "percent",
+        "description": "Self-assessed."
+      },
+      "goals": [
+        "ES modules and import maps",
+        "Async patterns without a framework"
+      ],
+      "keyLearnings": [
+        "Modules",
+        "Promises",
+        "Async and await"
+      ],
+      "relatedSkillIds": [
+        "skill-003"
+      ],
+      "featured": true,
+      "order": 1,
+      "enabled": true,
+      "image": ""
+    },
+    {
+      "id": "journey-002",
+      "isSample": true,
+      "title": "Example — SQL Server query tuning",
+      "categoryId": "database",
+      "topic": "SQL Server",
+      "description": "Example record shipped with the template. It shows the timeline with a progress bar and a finished state.",
+      "learningType": "course",
+      "source": {
+        "name": "Microsoft Learn",
+        "url": "https://learn.microsoft.com/"
+      },
+      "startDate": "2025-09",
+      "endDate": "2025-12",
+      "status": "completed",
+      "progress": {
+        "enabled": true,
+        "value": 100,
+        "unit": "percent",
+        "description": "Completed."
+      },
+      "goals": [
+        "Read execution plans",
+        "Index strategy"
+      ],
+      "keyLearnings": [
+        "Execution plans",
+        "Covering indexes"
+      ],
+      "relatedSkillIds": [
+        "skill-006"
+      ],
+      "featured": false,
+      "order": 2,
+      "enabled": true,
+      "image": ""
+    },
+    {
+      "id": "journey-003",
+      "isSample": true,
+      "title": "Example — .NET Core APIs",
+      "categoryId": "backend",
+      "topic": ".NET Core",
+      "description": "Example record shipped with the template.",
+      "learningType": "self-study",
+      "source": {
+        "name": "Microsoft Learn",
+        "url": "https://learn.microsoft.com/"
+      },
+      "startDate": "2024-04",
+      "endDate": "2024-08",
+      "status": "completed",
+      "progress": {
+        "enabled": false,
+        "value": 0,
+        "unit": "percent",
+        "description": ""
+      },
+      "goals": [
+        "Sample goal: name the first thing you wanted to be able to do.",
+        "Sample goal: name the second."
+      ],
+      "keyLearnings": [
+        "Sample takeaway: a concept you can now explain.",
+        "Sample takeaway: something you built with it."
+      ],
+      "relatedSkillIds": [
+        "skill-004"
+      ],
+      "featured": false,
+      "order": 3,
+      "enabled": true,
+      "image": ""
+    }
+  ]
+}

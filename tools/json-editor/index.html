@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Editor Studio &middot; Portfolio</title>
+
+    <!--
+      Reuse the portfolio's design tokens so the editor belongs to the same visual
+      system. The editor loads no other site stylesheet: the public page's layout
+      rules would fight this application layout.
+    -->
+    <link rel="icon" type="image/svg+xml" href="../../assets/images/favicon.svg">
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="./css/editor.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar__brand">
+            <h1>JSON Editor Studio</h1>
+            <p>Edit the portfolio's JSON through forms, validate, then save or download.</p>
+        </div>
+
+        <div class="topbar__actions">
+            <span id="connection-status" class="status" data-state="preview" role="status" aria-live="polite">
+                Loading datasets…
+            </span>
+            <button id="connect-button" class="button" type="button">Connect project folder</button>
+            <button id="save-button" class="button button--primary" type="button" disabled>Save</button>
+            <button id="download-button" class="button" type="button" disabled>Download</button>
+        </div>
+    </header>
+
+    <main class="layout">
+        <aside class="sidebar" aria-label="Datasets">
+            <h2 class="sidebar__title">Datasets</h2>
+            <nav id="dataset-list" class="dataset-list"></nav>
+            <p class="sidebar__hint">
+                Preview loads read-only from the local server. Connect the project folder
+                to write into <code>data/</code> with a timestamped backup.
+            </p>
+        </aside>
+
+        <section class="records" aria-label="Records">
+            <div class="records__head">
+                <div>
+                    <h2 id="dataset-title">Dataset</h2>
+                    <p id="dataset-meta" class="muted"></p>
+                </div>
+                <button id="categories-toggle" class="button button--ghost" type="button" hidden>
+                    Categories
+                </button>
+            </div>
+
+            <div class="toolbar">
+                <label class="visually-hidden" for="record-search">Search records</label>
+                <input id="record-search" class="input" type="search" placeholder="Search records…" autocomplete="off">
+                <button id="add-record" class="button" type="button">+ Add record</button>
+            </div>
+
+            <div id="table-wrap" class="table-wrap">
+                <table id="record-table" class="record-table"></table>
+            </div>
+
+            <p id="empty-state" class="empty" hidden></p>
+        </section>
+
+        <aside class="editor" aria-label="Record editor">
+            <div class="editor__head">
+                <h2 id="form-title">Record</h2>
+                <div class="tabs" role="tablist" aria-label="Editor view">
+                    <button class="tab is-active" type="button" data-tab="form" role="tab" aria-selected="true">Form</button>
+                    <button class="tab" type="button" data-tab="json" role="tab" aria-selected="false">JSON</button>
+                </div>
+            </div>
+
+            <form id="record-form" class="record-form" novalidate></form>
+
+            <div id="preview-wrap" class="preview-wrap" hidden>
+                <pre id="json-preview" class="json-preview" hidden></pre>
+                <button id="copy-json" class="button button--ghost" type="button">Copy JSON</button>
+            </div>
+
+            <div class="editor__actions">
+                <button id="apply-record" class="button button--primary" type="button" disabled>Apply</button>
+                <button id="cancel-record" class="button" type="button" disabled>Cancel</button>
+            </div>
+
+            <section id="validation-panel" class="validation" aria-live="polite"></section>
+        </aside>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

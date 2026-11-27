@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Page not found - Er Shubham Bhagat portfolio.">
+
+    <!-- Same background value as index.html so a 404 keeps identical browser chrome. -->
+    <meta name="theme-color" content="#08090c">
+    <meta name="color-scheme" content="dark light">
+
+    <!--
+      A missing page must never become an indexable result. GitHub Pages serves
+      this file with the requested status, but noindex keeps search engines from
+      listing the URL and competing with the real home page.
+    -->
+    <meta name="robots" content="noindex">
+
+    <title>Page not found &middot; Er Shubham Bhagat</title>
+
+    <!--
+      No canonical on purpose: a 404 has no canonical address - it is served for
+      an unbounded set of URLs.
+    -->
+
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+
+    <!--
+      PATH STRATEGY DIFFERS FROM index.html - deliberately.
+
+      GitHub Pages serves this file for any unknown path, at any depth
+      (/missing, /a/b/c, ...). A relative link such as ./css/reset.css would then
+      resolve against that unknown directory and 404 a second time, leaving the
+      page unstyled. Root-relative paths always resolve against the user-site
+      root, which is the only origin this repository is published to
+      (ErShubhamBhagat.github.io -> https://ershubhambhagat.github.io/).
+
+      If the site is ever moved to a project path (/repo-name/), every path in
+      this file - and the home link below - must be prefixed with that segment.
+    -->
+
+    <!-- Global layer, same order as index.html so tokens reach every file. -->
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/animations.css">
+
+    <!-- Layout layer: only the header and footer rules matter here, but the
+         full shell chain is loaded so the 404 cannot drift from the real site. -->
+    <link rel="stylesheet" href="/css/layout/header.css">
+    <link rel="stylesheet" href="/css/layout/footer.css">
+    <link rel="stylesheet" href="/css/layout/navigation.css">
+
+    <!-- Component layer -->
+    <link rel="stylesheet" href="/css/components/buttons.css">
+    <link rel="stylesheet" href="/css/components/cards.css">
+    <link rel="stylesheet" href="/css/components/badges.css">
+    <link rel="stylesheet" href="/css/components/modals.css">
+    <link rel="stylesheet" href="/css/components/search.css">
+    <link rel="stylesheet" href="/css/components/filters.css">
+    <link rel="stylesheet" href="/css/components/timeline.css">
+    <link rel="stylesheet" href="/css/components/tooltips.css">
+    <link rel="stylesheet" href="/css/components/toast.css">
+
+    <!-- Section layer. Not needed for the message itself, but loaded so the page
+         is styled by exactly the same cascade as the rest of the site. -->
+    <link rel="stylesheet" href="/css/sections/profile.css">
+    <link rel="stylesheet" href="/css/sections/skills.css">
+    <link rel="stylesheet" href="/css/sections/experience.css">
+    <link rel="stylesheet" href="/css/sections/projects.css">
+    <link rel="stylesheet" href="/css/sections/certificates.css">
+    <link rel="stylesheet" href="/css/sections/education.css">
+    <link rel="stylesheet" href="/css/sections/learning-journey.css">
+    <link rel="stylesheet" href="/css/sections/career-timeline.css">
+    <link rel="stylesheet" href="/css/sections/github-importer.css">
+    <link rel="stylesheet" href="/css/sections/bookmarks.css">
+    <link rel="stylesheet" href="/css/sections/contact.css">
+    <link rel="stylesheet" href="/css/sections/global-search.css">
+    <link rel="stylesheet" href="/css/sections/theme-studio.css">
+    <link rel="stylesheet" href="/css/sections/json-manager.css">
+
+    <!--
+      PAGE-LOCAL LAYOUT ONLY.
+
+      This page does not own a stylesheet (the contract has no path for one) and
+      it must render with JavaScript disabled, so the few declarations needed to
+      centre a single message live here. They are geometry only: no colour, no
+      font family, no shadow - every visible value still comes from the tokens in
+      css/variables.css, which is why Theme Studio can restyle this page too.
+      Everything here is scoped under .error-page, so it cannot leak into
+      index.html even though both pages share the same stylesheet chain.
+    -->
+    <style>
+        .error-page {
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            padding: var(--spacing-lg, 1.5rem);
+            text-align: center;
+        }
+
+        .error-page__panel {
+            max-width: 44ch;
+        }
+
+        /* Decorative code, hidden from assistive tech in the markup below so the
+           heading - not the number - is what a screen reader announces first. */
+        .error-page__code {
+            margin: 0 0 var(--spacing-sm, 0.5rem);
+            font-family: var(--font-heading, inherit);
+            font-size: clamp(3rem, 12vw, 6rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.05em;
+            color: var(--color-primary);
+        }
+
+        .error-page__panel h1 {
+            margin: 0 0 var(--spacing-md, 1rem);
+        }
+
+        .error-page__panel p {
+            margin: 0 0 var(--spacing-md, 1rem);
+            color: var(--color-text-secondary);
+        }
+
+        /* The home action is the only call to action on the page, so it gets the
+           focus ring from main.css and a visible box of its own. */
+        .error-page__home {
+            display: inline-block;
+            margin-top: var(--spacing-sm, 0.5rem);
+        }
+    </style>
+</head>
+
+<body class="error-page">
+
+<!--
+  NO APPLICATION SHELL HERE.
+
+  There is no header, footer, navigation, back-to-top or feature mount on this
+  page: js/app.js is deliberately not loaded, because a 404 must work when
+  scripting fails, and none of the shell regions can be filled without it.
+  Keeping the page free of those ids also means the Navigation and Layout phase
+  never has to special-case a second document.
+-->
+
+<main id="main-content" tabindex="-1">
+    <div class="error-page__panel">
+        <p class="error-page__code" aria-hidden="true">404</p>
+
+        <h1>This page does not exist</h1>
+
+        <p>
+            The address may be mistyped, or the page may have moved. This
+            portfolio is a single page, so every section is reachable from the
+            home page.
+        </p>
+
+        <p>
+            <a class="error-page__home" href="/">Go to the portfolio home page</a>
+        </p>
+    </div>
+</main>
+
+</body>
+</html>
