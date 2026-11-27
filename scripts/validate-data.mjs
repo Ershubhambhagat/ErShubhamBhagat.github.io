@@ -190,14 +190,38 @@ if (navigation && existsSync(indexPath)) {
 // --- cross-file: local bookmark files -------------------------------------
 const bookmarks = loaded.get("bookmarks");
 
+/**
+ * Resolves a repository-relative bookmark URL to a file on disk.
+ *
+ * Two roots are checked on purpose. The deployed site serves the legacy pages at
+ * the repository root (`/Project/MyProject.html`, `/BookMark/index.html`), which
+ * is what a bookmark URL must point at to work on GitHub Pages. This workspace
+ * keeps the same tree under `Old_Data/` because that folder is git-ignored, so a
+ * URL that exists only in `Old_Data/` is reported as missing - it ships nowhere.
+ *
+ * @param {string} url - A URL starting with "./".
+ * @returns {string|null} The existing path, or null.
+ */
+function resolveRepositoryPath(url) {
+  const relative = decodeURIComponent(url)
+    .replace(/^\.\//, "")
+    .split("#")[0]
+    .split("?")[0];
+
+  const candidates = [path.join(root, relative), path.join(root, "Old_Data", relative)];
+
+  return candidates.find((candidate) => existsSync(candidate)) ?? null;
+}
+
 if (bookmarks && Array.isArray(bookmarks.bookmarks)) {
   bookmarks.bookmarks.forEach((bookmark, index) => {
     const url = String(bookmark.url || "");
 
     if (url.startsWith("./") && !url.includes("#")) {
-      const target = path.join(root, decodeURIComponent(url));
-      if (!existsSync(target)) {
-        fail(`bookmarks.json bookmarks[${index}]: "${url}" does not exist`);
+      if (!resolveRepositoryPath(url)) {
+        fail(
+          `bookmarks.json bookmarks[${index}]: "${url}" exists neither at the repository root nor under Old_Data/`
+        );
       }
     }
   });

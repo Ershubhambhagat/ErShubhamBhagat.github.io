@@ -77,6 +77,21 @@ Forms are generated from the record shape and field names:
 
 `_guide` is never edited by a form; it is preserved on save.
 
+## Publishing
+
+The editor writes files; it never publishes them.
+
+1. Save (or Download and copy the file into `data/`).
+2. Review the change: `git diff data/`.
+3. Validate: `node scripts/validate-data.mjs` - it must print
+   "All data checks passed."
+4. Commit the file and push to the branch GitHub Pages serves for this repository
+   (Settings -> Pages shows which one).
+5. Reload the site after the Pages build finishes.
+
+The editor never asks for a GitHub token, never calls the GitHub API and never
+pushes: there is no upload path in the code.
+
 ## Validation
 
 Saving is blocked while the current dataset has errors:
@@ -128,6 +143,7 @@ Warnings (such as a duplicate timeline reference) do not block saving.
 | Categories tab | PASS - 3 project categories listed |
 | JSON preview | PASS - `_guide` present, form hidden |
 | Download fallback | PASS - real download produced `projects.json` with 7 records and `_guide` |
+| Search with no match | PASS - shows "No records match ..." instead of an empty table (fixed 2026-11-27, round 2) |
 | Save / backup / conflict | PASS with mock file handles - write, original backup, hash, conflict, invalid JSON refused |
 | Real folder picker + permission | BLOCKED - requires a human click; not automated |
 | Browser auto-open | NOT VERIFIED in automation (suppressed with `PORTFOLIO_NO_BROWSER=1`) |
@@ -147,7 +163,7 @@ Warnings (such as a duplicate timeline reference) do not block saving.
 
 ## Related documentation
 
-- `../../docs/DATA-GUIDE.md` - dataset field meanings.
+- `../../docs/DEVELOPMENT/DATA_GUIDE.md` - dataset field meanings.
 - `../../docs/ARCHITECTURE.md` - how the public site loads data.
 - `../../Prompt/sections/JSON_EDITOR_STUDIO_IMPLEMENTATION_PROMPT.md` - the full
   editor specification; this implementation covers the START_LOCAL workflow, not

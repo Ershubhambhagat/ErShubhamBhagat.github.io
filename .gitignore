@@ -7,11 +7,10 @@ Feature/
 Future/
 Project/
 Projects/
-Prompt/
 Sangrampur/
 .build/
 .zwork/
-docs/
 Old_Data/
-# Timestamped JSON backups created by tools/json-editor (never published)
 .local-json-backups/
+docs/
+Prompt/

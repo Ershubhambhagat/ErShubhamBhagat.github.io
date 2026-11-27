@@ -51,6 +51,8 @@ export const STORAGE_KEYS = Object.freeze({
   ui: Object.freeze({
     /** Last search query, restored into the Global Search input on reload. */
     lastSearchQuery: "portfolio.ui.lastSearchQuery",
+    /** Recent Global Search queries, newest first, capped at five. */
+    recentSearches: "portfolio.ui.recentSearches",
     /** Selected filter set per section: { [sectionId]: Object }. */
     filters: "portfolio.ui.filters",
     /** Selected sort mode per section: { [sectionId]: string }. */
@@ -66,7 +68,9 @@ export const STORAGE_KEYS = Object.freeze({
     /** Dataset edits made in the JSON Manager that have not been downloaded yet. */
     jsonManager: "portfolio.draft.jsonManager",
     /** Message text typed into the contact form. */
-    contactMessage: "portfolio.draft.contactMessage"
+    contactMessage: "portfolio.draft.contactMessage",
+    /** Bookmark create/edit/delete operations made in ?owner=1, awaiting export. */
+    bookmarkDrafts: "portfolio.draft.bookmarkDrafts"
   })
 });
 

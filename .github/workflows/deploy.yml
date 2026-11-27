@@ -1,34 +1,89 @@
-name: Deploy Static Website
+name: Deploy to GitHub Pages
+
+# Why this workflow is manual: the repository publishes the site from a branch,
+# and the audit found the previous `deploy.yml` deploying to Firebase with no
+# Firebase configuration in the repository - a job that could only fail, on a
+# branch (`main`) that nobody was pushing to.
+#
+# This workflow therefore does not run on push. The owner starts it deliberately
+# with "Run workflow", after deciding that the tracked tree is what should be live.
+# It stages only the files git tracks (`git archive`), so the 160 MB of
+# git-ignored legacy pages in this working copy are never published by accident,
+# and it deploys that staged tree to GitHub Pages.
+#
+# Consequence to be aware of before the first run: the current public site is the
+# older branch build, which serves /Blog/, /BookMark/, /Project/ and friends at
+# the repository root. Those folders are git-ignored here, so a deployment of
+# this branch replaces the site and those legacy URLs stop existing. The bookmark
+# data and sitemap.xml point at them, so decide that trade-off first.
 
 on:
-  push:
-    branches:
-      - main  # Change this to your default branch if different
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
-
+  verify:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2  # Step to check out the repository code
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools  # Install Firebase CLI globally
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
 
-      - name: Set up Firebase Configuration
+      # The same gates as verify.yml, repeated rather than called: a reusable
+      # workflow needs `workflow_call` on the callee, and keeping this readable is
+      # worth four duplicated commands. They must match, or a deploy can ship what
+      # CI would have rejected.
+      - name: Validate datasets
+        run: node scripts/validate-data.mjs
+
+      - name: Check the module contract
+        run: node scripts/check-modules.mjs
+
+      - name: Run unit tests
+        run: node tests/run.mjs
+
+      - name: Check the first-load budget
+        run: node scripts/check-budget.mjs
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage tracked files only
+        # docs/ and Prompt/ are git-ignored working material, so they are not in the tree
+        # this stages. The excludes stay as a guard: if either folder is ever tracked
+        # again, it must not become public pages under /docs/ or /Prompt/.
         run: |
-          echo "APIKEY=${{ secrets.APIKEY }}" >> $GITHUB_ENV
-          echo "AUTHDOMAIN=${{ secrets.AUTHDOMAIN }}" >> $GITHUB_ENV
-          echo "DATABASEURL=${{ secrets.DATABASEURL }}" >> $GITHUB_ENV
-          echo "PROJECTID=${{ secrets.PROJECTID }}" >> $GITHUB_ENV
-          echo "STORAGEBUCKET=${{ secrets.STORAGEBUCKET }}" >> $GITHUB_ENV
-          echo "MESSAGINGSENDERID=${{ secrets.MESSAGINGSENDERID }}" >> $GITHUB_ENV
-          echo "APPID=${{ secrets.APPID }}" >> $GITHUB_ENV
-          echo "MEASUREMENTID=${{ secrets.MEASUREMENTID }}" >> $GITHUB_ENV
+          mkdir -p _site
+          git archive HEAD | tar -x -C _site --exclude='docs' --exclude='docs/*' \
+            --exclude='Prompt' --exclude='Prompt/*'
 
-      - name: Deploy to Firebase Hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}  # Use your Firebase token from GitHub Secrets
-        run: |
-          firebase deploy --token $FIREBASE_TOKEN  # Deploy using the Firebase token
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

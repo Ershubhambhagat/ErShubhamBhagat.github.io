@@ -43,3 +43,100 @@
 .bookmarks-grid .card__footer {
   gap: var(--spacing-xs);
 }
+/* ---- Bookmark preview + file actions ---- *//* ---- Preview + file actions ---- */
+.bookmark-preview__image,
+.bookmark-preview__frame {
+  display: block;
+  inline-size: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+.bookmark-preview__image {
+  block-size: auto;
+}
+
+/* A fixed viewport height keeps the dialog from jumping when a site refuses to
+   embed: the frame keeps its box and the fallback note stays visible. */
+.bookmark-preview__frame {
+  block-size: 420px;
+}
+
+.bookmark-preview__note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.bookmarks-file-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-inline-start: auto;
+}
+
+/* The label acts as a button for the hidden file input; keep it on the same
+   baseline as the neighbouring buttons. */
+.bookmarks-file-actions .btn {
+  cursor: pointer;
+}
+/* --------------------------------------------------------------------------
+   OWNER MODE (?owner=1)
+   Draft create/edit/delete controls. The bar is not a permission system and does
+   not pretend to be one: it only reveals the local draft overlay, and the note
+   always says the published JSON is unchanged until it is exported and committed.
+   -------------------------------------------------------------------------- */
+
+.bookmarks-owner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-block-end: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt, transparent);
+}
+
+.bookmarks-owner__note {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.bookmarks-owner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.bookmarks-form {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.bookmarks-form__check {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.bookmarks-form__error {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-danger, #b3261e);
+}
+
+.bookmarks-form__errors {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-danger-soft, transparent);
+}
+
+.bookmarks-form__errors p {
+  margin: 0;
+  font-size: 0.8125rem;
+}

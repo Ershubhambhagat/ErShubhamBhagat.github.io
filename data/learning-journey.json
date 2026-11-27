@@ -26,7 +26,7 @@
     "title": "Learning journey",
     "subtitle": "What I am studying, and what I finished. Every record is an example that shows the progress bar, goals and source link.",
     "layout": "timeline",
-    "showSearch": false,
+    "showSearch": true,
     "showFilters": true,
     "showSort": true,
     "showProgress": true,
@@ -34,7 +34,7 @@
     "showRelatedItems": true,
     "defaultSort": "newest",
     "itemsPerPage": 8,
-    "showLoadMore": false
+    "showLoadMore": true
   },
   "categories": [
     {

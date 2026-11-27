@@ -435,6 +435,13 @@ textarea.input {
   gap: var(--spacing-xs);
 }
 
+/* The form panel wraps the form and its Apply/Cancel row so one tab controls
+   both halves; hiding only the form would leave two dead buttons under an
+   empty panel. */
+.tabpanel {
+  min-inline-size: 0;
+}
+
 .json-preview {
   max-block-size: 24rem;
   margin: 0;
@@ -633,4 +640,270 @@ textarea.input {
   .sidebar__hint {
     display: none;
   }
+}
+
+/* ---- Draft status chip --------------------------------------------------- */
+
+/* One chip, five states: Saved / Unsaved / Invalid / Saving / Save failed.
+   Colour alone is not the message - the text changes too. */
+.chip {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.chip[data-state="saved"] {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.chip[data-state="warning"] {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.chip[data-state="error"] {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.chip[data-state="busy"] {
+  color: var(--color-text-secondary);
+  border-style: dashed;
+}
+
+/* ---- Record rows ------------------------------------------------------- */
+
+/* The record name is a real <button> so Tab reaches it and Enter/Space open the
+   record. It is styled to look like the cell text it replaces. */
+.row-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  max-inline-size: 100%;
+  padding: 0.1rem 0.2rem;
+  font: inherit;
+  text-align: start;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.row-open:hover {
+  text-decoration: underline;
+}
+
+/* A visible focus ring is the point of the button, not decoration: the row is not
+   focusable any more, so this is the only keyboard cursor in the list. */
+.row-open:focus-visible,
+.icon-button:focus-visible,
+.button:focus-visible,
+.tab:focus-visible,
+.dataset-button:focus-visible,
+.tabpanel:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---- Toolbar controls -------------------------------------------------- */
+
+.toolbar .input--compact {
+  flex: 0 0 auto;
+  inline-size: auto;
+  min-inline-size: 7.5rem;
+}
+
+/* ---- Reference pickers ------------------------------------------------- */
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.ref-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.15rem 0.1rem 0.45rem;
+  font-size: 0.75rem;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.ref-chip__id {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.ref-add {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ref-add .input {
+  flex: 1 1 auto;
+}
+
+.field-hint {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+/* ---- Change review dialog ---------------------------------------------- */
+
+.dialog {
+  inline-size: min(52rem, calc(100vw - 2rem));
+  max-block-size: min(84vh, 54rem);
+  padding: 0;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.dialog::backdrop {
+  background: rgb(15 23 42 / 45%);
+}
+
+.dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.dialog__head h2 {
+  font-size: 1rem;
+}
+
+.dialog__body {
+  display: grid;
+  gap: var(--spacing-md);
+  max-block-size: 60vh;
+  padding: var(--spacing-md);
+  overflow-y: auto;
+}
+
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.change-file {
+  display: grid;
+  gap: 0.35rem;
+  padding-block-end: var(--spacing-sm);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.change-file:last-child {
+  border-block-end: 0;
+}
+
+.change-file__name {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.change-list,
+.change-fields {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  list-style: none;
+}
+
+.change-item {
+  display: grid;
+  grid-template-columns: 1rem auto 1fr;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.change-mark {
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-semibold);
+}
+
+.change-item[data-mark="+"] .change-mark {
+  color: var(--color-success);
+}
+
+.change-item[data-mark="~"] .change-mark {
+  color: var(--color-warning);
+}
+
+.change-item[data-mark="-"] .change-mark {
+  color: var(--color-danger);
+}
+
+.change-fields {
+  grid-column: 1 / -1;
+  padding-inline-start: 1.4rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  list-style: disc;
+}
+
+.change-categories {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.change-categories h4 {
+  margin: 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.change-errors {
+  margin-block-start: 0.2rem;
+}
+
+.save-results {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  list-style: none;
+}
+
+.save-result {
+  display: grid;
+  grid-template-columns: 1.2rem auto 1fr;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.save-result--ok .save-result__mark {
+  color: var(--color-success);
+}
+
+.save-result--fail .save-result__mark {
+  color: var(--color-danger);
+}
+
+.save-result--fail code {
+  color: var(--color-danger);
 }

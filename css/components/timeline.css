@@ -201,3 +201,128 @@
     inset-inline-start: calc(-1 * var(--spacing-xl) + 0.3rem - 3px);
   }
 }
+
+/* ==========================================================================
+   LIST RESET
+
+   The component renders an <ol>; the shared reset only removes list styling
+   from `[role="list"]`, so without this rule the browser paints decimal
+   markers and a 40px inline start padding - a numbered, indented timeline.
+   The list owns the gap so both the vertical and the grouped layout inherit
+   the rhythm of their root.
+   ========================================================================== */
+
+.timeline__list {
+  display: grid;
+  gap: inherit;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ==========================================================================
+   COMPACT LAYOUT (TIMELINE_COMPONENT.md § 5.3)
+
+   Same rail and markers, less air: a short summary of a few events. The marker
+   offset is rewritten because it is measured against the horizontal padding.
+   ========================================================================== */
+
+.timeline.timeline--compact {
+  gap: var(--spacing-sm);
+  padding-inline-start: var(--spacing-md);
+}
+
+.timeline--compact::before {
+  inset-inline-start: 0.25rem;
+}
+
+.timeline--compact .timeline__marker {
+  inset-block-start: 0.5rem;
+  inset-inline-start: calc(-1 * var(--spacing-md) + 0.25rem - 3px);
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+}
+
+.timeline--compact .timeline__content {
+  gap: 0.15rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.timeline--compact .timeline__description,
+.timeline--compact .timeline__details {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   GROUPED LAYOUT (TIMELINE_COMPONENT.md § 13)
+
+   The group wrapper already renders a heading; it only needs separation from
+   the next group so two years never read as one block.
+   ========================================================================== */
+
+.timeline--grouped {
+  gap: 0;
+}
+
+.timeline--grouped .timeline__list {
+  gap: var(--spacing-lg);
+}
+
+.timeline--grouped .timeline__group + .timeline__group {
+  margin-block-start: var(--spacing-xl);
+}
+
+.timeline--grouped .timeline__group > h3 {
+  margin-block-end: var(--spacing-sm);
+}
+
+/* ==========================================================================
+   HORIZONTAL LAYOUT (TIMELINE_COMPONENT.md § 5.2)
+
+   Only from 768px up: below that the base vertical rail applies unchanged,
+   which is the "alternative presentation on small screens" the spec requires.
+   The rail runs across the top, the events sit under it, and the list scrolls
+   in its own box so the page never gains horizontal overflow.
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .timeline.timeline--horizontal {
+    gap: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
+  .timeline--horizontal::before {
+    inset-block: 0.55rem auto;
+    inset-inline: 0.75rem;
+    inline-size: auto;
+    block-size: 2px;
+  }
+
+  .timeline--horizontal .timeline__list {
+    display: flex;
+    gap: var(--spacing-lg);
+    min-inline-size: max-content;
+    padding-block: 1.25rem 0.25rem;
+  }
+
+  .timeline--horizontal .timeline__event {
+    flex: 0 0 clamp(14rem, 22vw, 19rem);
+    padding-block-start: 0.75rem;
+  }
+
+  .timeline--horizontal .timeline__marker {
+    inset-block-start: -1.05rem;
+    inset-inline-start: 1rem;
+  }
+
+  /* A horizontal event card is as tall as its content; the grid must not
+     stretch every card to the tallest one or short milestones look empty. */
+  .timeline--horizontal .timeline__content {
+    align-content: start;
+  }
+}

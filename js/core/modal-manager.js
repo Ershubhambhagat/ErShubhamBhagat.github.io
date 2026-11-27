@@ -102,6 +102,14 @@ function handleDocumentKeydown(event) {
     // belongs to the dialog.
     event.preventDefault();
     event.stopPropagation();
+
+    // A blocking dialog (closable:false) must survive Escape. It used to close
+    // anyway, which defeated the one guarantee the option makes - a destructive
+    // or in-flight operation could be dismissed by a stray key press.
+    if (activeOptions && activeOptions.closable === false) {
+      return;
+    }
+
     closeModal(activeDialog, "escape");
     return;
   }
@@ -470,9 +478,16 @@ export function openModal(optionsOrElement = {}) {
   document.addEventListener("keydown", handleDocumentKeydown, true);
 
   // Native Escape produces "cancel" instead of a keydown in some engines. Both
-  // paths funnel into closeModal(), which is idempotent.
+  // paths funnel into closeModal(), which is idempotent - and both must honour
+  // closable:false, or the native path would reopen the hole the keydown path
+  // now closes.
   const handleCancel = (event) => {
     event.preventDefault();
+
+    if (activeOptions && activeOptions.closable === false) {
+      return;
+    }
+
     closeModal(dialog, "escape");
   };
 

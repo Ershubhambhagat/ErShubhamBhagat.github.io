@@ -2,23 +2,118 @@
    TOOLTIPS  ·  css/components/tooltips.css
    ==========================================================================
 
-   PLACEHOLDER — no rules yet, on purpose.
+   CSS-only tooltip primitive. No JavaScript: a tooltip is decoration on top of
+   an accessible name, so it never needs to be focus-managed.
 
-   Filled by: agent `builder-component-tooltips`, Phase 4 (shared components and
-   layout) of the sequence in Prompt/PORTFOLIO_ARCHITECTURE.md § 14.
+   CONTRACT (read before using it)
+   ---------------------------------
+   1. The trigger already has an accessible name: its own text, aria-label, or a
+      <title>. The bubble repeats or expands that name; it is never the only
+      place the information exists.
+   2. Markup: <button data-tooltip="Copy email" aria-label="Copy email">...</button>
+      The attribute text is copied into ::after with `content: attr(data-tooltip)`,
+      so it cannot carry markup and cannot inject anything.
+   3. The bubble appears on hover and on :focus-visible - keyboard users get the
+      same information as pointer users.
+   4. Long text is capped (about 22rem) and wraps. A tooltip is a hint, not a
+      paragraph; use the title, a description list or a modal for real content.
+   5. Reduced motion removes the fade but keeps the bubble.
 
-   Will own: the small label bubble used by icon-only controls (header actions,
-   copy buttons, back-to-top) and by truncated skill/badge labels, positioned
-   above the trigger with a short delay and an arrow.
+   This file previously held only a placeholder note. There is still no
+   Prompt/components/TOOLTIP_COMPONENT.md, so the contract above is the
+   authoritative one for this build; if the spec is added later, reconcile it
+   here rather than inventing a second primitive.
 
-   GAP TO CLOSE FIRST: no Prompt/components/TOOLTIP_COMPONENT.md exists in this
-   repository, so the component contract is not written yet. Whoever implements
-   this file should document the trigger/role/aria-describedby contract before
-   styling it, and register the file in the component documentation registry
-   (Prompt/PORTFOLIO_ARCHITECTURE.md § 5.1).
-
-   Token rule: --color-surface-raised background, --color-border outline,
-   --font-body at 0.8125rem, --shadow-md, --z-header + 1 (tooltips must sit
-   above the header but below the modal scrim at --z-overlay). A tooltip is
-   never the only way to reach information: no essential text only on hover.
+   Tokens only: no literal colours, sizes or fonts.
    ========================================================================== */
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  inset-block-end: calc(100% + 0.5rem);
+  inset-inline-start: 50%;
+  transform: translateX(-50%) translateY(2px);
+
+  /* Above the header (--z-header) but below the modal scrim: a tooltip must not
+     float over a dialog. css/variables.css owns both values. */
+  z-index: calc(var(--z-header) + 1);
+
+  /* A hint can be longer than the control; cap it and let it wrap instead of
+     stretching one line across the viewport. */
+  max-inline-size: min(22rem, 80vw);
+  inline-size: max-content;
+
+  padding: 0.4rem 0.55rem;
+
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-regular);
+  line-height: 1.35;
+  text-align: start;
+  white-space: normal;
+  color: var(--color-text-primary);
+
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+
+  /* Hidden by default, including from assistive technology: the pseudo-element
+     is visual only, and its text is already in the accessible name. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition-fast) var(--ease-standard),
+    transform var(--transition-fast) var(--ease-standard);
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* A trigger near the left or right edge would push its bubble off screen. The
+   modifiers are explicit rather than automatic because CSS cannot measure the
+   bubble; the consumer knows where the control sits. */
+[data-tooltip][data-tooltip-align="start"]::after {
+  inset-inline-start: 0;
+  transform: translateX(0) translateY(2px);
+}
+
+[data-tooltip][data-tooltip-align="start"]:hover::after,
+[data-tooltip][data-tooltip-align="start"]:focus-visible::after {
+  transform: translateX(0) translateY(0);
+}
+
+[data-tooltip][data-tooltip-align="end"]::after {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+  transform: translateX(0) translateY(2px);
+}
+
+[data-tooltip][data-tooltip-align="end"]:hover::after,
+[data-tooltip][data-tooltip-align="end"]:focus-visible::after {
+  transform: translateX(0) translateY(0);
+}
+
+/* Windows High Contrast replaces author colours; the bubble keeps a border so it
+   stays visible against the control it labels. */
+@media (forced-colors: active) {
+  [data-tooltip]::after {
+    border-color: CanvasText;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tooltip]::after {
+    transition: none;
+  }
+}

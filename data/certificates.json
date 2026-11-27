@@ -24,7 +24,7 @@
     "enabled": true,
     "title": "Certificates",
     "subtitle": "Courses and certifications. Both records are examples; example.com is a reserved domain used only to show the verification button.",
-    "showSearch": false,
+    "showSearch": true,
     "showFilters": true,
     "showSort": true,
     "showIssuer": true,
@@ -33,7 +33,7 @@
     "showVerificationButton": true,
     "defaultSort": "newest",
     "itemsPerPage": 8,
-    "showLoadMore": false
+    "showLoadMore": true
   },
   "categories": [
     {

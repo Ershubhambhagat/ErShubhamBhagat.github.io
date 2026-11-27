@@ -1,0 +1,19 @@
+{
+  "name": "Er Shubham Bhagat — Portfolio",
+  "short_name": "ESB Portfolio",
+  "description": "Portfolio of Er Shubham Bhagat: skills, experience, projects, certificates, education, learning journey and bookmarks.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08090c",
+  "theme_color": "#111319",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

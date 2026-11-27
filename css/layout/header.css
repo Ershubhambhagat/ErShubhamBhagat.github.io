@@ -240,3 +240,96 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   5. HEADER ACTIONS (Search / Theme / Resume)
+   --------------------------------------------------------------------------
+   Rendered by js/core/navigation.js only when data/navigation.json enables them
+   (header.showGlobalSearch, header.showThemeToggle) or when the profile has an
+   enabled resume file. They are utilities, so they sit after the destinations on
+   a desktop row and between the brand and the menu button on a narrow screen.
+
+   Icon-only below 768px is deliberate: two text buttons plus an eleven-link row
+   plus the brand is what pushed the old layout into a horizontal scroll. The
+   accessible name stays on the button (aria-label), so hiding the visible label
+   does not hide the name.
+   ========================================================================== */
+
+.site-header__actions {
+  order: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
+.site-header__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-inline-size: 36px;
+  block-size: 36px;
+  padding-inline: 0.5rem;
+
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--ease-standard),
+    border-color var(--transition-fast) var(--ease-standard);
+}
+
+.site-header__action:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+  text-decoration: none;
+}
+
+.site-header__action svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.site-header__action-label {
+  white-space: nowrap;
+}
+
+/* The menu button follows the actions on a narrow header; on desktop it is
+   hidden and the actions take the last slot after the link list. */
+@media (max-width: 1119px) {
+  #mobile-menu-toggle {
+    order: 3;
+  }
+}
+
+@media (min-width: 1120px) {
+  .site-header__actions {
+    order: 4;
+    margin-inline-start: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .site-header__action-label {
+    /* Visually hidden, still in the accessibility tree: aria-label already names
+       the button, and this keeps the row from growing. */
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .site-header__action--resume {
+    padding-inline: var(--spacing-sm);
+  }
+}

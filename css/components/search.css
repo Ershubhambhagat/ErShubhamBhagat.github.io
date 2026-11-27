@@ -12,6 +12,7 @@
    ========================================================================== */
 
 .search {
+  position: relative;
   display: block;
 }
 
@@ -129,25 +130,121 @@
 
 /* ---- Sizes -------------------------------------------------------------- */
 
-.search--small .search__input {
+/* The module writes `search--sm|md|lg` (SEARCH_SIZES in search.js); these rules
+   used to say `--small`/`--large`, so the size option did nothing. `md` is the
+   default typography and needs no rule. */
+
+.search--sm .search__input {
   padding-block: 0.4rem;
   font-size: 0.875rem;
 }
 
-.search--large .search__input {
+.search--lg .search__input {
   padding-block: 0.85rem;
   font-size: 1rem;
 }
 
 /* ---- Variants ----------------------------------------------------------- */
 
-.search--minimal .search__field {
+/* The five names the module accepts. Standard is the base look, so it has no
+   rule. Only `--minimal` used to exist here, and the module never emitted it. */
+
+.search--outlined .search__field {
   background: none;
-  border-color: transparent;
-  border-radius: var(--radius-sm);
+  border-color: var(--color-border);
 }
 
-.search--minimal .search__field:focus-within {
-  background-color: var(--color-surface);
-  border-color: var(--color-border);
+.search--filled .search__field {
+  background-color: var(--color-surface-raised);
+  border-color: transparent;
+}
+
+.search--compact .search__input {
+  padding-block: 0.3rem;
+  font-size: 0.875rem;
+}
+
+.search--expanded,
+.search--expanded .search__field {
+  inline-size: 100%;
+}
+
+.search--expanded .search__input {
+  padding-block: 0.75rem;
+}
+
+/* ---- Suggestions -------------------------------------------------------- */
+
+.search__suggestions {
+  position: absolute;
+  z-index: 40;
+  inset-inline: 0;
+  inset-block-start: calc(100% + 0.35rem);
+  max-block-size: min(16rem, 45vh);
+  overflow-y: auto;
+  padding: var(--spacing-xs);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg, 0 12px 32px rgb(0 0 0 / 0.28));
+}
+
+.search__suggestions[hidden] {
+  display: none;
+}
+
+.search__suggestions-label {
+  margin: 0;
+  padding: 0.25rem var(--spacing-xs) 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.search__suggestions-list {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search__suggestion {
+  padding: 0.45rem var(--spacing-sm);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/* The active row carries a background and an inset outline: colour alone is not
+   the state, and the outline survives forced-colours mode. */
+.search__suggestion.is-active {
+  color: var(--color-text-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.search__suggestions-empty {
+  margin: 0;
+  padding: 0.4rem var(--spacing-sm);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.search__suggestions-empty[hidden] {
+  display: none;
+}
+/* A section's own field label stays visible above the shared field; the component
+   must not add the indent it uses when the label sits inline with the input. */
+.collection-toolbar__search .search__label {
+  padding-inline-start: 0;
+  margin-block-end: 0.25rem;
+}
+.search__suggestions--above {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + 0.35rem);
 }

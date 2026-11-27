@@ -3,7 +3,7 @@
 
    Toolbar (search + category filter + result count) and the card grid. The card
    surface itself comes from css/components/cards.css; this file only owns the
-   layout above the grid.
+   layout above the grid, the featured treatment and the status chip.
    ========================================================================== */
 
 /* ---- Toolbar ---- */
@@ -41,4 +41,133 @@
    is a floor, not a fixed height, so longer text still grows the card. */
 .projects-grid .card__body {
   min-block-size: 4.5rem;
+}
+
+/* ---- Screenshot gallery (details dialog) ---- */
+.project-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.project-gallery__item {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+/* A fixed ratio keeps a row of mixed screenshots from looking ragged, and the
+   reserved height means a slow image cannot shift the dialog. */
+.project-gallery__image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* ---- Featured treatment ----
+   A badge alone is easy to miss in a grid, so a featured card also carries an
+   accent rail and a raised surface. The rail is absolutely positioned (the card
+   already clips its overflow), so it cannot shift the grid's baseline or the
+   stretched title link. Colour is never the only signal: the card keeps its
+   "Featured" badge. */
+.project-card--featured {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.project-card--featured::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-primary),
+    color-mix(in srgb, var(--color-primary) 35%, transparent)
+  );
+  pointer-events: none;
+}
+
+/* ---- Status chip ----
+   Status is a card fact (spec 05 §8), never a dialog-only detail, so it is
+   always spelled out in words. `showStatus` adds the accented pill instead of
+   deciding whether the fact appears; the dot beside the label is decoration and
+   the label itself carries the meaning. */
+.project-status {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: var(--spacing-sm) 0 0;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.project-status__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.project-status__value::before {
+  content: "";
+  inline-size: 0.4375rem;
+  block-size: 0.4375rem;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+}
+
+.project-status--in-progress,
+.project-status--ongoing {
+  color: var(--color-warning);
+}
+
+.project-status--completed {
+  color: var(--color-success);
+}
+
+.project-status--accent {
+  align-self: flex-start;
+  padding-block: 0.125rem;
+  padding-inline: 0.5rem;
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: var(--radius-full);
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+/* ---- Details list items (features, challenges) ----
+   The dialog's plain list carries no hierarchy, and a feature is a title plus a
+   sentence rather than a single line. */
+.details-panel__list--titled {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.details-panel__item {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.details-panel__item-title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.details-panel__item .details-panel__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+}
+
+.details-panel__related-link {
+  color: var(--color-primary);
 }

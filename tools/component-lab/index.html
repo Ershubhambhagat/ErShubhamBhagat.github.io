@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      COMPONENT LAB - an internal fixture page, not part of the visitor journey.
+
+      Why it exists: nine shared components have states that no section currently
+      renders (button loading, card skeleton, badge pressed/count, modal sizes and
+      scroll locking, filter multiple/checkbox, timeline horizontal/compact). The
+      2026-11-27 audit could only mark those states "NOT VERIFIED" because nothing
+      on index.html triggers them. This page renders every documented state once,
+      so the states are exercised in a real engine and can be re-checked after a
+      component change.
+
+      It is not navigation: no header, no footer, no data loading, no app.js. It
+      links the same stylesheets and imports the same modules the site uses, so a
+      regression here is a regression on the site. It is excluded from the
+      sitemap and marked noindex, because it is a developer surface rather than
+      content.
+    -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="color-scheme" content="dark light">
+    <title>Component lab &middot; internal</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+
+    <!-- Same global layer as index.html, then layout, component and section. -->
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/reset.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+
+    <link rel="stylesheet" href="../../css/layout/header.css">
+    <link rel="stylesheet" href="../../css/layout/footer.css">
+    <link rel="stylesheet" href="../../css/layout/navigation.css">
+
+    <link rel="stylesheet" href="../../css/components/buttons.css">
+    <link rel="stylesheet" href="../../css/components/cards.css">
+    <link rel="stylesheet" href="../../css/components/badges.css">
+    <link rel="stylesheet" href="../../css/components/modals.css">
+    <link rel="stylesheet" href="../../css/components/search.css">
+    <link rel="stylesheet" href="../../css/components/filters.css">
+    <link rel="stylesheet" href="../../css/components/timeline.css">
+    <link rel="stylesheet" href="../../css/components/tooltips.css">
+    <link rel="stylesheet" href="../../css/components/toast.css">
+
+    <link rel="stylesheet" href="../../css/sections/profile.css">
+    <link rel="stylesheet" href="../../css/sections/skills.css">
+    <link rel="stylesheet" href="../../css/sections/projects.css">
+    <link rel="stylesheet" href="../../css/sections/certificates.css">
+    <link rel="stylesheet" href="../../css/sections/career-timeline.css">
+
+    <link rel="stylesheet" href="./css/lab.css">
+</head>
+
+<body class="lab">
+
+<!--
+  The lab has its own minimal chrome: a heading, a note about what it is, and an
+  index of the sections. It deliberately reuses the site's `.skip-link`,
+  `#main-content` and heading conventions so keyboard and heading-order checks
+  here say something about the real page too.
+-->
+<a class="skip-link" href="#main-content">Skip to the component sections</a>
+
+<header class="lab__header">
+    <p class="lab__eyebrow">Internal fixture page</p>
+    <h1 class="lab__title">Component lab</h1>
+    <p class="lab__note">
+        Every shared component state, rendered once. This page is not linked from
+        the portfolio, is excluded from the sitemap and carries
+        <code>noindex</code>. It exists so states that no section triggers can be
+        checked in a real browser instead of by reading CSS.
+    </p>
+    <nav class="lab__nav" aria-label="Component sections">
+        <a href="#lab-buttons">Buttons</a>
+        <a href="#lab-cards">Cards</a>
+        <a href="#lab-badges">Badges</a>
+        <a href="#lab-filters">Filters</a>
+        <a href="#lab-search">Search</a>
+        <a href="#lab-timeline">Timeline</a>
+        <a href="#lab-modals">Modals</a>
+        <a href="#lab-toasts">Toasts</a>
+        <a href="#lab-images">Images</a>
+    </nav>
+</header>
+
+<main id="main-content" tabindex="-1" class="lab__main">
+
+    <section class="lab__section" id="lab-buttons" aria-labelledby="lab-buttons-title">
+        <h2 id="lab-buttons-title">Buttons</h2>
+        <p class="lab__hint">
+            Six variants at three sizes, then the loading, disabled, icon-only and
+            link states. Loading must set <code>aria-busy</code> and keep the
+            label; disabled must refuse activation.
+        </p>
+        <div class="lab__slot" id="lab-buttons-variants"></div>
+        <div class="lab__slot" id="lab-buttons-sizes"></div>
+        <div class="lab__slot lab__row" id="lab-buttons-states"></div>
+    </section>
+
+    <section class="lab__section" id="lab-cards" aria-labelledby="lab-cards-title">
+        <h2 id="lab-cards-title">Cards</h2>
+        <p class="lab__hint">
+            Standard, elevated, featured, compact and horizontal, then the
+            skeleton and the media states: a working image, a missing file that
+            must remove itself, and no image at all.
+        </p>
+        <div class="lab__grid" id="lab-cards-variants"></div>
+        <div class="lab__grid" id="lab-cards-media"></div>
+        <div class="lab__grid" id="lab-cards-skeletons"></div>
+    </section>
+
+    <section class="lab__section" id="lab-badges" aria-labelledby="lab-badges-title">
+        <h2 id="lab-badges-title">Badges</h2>
+        <p class="lab__hint">
+            Seven variants at three sizes, an interactive badge with
+            <code>aria-pressed</code>, and count badges (including the invalid
+            count that must be hidden rather than printed).
+        </p>
+        <div class="lab__slot" id="lab-badges-variants"></div>
+        <div class="lab__slot" id="lab-badges-sizes"></div>
+        <div class="lab__slot lab__row" id="lab-badges-interactive"></div>
+        <div class="lab__slot lab__row" id="lab-badges-counts"></div>
+    </section>
+
+    <section class="lab__section" id="lab-filters" aria-labelledby="lab-filters-title">
+        <h2 id="lab-filters-title">Filters</h2>
+        <p class="lab__hint">
+            One panel with all five group types (single, select, multiple,
+            checkbox, range), collapsible, with a result count and active chips.
+            The second panel is always expanded and uses apply mode.
+        </p>
+        <div class="lab__columns">
+            <div class="lab__slot" id="lab-filter-panel"></div>
+            <div class="lab__slot" id="lab-filter-apply"></div>
+        </div>
+        <p class="lab__output" id="lab-filter-state" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="lab__section" id="lab-search" aria-labelledby="lab-search-title">
+        <h2 id="lab-search-title">Search</h2>
+        <p class="lab__hint">
+            The shared field with suggestions, keyboard listbox and a status
+            line. Typing “re” must offer React and Redux; Enter selects the
+            active option.
+        </p>
+        <div class="lab__slot" id="lab-search-field"></div>
+        <div class="lab__slot lab__row" id="lab-search-sizes"></div>
+        <div class="lab__slot lab__row" id="lab-search-variants"></div>
+        <p class="lab__output" id="lab-search-state" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="lab__section" id="lab-timeline" aria-labelledby="lab-timeline-title">
+        <h2 id="lab-timeline-title">Timeline</h2>
+        <p class="lab__hint">
+            The same four events in all four layouts: vertical, horizontal,
+            compact and grouped. Events carry a badge, a details disclosure, an
+            action and an image so those slots are exercised too.
+        </p>
+        <div class="lab__slot" id="lab-timeline-vertical"></div>
+        <div class="lab__slot" id="lab-timeline-horizontal"></div>
+        <div class="lab__slot" id="lab-timeline-compact"></div>
+        <div class="lab__slot" id="lab-timeline-grouped"></div>
+        <p class="lab__output" id="lab-timeline-state" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="lab__section" id="lab-modals" aria-labelledby="lab-modals-title">
+        <h2 id="lab-modals-title">Modals</h2>
+        <p class="lab__hint">
+            Open each size and the confirm/preview helpers. While a dialog is
+            open the page scroll must be locked; Escape, the backdrop and the
+            close button must all close it and restore focus.
+        </p>
+        <div class="lab__slot lab__row" id="lab-modals-controls"></div>
+        <p class="lab__output" id="lab-modal-state" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="lab__section" id="lab-toasts" aria-labelledby="lab-toasts-title">
+        <h2 id="lab-toasts-title">Toasts</h2>
+        <p class="lab__hint">
+            Four tones, a stack capped at three visible, auto-dismiss, and hover
+            pause. Pausing must hold the remaining time, not restart it.
+        </p>
+        <div class="lab__slot lab__row" id="lab-toast-controls"></div>
+        <p class="lab__output" id="lab-toast-state" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="lab__section" id="lab-images" aria-labelledby="lab-images-title">
+        <h2 id="lab-images-title">Images</h2>
+        <p class="lab__hint">
+            The shared image helper: lazy by default, reserved width and height,
+            an eager variant for above-the-fold use, and a broken source that
+            must be removed rather than left as a broken icon.
+        </p>
+        <div class="lab__row" id="lab-images-slot"></div>
+    </section>
+
+</main>
+
+<!-- The two components that render outside the main flow, exactly as on the site. -->
+<div id="modal-root" aria-live="polite"></div>
+<div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+<script type="module" src="./js/lab.js"></script>
+
+</body>
+</html>

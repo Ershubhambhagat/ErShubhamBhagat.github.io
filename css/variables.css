@@ -160,9 +160,10 @@
      Easing lives in its own extension tokens.
 
      --animation-intensity is a unitless 0-1 multiplier written by Theme
-     Studio (contract token). animations.css multiplies every entrance
-     duration by it; 0 means "instant". Transitions intentionally do not use
-     it: feedback that survives at intensity 0 keeps the UI operable.
+     Studio's Layout > Motion intensity control (contract token); 1 is the
+     shipped default and Reset restores it. animations.css multiplies every
+     entrance duration by it; 0 means "instant". Transitions intentionally do
+     not use it: feedback that survives at intensity 0 keeps the UI operable.
      ---------------------------------------------------------------------- */
   --transition-fast: 140ms;
   --transition-normal: 240ms;

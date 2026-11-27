@@ -20,10 +20,11 @@
     "enabled": true,
     "title": "Skills & technologies",
     "subtitle": "The six levels below are the ones already published on this site. The tags without a level are tools I work with, listed without a score because no score was ever stated.",
-    "showSearch": false,
+    "showSearch": true,
     "showFilters": true,
+    "showSort": true,
     "showFeatured": true,
-    "showLearning": false
+    "showLearning": true
   },
   "categories": [
     {
@@ -331,6 +332,20 @@
       "tags": [
         "python"
       ]
+    },
+    {
+      "id": "skill-019",
+      "name": "Python",
+      "categoryId": "backend",
+      "description": "",
+      "icon": "",
+      "proficiency": 2,
+      "proficiencyLabel": "",
+      "featured": false,
+      "currentlyLearning": true,
+      "order": 19,
+      "enabled": true,
+      "tags": []
     }
   ]
 }

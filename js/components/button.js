@@ -407,6 +407,14 @@ export function createButtonLink(options = {}) {
         link.rel = "noopener noreferrer";
     }
 
+    // A link to a published file (the resume) is a download, not a navigation:
+    // keep the visitor on the page instead of leaving them in a PDF viewer.
+    if (options.download === true) {
+        link.setAttribute("download", "");
+    } else if (typeof options.download === "string" && options.download.trim()) {
+        link.setAttribute("download", options.download.trim());
+    }
+
     applyCommonOptions(link, options, { label, ariaLabel });
 
     if (typeof options.onClick === "function") {

@@ -297,7 +297,10 @@ export function initializeProfile(sectionData, appContext) {
       label: asText(resume.label) || "Download resume",
       href: asText(resume.file),
       variant: "ghost",
-      icon: createIcon("download")
+      icon: createIcon("download"),
+      // The configured file is a real PDF in this repository, so the click is a
+      // download rather than a navigation away from the portfolio.
+      download: true
     });
 
     if (link) {

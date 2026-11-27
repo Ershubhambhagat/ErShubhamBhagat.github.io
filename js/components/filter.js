@@ -35,7 +35,7 @@ import { collectFilterValues, readPath } from "../core/filter-engine.js";
 const ALL_VALUE = "all";
 
 /** Group types this component can render. Anything else is skipped safely. */
-const SUPPORTED_TYPES = Object.freeze(["single", "select", "multiple", "checkbox"]);
+const SUPPORTED_TYPES = Object.freeze(["single", "select", "multiple", "checkbox", "range"]);
 
 /**
  * Accepted aliases so a section can pass the wording from FILTER_COMPONENT.md
@@ -62,6 +62,316 @@ function reportError(message) {
 }
 
 /**
+ * Reads one range configuration into finite bounds, or null when unusable.
+ *
+ * A range needs real numbers to offer. Bounds may be supplied explicitly (a
+ * section knows its dataset's years) or derived from records with
+ * deriveRangeBounds; when neither exists the group is skipped, because §27
+ * forbids inventing a scale the data does not have.
+ *
+ * @param {Object} rawGroup
+ * @returns {{min: number, max: number, step: number, unit: string}|null}
+ */
+function readRangeBounds(rawGroup) {
+  const min = Number(rawGroup.min);
+  const max = Number(rawGroup.max);
+  const stepValue = Number(rawGroup.step);
+  const step = Number.isFinite(stepValue) && stepValue > 0 ? stepValue : 1;
+  const unit = typeof rawGroup.unit === "string" ? rawGroup.unit.trim() : "";
+
+  if (!Number.isFinite(min) || !Number.isFinite(max) || max <= min) {
+    reportError(
+      `Range group "${rawGroup.id}" needs finite min and max with max > min; skipped.`
+    );
+    return null;
+  }
+
+  return { min, max, step, unit };
+}
+
+/**
+ * Derives a usable interval from the records a section is about to show.
+ *
+ * Sections call this instead of hardcoding a scale: the bounds are whatever the
+ * dataset actually contains. Only finite numbers count, so a null proficiency
+ * ("no level assigned") can never widen the range to include 0.
+ *
+ * @param {Array<Object>} records
+ * @param {string|((record: Object) => unknown)} keyOrGetter - Field name or accessor.
+ * @param {Object} [options]
+ * @param {number} [options.step=1] - Granularity of the control.
+ * @param {boolean} [options.round=false] - Round outward to whole `step` units,
+ *   which is what year and percentage ranges want.
+ * @returns {{min: number, max: number, step: number}|null}
+ */
+export function deriveRangeBounds(records, keyOrGetter, options = {}) {
+  if (!Array.isArray(records)) {
+    return null;
+  }
+
+  const read =
+    typeof keyOrGetter === "function"
+      ? (record) => keyOrGetter(record)
+      : (record) => readPath(record, String(keyOrGetter ?? ""));
+
+  const stepValue = Number(options.step);
+  const step = Number.isFinite(stepValue) && stepValue > 0 ? stepValue : 1;
+  let min = null;
+  let max = null;
+
+  for (const record of records) {
+    const raw = read(record);
+    const value =
+      typeof raw === "number"
+        ? raw
+        : typeof raw === "string" && raw.trim() !== ""
+          ? Number(raw.trim())
+          : Number.NaN;
+
+    if (!Number.isFinite(value)) {
+      continue;
+    }
+
+    min = min === null ? value : Math.min(min, value);
+    max = max === null ? value : Math.max(max, value);
+  }
+
+  if (min === null || max === null || max <= min) {
+    return null;
+  }
+
+  if (options.round === true) {
+    min = Math.floor(min / step) * step;
+    max = Math.ceil(max / step) * step;
+  }
+
+  return max > min ? { min, max, step } : null;
+}
+
+/**
+ * Builds the shared numeric-range control: two number inputs joined by a dash.
+ *
+ * Exported because the control appears in two containers - this component's
+ * group panel and the section toolbars in js/core/collection-view.js - and the
+ * markup, clamping and keyboard behaviour must not diverge between them.
+ *
+ * The two inputs are preferred over a slider pair: they are native form
+ * controls (arrow keys, Home/End, screen-reader spin buttons all work for
+ * free), they can be typed precisely, and they need no ARIA widget pattern.
+ *
+ * @param {Object} options
+ * @param {string} options.id - Prefix for the two input ids.
+ * @param {string} options.label - Group label, e.g. "Started between".
+ * @param {number} options.min - Lower bound of the data's scale.
+ * @param {number} options.max - Upper bound of the data's scale.
+ * @param {number} [options.step=1]
+ * @param {string} [options.unit] - Appended to the chip label, e.g. "%".
+ * @param {string} [options.fromLabel="From"]
+ * @param {string} [options.toLabel="To"]
+ * @param {{min: number|null, max: number|null}} [options.value]
+ * @param {(value: {min: number|null, max: number|null}) => void} [options.onChange]
+ * @param {string} [options.className] - Extra class on the root element.
+ * @returns {{element: HTMLElement|null, getValue: Function, setValue: Function,
+ *   reset: Function, isActive: Function, destroy: Function}|null}
+ */
+export function createRangeFilter(options = {}) {
+  const settings = options && typeof options === "object" ? options : {};
+  const id = typeof settings.id === "string" ? settings.id.trim() : "";
+  const label = typeof settings.label === "string" ? settings.label.trim() : "";
+  const bounds = readRangeBounds({ ...settings, id: id || "range" });
+
+  if (!id || !bounds || typeof document === "undefined") {
+    return null;
+  }
+
+  if (!label) {
+    reportError(`Range group "${id}" has no label; skipped.`);
+    return null;
+  }
+
+  const { min: lower, max: upper, step } = bounds;
+  const unit = bounds.unit;
+  const fromLabel = typeof settings.fromLabel === "string" && settings.fromLabel.trim()
+    ? settings.fromLabel.trim()
+    : "From";
+  const toLabel = typeof settings.toLabel === "string" && settings.toLabel.trim()
+    ? settings.toLabel.trim()
+    : "To";
+
+  const root = document.createElement("div");
+  root.className = `range-filter${settings.className ? ` ${settings.className}` : ""}`;
+  root.dataset.rangeFilter = id;
+
+  const titleId = `${id}-label`;
+  const title = document.createElement("span");
+  title.className = "range-filter__label";
+  title.id = titleId;
+  title.textContent = label;
+
+  const controls = document.createElement("div");
+  controls.className = "range-filter__controls";
+  controls.setAttribute("role", "group");
+  controls.setAttribute("aria-labelledby", titleId);
+
+  const createInput = (role, text, placeholder) => {
+    const part = document.createElement("label");
+    part.className = "range-filter__part";
+
+    const partLabel = document.createElement("span");
+    partLabel.className = "range-filter__part-label";
+    partLabel.textContent = text;
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.className = "field__input range-filter__input";
+    input.id = `${id}-${role}`;
+    input.inputMode = "numeric";
+    input.autocomplete = "off";
+    input.min = String(lower);
+    input.max = String(upper);
+    input.step = String(step);
+    input.placeholder = placeholder;
+    input.dataset.rangeRole = role;
+
+    part.append(partLabel, input);
+    controls.append(part);
+    return input;
+  };
+
+  const minInput = createInput("min", fromLabel, String(lower));
+
+  const dash = document.createElement("span");
+  dash.className = "range-filter__dash";
+  dash.setAttribute("aria-hidden", "true");
+  dash.textContent = "\u2013";
+  controls.append(dash);
+
+  const maxInput = createInput("max", toLabel, String(upper));
+
+  const hint = document.createElement("span");
+  hint.className = "range-filter__hint";
+  hint.textContent = unit ? `${lower}\u2013${upper} ${unit}` : `${lower}\u2013${upper}`;
+  minInput.setAttribute("aria-describedby", `${id}-hint`);
+  maxInput.setAttribute("aria-describedby", `${id}-hint`);
+  hint.id = `${id}-hint`;
+
+  root.append(title, controls, hint);
+
+  /**
+   * Turns one input's text into a number clamped to the data's scale.
+   * An empty box means "no bound", which renders as null and is not clamped.
+   */
+  const readInput = (input) => {
+    const text = input.value.trim();
+
+    if (text === "") {
+      return null;
+    }
+
+    const parsed = Number(text);
+
+    if (!Number.isFinite(parsed)) {
+      // "e" and "-" are legal intermediate states in a number input; treat
+      // them as "no bound yet" rather than filtering everything out.
+      return null;
+    }
+
+    return Math.max(lower, Math.min(upper, parsed));
+  };
+
+  const read = () => ({ min: readInput(minInput), max: readInput(maxInput) });
+
+  const format = (value) => {
+    const minText = value.min === null ? "" : String(value.min);
+    const maxText = value.max === null ? "" : String(value.max);
+
+    if (!minText && !maxText) {
+      return "";
+    }
+
+    const range = minText && maxText ? `${minText}\u2013${maxText}` : minText || maxText;
+    return unit ? `${range} ${unit}` : range;
+  };
+
+  const notify = () => {
+    if (typeof settings.onChange === "function") {
+      settings.onChange(read());
+    }
+  };
+
+  /**
+   * Commits a finished edit: swaps reversed bounds and writes them back.
+   * Typing "2025" then "2022" should read "2022 to 2025", not an empty result
+   * set that looks like a data problem.
+   */
+  const settle = () => {
+    const value = read();
+
+    if (value.min !== null && value.max !== null && value.min > value.max) {
+      const swapped = { min: value.max, max: value.min };
+      minInput.value = String(swapped.min);
+      maxInput.value = String(swapped.max);
+      notify();
+    }
+  };
+
+  const handleInput = () => notify();
+  const handleChange = () => settle();
+
+  minInput.addEventListener("input", handleInput);
+  maxInput.addEventListener("input", handleInput);
+  minInput.addEventListener("change", handleChange);
+  maxInput.addEventListener("change", handleChange);
+
+  const setValue = (nextValue) => {
+    const source = nextValue && typeof nextValue === "object" ? nextValue : {};
+    const nextMin = Number.isFinite(Number(source.min)) && source.min !== null && source.min !== ""
+      ? Math.max(lower, Math.min(upper, Number(source.min)))
+      : null;
+    const nextMax = Number.isFinite(Number(source.max)) && source.max !== null && source.max !== ""
+      ? Math.max(lower, Math.min(upper, Number(source.max)))
+      : null;
+    const ordered =
+      nextMin !== null && nextMax !== null && nextMin > nextMax
+        ? { min: nextMax, max: nextMin }
+        : { min: nextMin, max: nextMax };
+
+    minInput.value = ordered.min === null ? "" : String(ordered.min);
+    maxInput.value = ordered.max === null ? "" : String(ordered.max);
+  };
+
+  const getValue = () => read();
+
+  const isActive = () => {
+    const value = read();
+    return value.min !== null || value.max !== null;
+  };
+
+  setValue(settings.value);
+
+  return {
+    element: root,
+    getValue,
+    setValue,
+    reset() {
+      setValue({ min: null, max: null });
+    },
+    isActive,
+    /** Human-readable form of the current interval, e.g. "2024\u20132025" or "75\u201390 %". */
+    format() {
+      return format(getValue());
+    },
+    destroy() {
+      minInput.removeEventListener("input", handleInput);
+      maxInput.removeEventListener("input", handleInput);
+      minInput.removeEventListener("change", handleChange);
+      maxInput.removeEventListener("change", handleChange);
+      root.remove();
+    }
+  };
+}
+
+/**
  * Turns a data value such as "web-development" into a readable label.
  *
  * Only fully lower-case values are humanised. Values that already carry their
@@ -82,6 +392,31 @@ function humanizeValue(value) {
     .split(/[-_]+/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+/**
+ * Describes an interval the way a chip should read.
+ *
+ * @param {{min?: number|null, max?: number|null}} range
+ * @param {string} [unit]
+ * @returns {string} "2024\u20132025", "from 2024", "up to 2025" or "".
+ */
+function formatRangeChip(range, unit) {
+  const min = Number.isFinite(range?.min) ? String(range.min) : "";
+  const max = Number.isFinite(range?.max) ? String(range.max) : "";
+
+  if (!min && !max) {
+    return "";
+  }
+
+  const text =
+    min && max
+      ? `${min}\u2013${max}`
+      : min
+        ? `from ${min}`
+        : `up to ${max}`;
+
+  return unit ? `${text} ${unit}` : text;
 }
 
 /**
@@ -365,6 +700,33 @@ function normalizeGroups(config) {
         ? rawGroup.allLabel.trim()
         : "All";
 
+    if (type === "range") {
+      // Range groups have no option list; their scale comes from the data or
+      // from explicit bounds. An unusable scale skips the group only.
+      const bounds = readRangeBounds({ ...rawGroup, id });
+
+      if (!bounds) {
+        return;
+      }
+
+      seenIds.add(id);
+      groups.push({
+        id,
+        label,
+        type,
+        allLabel,
+        includeAllOption: false,
+        options: [],
+        min: bounds.min,
+        max: bounds.max,
+        step: bounds.step,
+        unit: bounds.unit,
+        fromLabel: rawGroup.fromLabel,
+        toLabel: rawGroup.toLabel
+      });
+      return;
+    }
+
     const options = normalizeOptions(rawGroup, type, label);
 
     if (options.length === 0) {
@@ -400,7 +762,13 @@ function cloneState(state) {
   const copy = {};
 
   for (const [key, value] of Object.entries(state)) {
-    copy[key] = Array.isArray(value) ? [...value] : value;
+    // Range state is { min, max }: copying the object keeps a later edit from
+    // mutating the applied state the consumer already received.
+    copy[key] = Array.isArray(value)
+      ? [...value]
+      : value !== null && typeof value === "object"
+        ? { ...value }
+        : value;
   }
 
   return copy;
@@ -417,6 +785,11 @@ function createDefaultState(groups) {
   const state = {};
 
   for (const group of groups) {
+    if (group.type === "range") {
+      state[group.id] = { min: null, max: null };
+      continue;
+    }
+
     state[group.id] = group.type === "multiple" ? [] : "";
   }
 
@@ -448,6 +821,37 @@ function sanitizeState(groups, candidate) {
     }
 
     const value = candidate[group.id];
+
+    if (group.type === "range") {
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        continue;
+      }
+
+      const toBound = (raw) => {
+        const parsed =
+          typeof raw === "number"
+            ? raw
+            : typeof raw === "string" && raw.trim() !== ""
+              ? Number(raw.trim())
+              : Number.NaN;
+
+        if (!Number.isFinite(parsed)) {
+          return null;
+        }
+
+        return Math.max(group.min, Math.min(group.max, parsed));
+      };
+
+      const min = toBound(value.min);
+      const max = toBound(value.max);
+
+      // Reversed bounds are ordered rather than rejected: a deep link or a saved
+      // state can legitimately carry them, and an empty result set would look
+      // like missing data. Unknown keys are ignored (§25).
+      state[group.id] =
+        min !== null && max !== null && min > max ? { min: max, max: min } : { min, max };
+      continue;
+    }
 
     if (group.type === "multiple") {
       if (!Array.isArray(value)) {
@@ -502,6 +906,21 @@ function describeActiveFilters(groups, state) {
 
   for (const group of groups) {
     const value = state[group.id];
+
+    if (group.type === "range") {
+      const range = value && typeof value === "object" ? value : {};
+
+      if (range.min === null && range.max === null) {
+        continue;
+      }
+
+      const label = formatRangeChip(range, group.unit);
+
+      if (label) {
+        entries.push({ groupId: group.id, value: label, label });
+      }
+      continue;
+    }
 
     if (group.type === "multiple") {
       if (!Array.isArray(value)) {
@@ -606,6 +1025,30 @@ function renderChoiceGroup(fieldset, group, instanceId) {
  * @returns {{input?: HTMLInputElement, select?: HTMLSelectElement}}
  */
 function renderGroup(group, instanceId) {
+  if (group.type === "range") {
+    const rangeFilter = createRangeFilter({
+      id: `filter-${instanceId}-${safeIdPart(group.id)}`,
+      label: group.label,
+      min: group.min,
+      max: group.max,
+      step: group.step,
+      unit: group.unit,
+      fromLabel: group.fromLabel,
+      toLabel: group.toLabel,
+      className: "filter__group filter__group--range"
+    });
+
+    if (!rangeFilter) {
+      return null;
+    }
+
+    // The input listener maps a DOM node back to its group; the control's own id
+    // carries the instance prefix, so the group id is what the attribute holds.
+    rangeFilter.element.dataset.rangeFilter = group.id;
+
+    return { element: rangeFilter.element, rangeFilter };
+  }
+
   if (group.type === "select") {
     const wrapper = document.createElement("div");
     wrapper.className = "filter__group filter__group--select";
@@ -716,7 +1159,18 @@ function buildInterface(container, groups, instanceId, settings) {
 
   for (const group of groups) {
     const rendered = renderGroup(group, instanceId);
-    controls.set(group.id, { inputs: rendered.inputs, select: rendered.select });
+
+    if (!rendered) {
+      // A group whose control could not be built is skipped, not fatal: the rest
+      // of the panel keeps working (§25).
+      continue;
+    }
+
+    controls.set(group.id, {
+      inputs: rendered.inputs,
+      select: rendered.select,
+      rangeFilter: rendered.rangeFilter
+    });
     panel.append(rendered.element);
   }
 
@@ -874,6 +1328,11 @@ export function initializeFilter(container, options = {}) {
 
       const value = draftState[group.id];
 
+      if (refs.rangeFilter) {
+        refs.rangeFilter.setValue(value);
+        continue;
+      }
+
       if (refs.select) {
         refs.select.value = typeof value === "string" && value ? value : ALL_VALUE;
         continue;
@@ -912,7 +1371,6 @@ export function initializeFilter(container, options = {}) {
     if (!input || !input.dataset || !input.dataset.filterGroup) {
       return;
     }
-
     const group = groups.find((item) => item.id === input.dataset.filterGroup);
 
     if (!group) {
@@ -957,7 +1415,9 @@ export function initializeFilter(container, options = {}) {
       return;
     }
 
-    if (group.type === "multiple") {
+    if (group.type === "range") {
+      draftState[groupId] = { min: null, max: null };
+    } else if (group.type === "multiple") {
       const current = Array.isArray(draftState[groupId]) ? draftState[groupId] : [];
       draftState[groupId] = current.filter((entry) => entry !== value);
     } else {
@@ -1038,7 +1498,45 @@ export function initializeFilter(container, options = {}) {
     }
   }
 
+  /**
+   * Keeps range state in step with its two inputs.
+   *
+   * The range control owns its own typing and clamping; this handler only copies
+   * the interval into the panel state, so a number input never has to know what
+   * "applied state" means in apply mode.
+   */
+  function handleRangeInput(event) {
+    const target = event.target;
+    const host =
+      target && typeof target.closest === "function"
+        ? target.closest("[data-range-filter]")
+        : null;
+
+    if (!host || !ui.root.contains(host)) {
+      return;
+    }
+
+    const groupId = host.dataset.rangeFilter;
+    const group = groups.find((item) => item.id === groupId);
+    const refs = ui.controls.get(groupId);
+
+    if (!group || !refs?.rangeFilter) {
+      return;
+    }
+
+    draftState[groupId] = refs.rangeFilter.getValue();
+
+    if (applyMode) {
+      renderActiveFiltersView();
+      return;
+    }
+
+    commit({ groupId, value: draftState[groupId], action: "range" });
+  }
+
   ui.root.addEventListener("change", handleChange);
+  ui.root.addEventListener("change", handleRangeInput);
+  ui.root.addEventListener("input", handleRangeInput);
   ui.root.addEventListener("click", handleClick);
 
   syncControls();
@@ -1133,7 +1631,14 @@ export function initializeFilter(container, options = {}) {
 
       destroyed = true;
       ui.root.removeEventListener("change", handleChange);
+      ui.root.removeEventListener("change", handleRangeInput);
+      ui.root.removeEventListener("input", handleRangeInput);
       ui.root.removeEventListener("click", handleClick);
+
+      for (const refs of ui.controls.values()) {
+        refs.rangeFilter?.destroy();
+      }
+
       ui.root.remove();
       ui.controls.clear();
     }

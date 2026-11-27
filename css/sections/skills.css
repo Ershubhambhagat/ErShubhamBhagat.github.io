@@ -96,3 +96,40 @@
 .skills-toolbar .filter {
   max-inline-size: 20rem;
 }
+
+/* ---- Skill icon tile ----
+   A 28px tile keeps the name on one line with its badges. The letter fallback
+   uses the same box so a mixed list has one baseline. */
+.skill__head {
+  flex-wrap: wrap;
+}
+
+.skill__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 28px;
+  block-size: 28px;
+  flex-shrink: 0;
+  color: var(--color-secondary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.skill__icon svg {
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+.skill__icon--letter {
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+/* Badges in the head must not be pushed onto their own line by the level label;
+   the level is the only element that may take the remaining space. */
+.skill__level {
+  margin-inline-start: auto;
+}

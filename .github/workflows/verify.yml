@@ -1,0 +1,56 @@
+name: Verify
+
+# Why this workflow exists: the audit found no automated gate at all, and the
+# first version of this file gated only `gh-pages` while the work happened on
+# `New_Version` - so a push of the actual code ran no check (quality audit C1).
+#
+# Every branch push and every pull request now runs the same commands a developer
+# runs locally. No build step, no dependencies, no deployment.
+#
+# Deploying is separate and manual: .github/workflows/deploy.yml.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Validate datasets
+        run: node scripts/validate-data.mjs
+
+      - name: Check the module contract
+        run: node scripts/check-modules.mjs
+
+      - name: Run unit tests
+        run: node tests/run.mjs
+
+      - name: Check the first-load budget
+        # docs/DEVELOPMENT/PERFORMANCE.md holds the limits; this step is what makes
+        # them a gate instead of a table (SEO-007).
+        run: node scripts/check-budget.mjs
+
+      - name: Check that no module claims a placeholder it no longer is
+        # Comments must match the code (DEVELOPER_FRIENDLY_CODE_COMMENTS.md).
+        # The audit found four modules still describing themselves as
+        # placeholders after they were implemented, so the rule is now enforced
+        # instead of remembered.
+        run: |
+          if grep -rn --include="*.js" --include="*.css" -i "placeholder in this build\|not implemented yet\|coming soon" js css index.html; then
+            echo "::error::A source comment claims a feature is still a placeholder."
+            exit 1
+          fi
+          echo "Comment freshness check passed."

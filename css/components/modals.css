@@ -81,25 +81,31 @@ dialog.modal::backdrop {
 
 /* ---- Sizes (MODAL_COMPONENT.md § 6) ------------------------------------- */
 
-.modal--sm {
+/* Two classes on purpose: the base shell is styled as `dialog.modal`, which is
+   one element plus one class (0,1,1). A single `.modal--sm` (0,1,0) therefore
+   lost every width declaration and every dialog rendered at the 640px default.
+   Pairing the modifier with `.modal` (0,2,0) makes the size win without an
+   !important and keeps the rule independent of source order. */
+
+.modal.modal--sm {
   width: min(calc(100% - 2 * var(--spacing-md)), 26.25rem); /* 420px */
 }
 
-.modal--md {
+.modal.modal--md {
   width: min(calc(100% - 2 * var(--spacing-md)), 40rem); /* 640px */
 }
 
-.modal--lg {
+.modal.modal--lg {
   width: min(calc(100% - 2 * var(--spacing-md)), 56.25rem); /* 900px */
 }
 
-.modal--xl {
+.modal.modal--xl {
   width: min(calc(100% - 2 * var(--spacing-md)), 70rem); /* 1120px */
 }
 
 /* Full-screen dialogs keep a gutter so the scrim and the panel edge stay
    distinguishable - a panel flush with the viewport reads as a page, not a dialog. */
-.modal--full {
+.modal.modal--full {
   width: calc(100% - 2 * var(--spacing-md));
   height: calc(100vh - 2 * var(--spacing-md));
   height: calc(100dvh - 2 * var(--spacing-md));

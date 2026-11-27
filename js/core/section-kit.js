@@ -277,6 +277,80 @@ export function createIcon(name) {
 }
 
 /**
+ * Creates a validated, lazily loaded image.
+ *
+ * Why a helper instead of `document.createElement("img")` in each section:
+ * every media field in data/*.json is optional and owner-editable, so three
+ * rules have to hold everywhere or a broken path becomes a broken layout:
+ *   1. the src passes the same allow-list as links (no data:, no javascript:);
+ *   2. the intrinsic size is reserved when the data declares one, so a late load
+ *      cannot shift the card grid (CLS);
+ *   3. a load failure removes the image instead of leaving a broken icon or an
+ *      empty frame. `onFallback` lets a section substitute a monogram.
+ *
+ * @param {Object} options
+ * @param {string} options.src
+ * @param {string} options.alt - Empty string only for a decorative image.
+ * @param {string} [options.className]
+ * @param {number} [options.width]
+ * @param {number} [options.height]
+ * @param {"lazy"|"eager"} [options.loading]
+ * @param {() => (Node|null)} [options.onFallback]
+ * @returns {HTMLImageElement|null} null when the src is missing or unsafe.
+ */
+export function createImage({
+  src,
+  alt = "",
+  className,
+  width,
+  height,
+  loading = "lazy",
+  onFallback
+} = {}) {
+  const safeSrc = toSafeHref(src);
+
+  if (!safeSrc || typeof document === "undefined") {
+    return null;
+  }
+
+  const image = document.createElement("img");
+  image.src = safeSrc;
+  image.alt = asText(alt);
+  image.loading = loading === "eager" ? "eager" : "lazy";
+  image.decoding = "async";
+
+  if (className) {
+    image.className = className;
+  }
+
+  // Only positive integers are written: width="0" or a decimal would be
+  // rejected by the HTML parser and reserve no space at all.
+  if (Number.isInteger(width) && width > 0) {
+    image.width = width;
+  }
+
+  if (Number.isInteger(height) && height > 0) {
+    image.height = height;
+  }
+
+  image.addEventListener(
+    "error",
+    () => {
+      const replacement = typeof onFallback === "function" ? onFallback() : null;
+
+      if (replacement instanceof Node && image.parentNode) {
+        image.replaceWith(replacement);
+      } else {
+        image.remove();
+      }
+    },
+    { once: true }
+  );
+
+  return image;
+}
+
+/**
  * Creates a validated link.
  *
  * @param {Object} options
@@ -398,6 +472,11 @@ export function formatDate(value, style = "short") {
 /**
  * Formats a date range, collapsing whatever is missing.
  *
+ * `current` is the only thing that may produce "Present". A record with no end
+ * date and `current: false` is a finished spell whose end is unknown, so it
+ * prints the start alone: claiming "Present" there would be a false statement
+ * about the owner's employment (found in the 2026-11-27 quality audit).
+ *
  * @param {string} start
  * @param {string} end
  * @param {boolean} [current] - When true and no end date, renders "Present".
@@ -407,15 +486,15 @@ export function formatDateRange(start, end, current = false) {
   const startText = formatDate(start);
   const endText = formatDate(end);
 
-  if (startText && endText) {
+  if (!startText) {
+    return endText;
+  }
+
+  if (endText) {
     return `${startText} \u2013 ${endText}`;
   }
 
-  if (startText) {
-    return current || !endText ? `${startText} \u2013 Present` : startText;
-  }
-
-  return endText;
+  return current ? `${startText} \u2013 Present` : startText;
 }
 
 /**

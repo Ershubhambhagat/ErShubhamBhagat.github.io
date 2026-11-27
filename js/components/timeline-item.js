@@ -609,6 +609,20 @@ export function initializeTimelineItem(container, options = {}) {
     expandRefs.clear();
     eventIndex.clear();
 
+    // A grouped consumer may legitimately supply only `groups` and no flat
+    // `events` array. Flatten the supplied groups once so the empty check below
+    // sees the collection the groups describe; without this, a groups-only
+    // caller rendered nothing at all (found by the component lab).
+    if (events.length === 0 && groupSpecs.length > 0) {
+      events = [];
+
+      for (const group of groupSpecs) {
+        if (group && Array.isArray(group.events)) {
+          events.push(...group.events);
+        }
+      }
+    }
+
     const prepared = prepareEvents(events);
 
     if (prepared.length === 0) {
